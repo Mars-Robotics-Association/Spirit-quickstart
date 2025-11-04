@@ -9,9 +9,10 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.robot.Intake;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
-@TeleOp(name="Spirit", group="Teleop")
+@TeleOp(name = "Spirit", group = "Teleop")
 public class SpiritTeleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,10 +20,14 @@ public class SpiritTeleop extends LinearOpMode {
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+            Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
 
             waitForStart();
 
             while (opModeIsActive()) {
+                double netPower = gamepad2.right_trigger - gamepad2.left_trigger;//if the player pulls both triggers at the same time, power is netted
+                intake.setPower(netPower);//sets the power on the intake moter based on the values from the triggers
+
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
                                 -gamepad1.left_stick_y,
@@ -44,7 +49,7 @@ public class SpiritTeleop extends LinearOpMode {
                 Drawing.drawRobot(packet.fieldOverlay(), pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
-        }  else {
+        } else {
             throw new RuntimeException();
         }
     }
