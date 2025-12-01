@@ -76,7 +76,7 @@ public class SpiritTeleop extends LinearOpMode {
                 }
 //------------------------------------ CODE FOR RIGHT TRIGGER ----------------------------
                 if ((gamepad2.left_trigger <= 0.01) && (gamepad2.right_trigger < .25)) {
-                    if (ShooterFlag = false) {
+                    if (ShooterFlag == false) {
                         ShooterFlag = true;
                         RampUpTimer = getRuntime() + 2; //set a timer to the length of time the op has been running + 2 seconds
                         shooter.setPower(.6);//ramp up the shooter
@@ -86,7 +86,7 @@ public class SpiritTeleop extends LinearOpMode {
                 //check to see if the shooter has ramped up for the required number of seconds.
                 //if so, reapply power, advance carousel, engage teardrop, reset teardrop,
                 //and count how many times the carousel has advanced (at 3, reset it to original position)
-                if (ShooterFlag = true) {
+                if (ShooterFlag == true) {
                     if (getRuntime() > RampUpTimer) {
                         if (carouselCounter < 3) {
                             shooter.setPower(.6);
