@@ -9,8 +9,8 @@ public class Shooter {
     private final DcMotorEx shooterMotorRight;
 
     public Shooter(HardwareMap hardwareMap) {
-        shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotor");
-        shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotor");
+        shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
+        shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
         shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }

@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Shooter;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
-@TeleOp(name = "Spirit", group = "Teleop")
-public class SpiritTeleop extends LinearOpMode {
+@TeleOp(name = "tempBKFPlaygroundTeleop", group = "Teleop")
+public class tempBKFPlaygroundTeleop extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -52,83 +52,38 @@ public class SpiritTeleop extends LinearOpMode {
                     //and count how many times the carousel has advanced (at 3, reset it to original position)
                     if (ShooterFlag = true) {
                         if (getRuntime() > RampUpTimer) {
-                            if (carouselCounter < 5) {
+                            if (carouselCounter < 3) {
                                 shooter.setPower(.6);
                                 //add code to advance carousel by 120 degrees
-
                                 //carousel.flipShooterServo();
-                               //carousel.unflipShooterServo();
+                                //carousel.unflipShooterServo();
                                 carouselCounter++;
                             } else {
                                 //add code to reset carousel to original position
                             }
-//this is a loop to make the code "wait" until the require number of seconds has passed (if statement cannot be empty so we gave it a task to do
-                        // else {
-                         //   i = i++;
-                        }else {
-                            i=i++;
-                        }
-                    } else {
-                        shooter.setPower(0);
 
-                    //else {
-                   // shooter.setPower(0);
-                }
-//------------------------------------ CODE FOR RIGHT TRIGGER ----------------------------
-                if ((gamepad2.left_trigger <= 0.01) && (gamepad2.right_trigger < .25)) {
-                    if (ShooterFlag = false) {
-                        ShooterFlag = true;
-                        RampUpTimer = getRuntime() + 2; //set a timer to the length of time the op has been running + 2 seconds
-                        shooter.setPower(.6);//ramp up the shooter
-                    }
-                }
-
-                //check to see if the shooter has ramped up for the required number of seconds.
-                //if so, reapply power, advance carousel, engage teardrop, reset teardrop,
-                //and count how many times the carousel has advanced (at 3, reset it to original position)
-                if (ShooterFlag = true) {
-                    if (getRuntime() > RampUpTimer) {
-                        if (carouselCounter < 3) {
-                            shooter.setPower(.6);
-                            //add code to advance carousel by 120 degrees
-                            //carousel.flipShooterServo();
-                           // carousel.unflipShooterServo();
-                            carouselCounter++;
                         } else {
-                            //add code to reset carousel to original position
+                            i = i++;
                         }
-
-                    } else {
-                        i = i++;
                     }
+                } else {
+                    shooter.setPower(0);
                 }
-            } else {
-                shooter.setPower(0);
-            }
 
+                if ((gamepad2.left_trigger <= 0.25) && (gamepad2.right_trigger < .01)) {
+                    //Braelan to add the code for the left trigger
+                }
 //--------------------------------------------------------
                 if (gamepad2.y) {
                    // carousel.flipFeedServo();
                 }
 
                 if (gamepad2.x) {
-                  //  carousel.unflipFeedServo();
+                   // carousel.unflipFeedServo();
                 }
 
                 if (gamepad2.a) {
-                  if (carouselCounter <= 5){
-                     // carousel.advanceCarousel();
-                      carouselCounter++;
-                  }
-                  else{
-                      //
-                      // carousel.resetCarousel();
-                      carouselCounter=0;
-                  }
-                }
-
-                if (gamepad2.b) {
-                    intake.setPower(0);
+                    shooter.setPower(0);
                 }
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
@@ -154,3 +109,4 @@ public class SpiritTeleop extends LinearOpMode {
         }
     }
 }
+
