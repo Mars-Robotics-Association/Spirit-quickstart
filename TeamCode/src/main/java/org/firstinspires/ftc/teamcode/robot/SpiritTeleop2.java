@@ -26,6 +26,14 @@ public class SpiritTeleop2 extends LinearOpMode {
         int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
 
 
+        enum State {
+            IDLE,
+            RIGHT_TRIGGER_SEQUENCE,
+            LEFT_TRIGGER_SEQUENCE
+        }
+        State currentState = State.IDLE;
+        double stateStartTime = 0;
+
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
             Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
@@ -49,15 +57,19 @@ public class SpiritTeleop2 extends LinearOpMode {
                 switch (currentState) {
 
                     case IDLE:
-                        handleIdle();
+                        //handleIdle();
+                        shooter.setPower(0);
+                        if ((gamepad2.right_trigger >.25) && (gamepad2.left_trigger <.01)) {
+
+                        }
                         break;
 
                     case RIGHT_TRIGGER_SEQUENCE:
-                        updateRightSequence();
+                        //updateRightSequence();
                         break;
 
                     case LEFT_TRIGGER_SEQUENCE:
-                        updateLeftSequence();
+                        //updateLeftSequence();
                         break;
                 }
  //------------------------END OF SHOOTER CONTROL-----------------------------------
@@ -147,9 +159,7 @@ public class SpiritTeleop2 extends LinearOpMode {
         }
         telemetry.update();
 
-        private void handleIdle() {
-            shooter.setPower(0);
+
         }
     }
-}
-        }
+
