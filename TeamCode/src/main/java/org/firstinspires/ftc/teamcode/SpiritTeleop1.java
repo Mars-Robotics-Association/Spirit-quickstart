@@ -16,15 +16,12 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @TeleOp(name = "Spirit", group = "Teleop")
-public class SpiritTeleop extends LinearOpMode {
+public class SpiritTeleop1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
-        double closeShooterPower = .4;//speed for shooter if close to target
-        double farShooterPower = .6;//speed for shooter if far from target
-        double shooterPower = 0;//we will set shooterPower to either closeShooterPower or farShooterPower depending on which trigger is pulled.
         int i = 0;//a variable to give make the code "wait" until the required number of seconds have passed to begin launching the artifact
         int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
 
@@ -50,12 +47,13 @@ public class SpiritTeleop extends LinearOpMode {
 
                 if ((gamepad2.left_trigger > 0.25) && (gamepad2.right_trigger < .01))
                 {
-                    shooterPower = closeShooterPower;
+                    shooter.shooterPower = shooter.closeShooterPower;
+                    shooterTilt = closeShooterTilt;
                     if (rampUpFlag == false)
                     {
                         rampUpFlag = true;
                         rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
-                        shooter.setPower(shooterPower);
+                        shooter.setPower(shooter.shooterPower);
                     }
                     else if (getRuntime() > rampUpTimer){
                         shooter.setPower(shooterPower);//ramp up the shooter
@@ -70,10 +68,12 @@ public class SpiritTeleop extends LinearOpMode {
                 if ((gamepad2.right_trigger > 0.25) && (gamepad2.left_trigger < .01))
                 {
                     shooterPower = farShooterPower;
+                    shooterTilt = farShooterTilt;
                     if (rampUpFlag == false)
                     {
                         rampUpFlag = true;
                         rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
+
                         shooter.setPower(shooterPower);
                     }
                     else if (getRuntime() > rampUpTimer){
