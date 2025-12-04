@@ -26,12 +26,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 double nearShooterPower = .4;
 double farShooterPower = .6;
 double shooterPower = 0;
-        enum State {
-            IDLE,
-            RAMPING,
-            LAUNCHING,
-
-        }
         State currentState = State.IDLE;
         double stateStartTime = 0;
 
@@ -88,8 +82,11 @@ double shooterPower = 0;
                     case LAUNCHING:
                         if(getRuntime() > rampUpTimer) {
                             shooter.setShooterPower(shooterPower);//reapply power to shooter
+                            //add line to lift
                             carousel.engageShooterServo();
-                            carousel.resetCarousel();
+                            carousel.releaseShooterServo();
+
+                            //carousel.resetCarousel();
                             currentState = State.IDLE;
                         }
                         break;
@@ -181,7 +178,7 @@ double shooterPower = 0;
 
                 TelemetryPacket packet = new TelemetryPacket();
                 packet.fieldOverlay().setStroke("#3F51B5");
-                Drawing.drawRobot(packet.fieldOverlay(), pose);
+                //Drawing.drawRobot(packet.fieldOverlay(), pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
         }
@@ -189,5 +186,12 @@ double shooterPower = 0;
 
 
         }
+
+    private enum State {
+        IDLE,
+        RAMPING,
+        LAUNCHING,
+
     }
+}
 
