@@ -6,9 +6,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Shooter {
-    private final DcMotorEx shooterMotorLeft;
-    private final DcMotorEx shooterMotorRight;
-    private final Servo tiltServo;
+    public final DcMotorEx shooterMotorLeft;
+    public final DcMotorEx shooterMotorRight;
+    public final Servo tiltServo;
 
 
 
@@ -24,12 +24,18 @@ public class Shooter {
     /**
      * Set the power to the left and right motors
      */
-        public void setPower(double power) {
+        public void setShooterPower(double power) {
         shooterMotorLeft.setPower(power);
         shooterMotorRight.setPower(power);
          }
+        public void setTiltServo(double shooterTiltPositon){
+           tiltServo.setPosition(shooterTiltPositon);
+         }
+    }
 
-        public void setShooterTilt(double shooterTiltPositon){
-            tiltServo.setPosition(shooterTiltPositon);
-        }
+/**
+ Set position of servo that tilts the shooters
+ *
+ */
+
 }

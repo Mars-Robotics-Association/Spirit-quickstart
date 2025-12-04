@@ -17,21 +17,21 @@ public class Carousel {
 
 
     }
-//feeds an artifact into the carousel
-    public void flipFeedServo() {
+    //feeds an artifact into the carousel
+    public void engageFeedServo() {
         feedServo.setPosition(1);
          }
     //resets the teardrop that feeds the carousel
-    public void unflipFeedServo(){
+    public void resetFeedServo(){
         feedServo.setPosition(0);
     }
 
     //feeds an artifact to the shooter
-    public void flipShooterServo() {
+    public void engageShooterServo() {
        shooterServo.setPosition(1);
     }
     //resets tej teardrop that feeds the shooter
-   public void unflipShooterServo(){
+   public void releaseShooterServo(){
      shooterServo.setPosition(0);
     }
 

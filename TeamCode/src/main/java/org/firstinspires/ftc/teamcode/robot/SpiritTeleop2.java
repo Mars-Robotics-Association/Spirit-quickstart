@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode;
-
+package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -24,12 +23,14 @@ public class SpiritTeleop2 extends LinearOpMode {
         boolean rampUpFlag = false;
         int i = 0;//a variable to give make the code "wait" until the required number of seconds have passed to begin launching the artifact
         int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
-
-
+double nearShooterPower = .4;
+double farShooterPower = .6;
+double shooterPower = 0;
         enum State {
             IDLE,
-            RIGHT_TRIGGER_SEQUENCE,
-            LEFT_TRIGGER_SEQUENCE
+            RAMPING,
+            LAUNCHING,
+
         }
         State currentState = State.IDLE;
         double stateStartTime = 0;
@@ -58,20 +59,47 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                     case IDLE:
                         //handleIdle();
-                        shooter.setPower(0);
-                        if ((gamepad2.right_trigger >.25) && (gamepad2.left_trigger <.01)) {
+                        shooter.setShooterPower(0.00);//stop shooter
+                        carousel.releaseShooterServo();//move shooter feeder to down position
 
+                        if ((gamepad2.right_trigger >.25) && (gamepad2.left_trigger <.01))
+                         {
+                           shooterPower = nearShooterPower;
+                           shooter.setShooterPower(shooterPower);//set power to shoot near target
+                            currentState = State.RAMPING;
+                            rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
+                        }
+                        if ((gamepad2.left_trigger >.25) && (gamepad2.right_trigger <.01))
+                        {
+                            shooterPower=farShooterPower;
+                            shooter.setShooterPower(shooterPower);//set power to shoot far from target
+                            currentState = State.RAMPING;
+                            rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
                         }
                         break;
 
-                    case RIGHT_TRIGGER_SEQUENCE:
-                        //updateRightSequence();
+                    case RAMPING:
+                        if(getRuntime() > rampUpTimer) {
+                            shooter.setShooterPower(shooterPower);//set power to shooter
+                            currentState = State.LAUNCHING;
+                        }
                         break;
 
-                    case LEFT_TRIGGER_SEQUENCE:
-                        //updateLeftSequence();
+                    case LAUNCHING:
+                        if(getRuntime() > rampUpTimer) {
+                            shooter.setShooterPower(shooterPower);//reapply power to shooter
+                            carousel.engageShooterServo();
+                            carousel.resetCarousel();
+                            currentState = State.IDLE;
+                        }
                         break;
+
+
                 }
+                telemetry.addData("State", currentState);
+                telemetry.addData("Shooter Power", shooterPower);
+                //telemetry.addData("Servo Pos", carousel.getPosition());
+                telemetry.update();
  //------------------------END OF SHOOTER CONTROL-----------------------------------
 
 
