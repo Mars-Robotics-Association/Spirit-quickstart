@@ -16,9 +16,11 @@ public class Shooter {
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
+
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
-        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        shooterMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -28,6 +30,8 @@ public class Shooter {
         shooterMotorLeft.setPower(power);
         shooterMotorRight.setPower(power);
          }
+
+
         public void setTiltServo(double shooterTiltPositon){
            tiltServo.setPosition(shooterTiltPositon);
          }

@@ -23,11 +23,11 @@ public class SpiritTeleop2 extends LinearOpMode {
         boolean rampUpFlag = false;
         int i = 0;//a variable to give make the code "wait" until the required number of seconds have passed to begin launching the artifact
         int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
-double nearShooterPower = .4;
-double farShooterPower = .6;
-double shooterPower = 0;
+        double nearShooterPower = .4;//power for shooter if bot is near target
+        double farShooterPower = .6;//power for shooter if bot is far from target
+        double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
-        double stateStartTime = 0;
+
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -38,6 +38,7 @@ double shooterPower = 0;
             waitForStart();
 
             while (opModeIsActive())
+            //Operate Intake: left bumper is intake and right bumper is eject
             {
                 if (gamepad2.left_bumper) {
                     intake.setPower(1);
@@ -46,6 +47,8 @@ double shooterPower = 0;
                 } else {
                     intake.setPower(0);
                 }
+
+                if ()
 //------------------CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
                 //--------------LEFT TRIGGER PULLED (CLOSE TO TARGET) ------------------------------
 
@@ -81,9 +84,12 @@ double shooterPower = 0;
 
                     case LAUNCHING:
                         if(getRuntime() > rampUpTimer) {
-                            shooter.setShooterPower(shooterPower);//reapply power to shooter
-                            //add line to lift
-                            carousel.engageShooterServo();
+                            //shooter.setShooterPower(shooterPower);//reapply power to shooter
+                            carousel.tinyLiftShooterServo(); //the shooter servo a tiny bit so artifact is held
+                            //addline to tilt shooters to near or far posiiton
+                            //addline to lift the shooterServo to launch artifact
+                            carousel.fullLiftShooterServo();
+                            wait
                             carousel.releaseShooterServo();
 
                             //carousel.resetCarousel();
@@ -100,49 +106,14 @@ double shooterPower = 0;
  //------------------------END OF SHOOTER CONTROL-----------------------------------
 
 
-  /*  THIS CODE IS NOT NEEDED AND WILL BE DELETED AFTER THE CLASS IS REWRITTEN
-//------------------------------------ CODE FOR RIGHT TRIGGER ----------------------------
-                    if ((gamepad2.right_trigger >.25) && (gamepad2.left_trigger <.01)) {
-                        if (rampUpFlag == false) {
-                            rampUpFlag = true;
-                            rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
-                            shooter.setPower(.4);//ramp up the shooter
-                        }else{
-                            shooter.setPower(0);
-                            rampUpFlag = false;
-                        }
-                        //check to see if the shooter has ramped up for the required number of seconds.
-                        //if so, reapply power, advance carousel, engage teardrop, reset teardrop,
-                        //and count how many times the carousel has advanced (at 3, reset it to original position)
-                        if (rampUpFlag == true) {
-                            shooter.setPower(.4);
-                            if (getRuntime() > rampUpTimer) {
-                                if (carouselCounter < 5) {
-                                    //add code to advance carousel by 120 degrees which is .06 (120 degrees/1800 total degrees)
-                                    //carousel.flipShooterServo();
-                                    //carousel.unflipShooterServo();
-                                    carouselCounter++;
-                                } else {
-                                    //carousel.resetCarousel(0);
-                                    carouselCounter = 0;
-                                }
-//this is a loop to make the code "wait" until the require number of seconds has passed (if statement cannot be empty so we gave it a task to do
-                            } else {
-                                i++;
-                            }
-                        } //else {
-                          //  shooter.setPower(0);
-                          //  shooterFlag = false;
-                       // }
+ -------END CODE FOR TRIGGERS--------------------------------------
 
-//------------------END CODE FOR TRIGGERS--------------------------------------
-*/
                 if (gamepad2.y) {
-                    // carousel.flipFeedServo();
+                    //
                 }
 
                 if (gamepad2.x) {
-                    //  carousel.unflipFeedServo();
+                    //
                 }
 
                 if (gamepad2.a) {
@@ -157,8 +128,7 @@ double shooterPower = 0;
                 }
 
                 if (gamepad2.b) {
-                    intake.setPower(0);
-                    telemetry.addData("button b", "button b");
+                    //
                 }
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(

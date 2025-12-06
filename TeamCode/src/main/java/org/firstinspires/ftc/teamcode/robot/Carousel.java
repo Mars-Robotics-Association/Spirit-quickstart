@@ -5,25 +5,22 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Carousel {
 
-   private final Servo shooterServo;
-   //private final Servo spinServo;
+   private final Servo shooterServo;//lifts the teardrop to feed the artifact to the shooter
+   private final Servo carouselServo;//turns the carousel
 
 
     public Carousel(HardwareMap hardwareMap) {
-
-       shooterServo = hardwareMap.get(Servo.class, "shooterServo");//teardrop from carousel to shooters
-       // spinServo = hardwareMap.get(Servo.class, "spinServo");//advances the carousel
-
-
-
+       shooterServo = hardwareMap.get(Servo.class, "shooterServo");
+       carouselServo = hardwareMap.get(Servo.class, "carouselServo");
     }
 
-
-    //feeds an artifact to the shooter
-    public void engageShooterServo() {
-       shooterServo.setPosition(1);
+    public void tinyLiftShooterServo(){
+        shooterServo.setPosition(.2);
     }
-    //resets tej teardrop that feeds the shooter
+
+    public void fullLiftShooterServo(){
+        shooterServo.setPosition(.8);
+    }
 
     public void releaseShooterServo(){
      shooterServo.setPosition(0);
