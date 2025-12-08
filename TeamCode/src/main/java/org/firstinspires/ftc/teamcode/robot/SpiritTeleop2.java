@@ -72,10 +72,12 @@ public class SpiritTeleop2 extends LinearOpMode {
                     shooter.setFarTiltServo();
                 }
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
+
+                //spin carousel forward
                 if (gamepad1.x) {
                     carousel.spinCarousel();
                 }
-
+                //spin carousel backward
                 if (gamepad1.y) {
                     carousel.spinCarousel();
                 }
@@ -149,15 +151,15 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                     //-------END CODE FOR TRIGGERS--------------------------------------
 
-                    if (gamepad2.y) {
+                    //if (gamepad2.y) {
                         //
-                    }
+                    // }
 
-                    if (gamepad2.x) {
+                   // if (gamepad2.x) {
                         //
-                    }
+                    // }
 
-                    if (gamepad2.b) {
+                    if (gamepad1.x) {
                         if (carouselCounter <= 3) {
                             carousel.spinCarousel();
                             carouselCounter++;
