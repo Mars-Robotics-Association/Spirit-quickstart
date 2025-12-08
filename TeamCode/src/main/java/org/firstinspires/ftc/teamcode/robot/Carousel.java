@@ -5,34 +5,38 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Carousel {
 
-   private final Servo shooterServo;//lifts the teardrop to feed the artifact to the shooter
-   private final Servo carouselServo;//turns the carousel
-
+    private final Servo kickerServo;//lifts the teardrop to feed the artifact to the shooter
+    private final Servo carouselServo;//turns the carousel
+   // double carouselPosition1 = .2;//for testing variable to hold the forward positon of the carousel (will be set in code)
+   // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
+   double kickerDownPosition = .8;
+   double kickerTinyLiftPosition = .7;
+   double kickerFullLiftPosition = .5;
+    double carouselPosition1 = .2;//forward sping for testing only just to see if carosel turns
+    double carouselPosition2 = .4;//backward spin for testing only just to see carousel moves
 
     public Carousel(HardwareMap hardwareMap) {
-       shooterServo = hardwareMap.get(Servo.class, "shooterServo");
+       kickerServo = hardwareMap.get(Servo.class, "kickerServo");
        carouselServo = hardwareMap.get(Servo.class, "carouselServo");
     }
 
-    public void tinyLiftShooterServo(){
-        shooterServo.setPosition(.2);
+    public void setTinyKicker(){
+        kickerServo.setPosition(kickerTinyLiftPosition);
     }
 
-    public void fullLiftShooterServo(){
-        shooterServo.setPosition(.8);
+    public void setFullKicker(){
+        kickerServo.setPosition(kickerFullLiftPosition);
     }
 
-    public void releaseShooterServo(){
-     shooterServo.setPosition(0);
+    public void setHomePositionKicker(){
+     kickerServo.setPosition(kickerDownPosition);
     }
-/*
-   public void advanceCarousel()
-   {
-        spinServo.setPosition(spinServo.getPosition() + .06);//120 degrees/1800 servo degree range -= .06
+
+    public void spinCarouselForward(){
+        carouselServo.setPosition(carouselPosition1);
     }
-*/
-    //public void resetCarousel(){
-     //   spinServo.setPosition(0);
-    //}
+    public void spinCarouselBackward(){
+        carouselServo.setPosition(carouselPosition2);
+    }
     }
 

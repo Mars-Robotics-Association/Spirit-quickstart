@@ -26,20 +26,26 @@ public class Shooter {
     /**
      * Set the power to the left and right motors
      */
-        public void setShooterPower(double power) {
+    public void setShooterPower(double power) {
         shooterMotorLeft.setPower(power);
         shooterMotorRight.setPower(power);
-         }
-
-
-        public void setTiltServo(double shooterTiltPositon){
-           tiltServo.setPosition(shooterTiltPositon);
-         }
     }
 
-/**
- Set position of servo that tilts the shooters
- *
- */
+    //Set position of servo that tilts the shooters
+    public void setTiltServo(double shooterTiltPositon) {
+        tiltServo.setPosition(shooterTiltPositon);
+    }
+//FOR TESTING
+    public void setNearTiltPosition(double nearTiltPosition) {
+        tiltServo.setPosition(nearTiltPosition);
+    }
+    public void setFarTiltPosition(double farTiltPosition) {
+        tiltServo.setPosition(farTiltPosition);
+    }
+    public void setHomeTiltPosition(double homeTiltPosition) {
+        tiltServo.setPosition(homeTiltPosition);
+    }
+}
+
 
 
