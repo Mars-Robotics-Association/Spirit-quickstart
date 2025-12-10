@@ -9,7 +9,9 @@ public class Shooter {
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
-
+   // double nearTiltPosition = .35;//for testing
+   // double farTiltPosition = .4;//for testing
+    double homeTiltPosition = 0;//for testing
 
 
     public Shooter(HardwareMap hardwareMap) {
@@ -32,19 +34,23 @@ public class Shooter {
     }
 
     //Set position of servo that tilts the shooters
-    public void setTiltServo(double shooterTiltPositon) {
-        tiltServo.setPosition(shooterTiltPositon);
+    public void setTiltPosition(double tiltPositon) {
+        tiltServo.setPosition(tiltPositon);
     }
+    /*
 //FOR TESTING
-    public void setNearTiltPosition(double nearTiltPosition) {
+    public void setNearTiltPosition(nearTiltPosition) {
         tiltServo.setPosition(nearTiltPosition);
     }
-    public void setFarTiltPosition(double farTiltPosition) {
+    public void setFarTiltPosition(farTiltPosition) {
         tiltServo.setPosition(farTiltPosition);
     }
-    public void setHomeTiltPosition(double homeTiltPosition) {
+    */
+    public void setHomeTiltPosition() {
         tiltServo.setPosition(homeTiltPosition);
     }
+
+
 }
 
 

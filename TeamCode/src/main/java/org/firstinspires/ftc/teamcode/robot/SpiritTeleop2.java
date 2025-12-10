@@ -8,31 +8,31 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robot.Carousel;
-import org.firstinspires.ftc.teamcode.robot.Intake;
-import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
-import org.firstinspires.ftc.teamcode.robot.Shooter;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @TeleOp(name = "Spirit", group = "Teleop")
 public class SpiritTeleop2 extends LinearOpMode {
+    public double launchSequenceTimer = 0;
+    public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-       //set variables
+        //set variables
         double rampUpTimer = 0;
+        //public double launchSequenceTimer = 0;
         boolean rampUpFlag = false;
-        int i = 0;//a variable to give make the code "wait" until the required number of seconds have passed to begin launching the artifact
-        int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
+        //int carouselCounter = 0;//counts the number of times the carousel has advanced 120 degrees. After 3 advances, we need to rest the carousel's position
+       // public int counter = 0;//variable to use to cause a waiting period in the launch sequence
         double nearShooterPower = .4;//power for shooter if bot is near target
         double farShooterPower = .6;//power for shooter if bot is far from target
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
         double nearTiltPosition = .35;
         double farTiltPosition = .4;
+        double tiltPosition = 0;
         double homeTiltPosition = 0;
-      // double carouselPosition1 = .2;//carousel position if moved forward (for testing)
-      //  double carouselPosition2 = .4;//carousel position if moved backward (for testing)
+        // double carouselPosition1 = .2;//carousel position if moved forward (for testing)
+        //  double carouselPosition2 = .4;//carousel position if moved backward (for testing)
 
         if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {
             MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -63,16 +63,19 @@ public class SpiritTeleop2 extends LinearOpMode {
                 if (gamepad2.y) {
                     carousel.setFullKicker();
                 }
-//------------------JUST FOR TESTING POSITION OF TILT SERVO
+/*
+                //------------------JUST FOR TESTING POSITION OF TILT SERVO
                 if (gamepad1.a) {
-                    shooter.setNearTiltPosition(nearTiltPosition);
+                    shooter.setNearTiltPosition();
                 }
                 if (gamepad1.b) {
-                    shooter.setFarTiltPosition(farTiltPosition);
+                    shooter.setFarTiltPosition();
                 }
                 if (gamepad2.a) {
-                    shooter.setHomeTiltPosition(homeTiltPosition);
+                    shooter.setHomeTiltPosition();
                 }
+
+ */
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
                 if (gamepad1.x) {
                     carousel.spinCarouselForward();//this is set to .2 for now
@@ -89,44 +92,66 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                     case IDLE:
                         //handleIdle();
-                       // shooter.setHomeTiltPosition(homeTiltPosition);
+                        shooter.setHomeTiltPosition();
+                        carousel.setHomePositionKicker();
                         shooter.setShooterPower(0.00);//stop shooter
-                       // carousel.setTinyKicker(.9);//move kicker to down position
+                        // carousel.setTinyKicker(.9);//move kicker to down position
 
-                        //if left trigger pulled
-                        if ((gamepad2.right_trigger >.25) && (gamepad2.left_trigger <.01))
-                         {
-                           shooterPower = nearShooterPower;
-                           shooter.setShooterPower(shooterPower);//set power to shoot near target
+                        //if left trigger pulled shoot near target
+                        if ((gamepad2.right_trigger > .25) && (gamepad2.left_trigger < .01)) {
+                            shooterPower = nearShooterPower;
+                            shooter.setShooterPower(shooterPower);//set power to shoot near target
+                            tiltPosition = nearTiltPosition;
                             currentState = State.RAMPING;
                             rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
                         }
-                        //if right trigger pulled
-                        if ((gamepad2.left_trigger >.25) && (gamepad2.right_trigger <.01))
-                        {
-                            shooterPower=farShooterPower;
+                        //if right trigger pulled - shoot far away
+                        if ((gamepad2.left_trigger > .25) && (gamepad2.right_trigger < .01)) {
+                            shooterPower = farShooterPower;
                             shooter.setShooterPower(shooterPower);//set power to shoot far from target
+                            tiltPosition = farTiltPosition;
                             currentState = State.RAMPING;
                             rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
                         }
                         break;
 
                     case RAMPING:
-                        if(getRuntime() > rampUpTimer) {
-                            shooter.setShooterPower(shooterPower);//set power to shooter
+                        if (getRuntime() > rampUpTimer) {
                             currentState = State.LAUNCHING;
                         }
                         break;
 
                     case LAUNCHING:
-                        if(getRuntime() > rampUpTimer) {
-                            //for (int i; i=<3;i++{)
-                            // rotate carousel
-                            //lift kicker tiny amount
-                            //tilt shooter for near or far shot
-                            //lift kicker the entire way
-                            //tile shooter to home position
-                            //lower kicker the whole way}
+                        if (getRuntime() > rampUpTimer) {
+                            for (int i = 0; i <= 3; i++) {
+                                // rotate carousel
+                                //lift kicker tiny amount
+                                //tilt shooter for near or far shot
+                                //lift kicker the entire way
+                                //tile shooter to home position
+                                //lower kicker the whole way}
+                                carousel.spinCarouselLaunchOne();
+                                carousel.setTinyKicker();
+                                shooter.setTiltPosition(tiltPosition);
+                                carousel.setFullKicker();
+                                shooter.setHomeTiltPosition();
+                                carousel.setHomePositionKicker();
+
+                                carousel.spinCarouselLaunchTwo();
+                                carousel.setTinyKicker();
+                                shooter.setTiltPosition(tiltPosition);
+                                carousel.setFullKicker();
+                                shooter.setHomeTiltPosition();
+                                carousel.setHomePositionKicker();
+
+                                carousel.spinCarouselLaunchThree();
+                                carousel.setTinyKicker();
+                                shooter.setTiltPosition(tiltPosition);
+                                carousel.setFullKicker();
+                                shooter.setHomeTiltPosition();
+                                carousel.setHomePositionKicker();
+                                shooter.setShooterPower(0.00);
+                            }
 
                             currentState = State.IDLE;
                         }
@@ -138,7 +163,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                 telemetry.addData("Shooter Power", shooterPower);
                 //telemetry.addData("Servo Pos", carousel.getPosition());
                 telemetry.update();
- //------------------------END OF TRIGGER CONTROL-----------------------------------
+                //------------------------END OF TRIGGER CONTROL-----------------------------------
 
                 drive.setDrivePowers(new PoseVelocity2d(
                         new Vector2d(
@@ -163,15 +188,20 @@ public class SpiritTeleop2 extends LinearOpMode {
             }
         }
         telemetry.update();
-
-
+    }
+        void delayLaunchSequence() {
+            launchSequenceTimer = getRuntime() + 2;
+            if (getRuntime() < launchSequenceTimer) {
+                counter++;
+            } else {
+                launchSequenceTimer = 0;
+            }
         }
 
-    private enum State {
+     enum State {
         IDLE,
         RAMPING,
         LAUNCHING,
-
     }
 }
 
