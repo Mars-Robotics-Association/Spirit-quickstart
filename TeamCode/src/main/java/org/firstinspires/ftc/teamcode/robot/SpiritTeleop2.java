@@ -14,6 +14,9 @@ import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 public class SpiritTeleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
+    int launchStep = 0;
+    double stepStartTime = 0;
+
     @Override
     public void runOpMode() {
         telemetry.setAutoClear(false);
@@ -62,7 +65,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                 if (gamepad2.y) {
                     carousel.setFullKicker();
                 }
-
+/*
                 //------------------JUST FOR TESTING POSITION OF TILT SERVO
                 if (gamepad1.a) {
                     shooter.setNearTiltPosition();
@@ -73,7 +76,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                 if (gamepad2.a) {
                     shooter.setHomeTiltPosition();
                 }
-
+*/
 
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
 
@@ -91,115 +94,194 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                 switch (currentState) {
 
+                    // ------------------------------------------------------
+                    //  IDLE — waiting for trigger input
+                    // ------------------------------------------------------
                     case IDLE:
-                        //handleIdle();
-                        telemetry.addData("State", currentState);
-                        telemetry.update();
+                        shooter.setShooterPower(0);
                         shooter.setHomeTiltPosition();
                         carousel.setHomePositionKicker();
                         carousel.spinCarouselHome();
-                       // telemetry.addData("Carousel Home Pos", carousel.carouselPositionHome);
-                      //  telemetry.update();
-                        shooter.setShooterPower(0.00);//stop shooter
 
-                        //if left trigger pulled shoot near target
-                        if ((gamepad2.right_trigger > .25) && (gamepad2.left_trigger < .01)) {
+                        // Near shot (right trigger)
+                        if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
                             shooterPower = nearShooterPower;
-                            shooter.setShooterPower(shooterPower);//set power to shoot near target
                             tiltPosition = nearTiltPosition;
+
+                            shooter.setShooterPower(shooterPower);
+                            rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
                             currentState = State.RAMPING;
-                            telemetry.addData("State LT", currentState);
-                            telemetry.update();
-                            rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
                         }
-                        //if right trigger pulled - shoot far away
-                        if ((gamepad2.left_trigger > .25) && (gamepad2.right_trigger < .01)) {
+
+                        // Far shot (left trigger)
+                        if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1) {
                             shooterPower = farShooterPower;
-                            shooter.setShooterPower(shooterPower);//set power to shoot far from target
                             tiltPosition = farTiltPosition;
+
+                            shooter.setShooterPower(shooterPower);
+                            rampUpTimer = getRuntime() + 2.0;
                             currentState = State.RAMPING;
-                            telemetry.addData("State RT", currentState);
-                            telemetry.update();
-                            rampUpTimer = getRuntime() + 2;//set a timer to the length of time the op has been running + 2 seconds
                         }
+
                         break;
 
+                    // ------------------------------------------------------
+                    //  RAMPING — waiting for flywheel to reach speed
+                    // ------------------------------------------------------
                     case RAMPING:
                         if (getRuntime() > rampUpTimer) {
+                            // Begin launch sequence
                             currentState = State.LAUNCHING;
-                            telemetry.addData("State", currentState);
-                            telemetry.update();
-
+                            launchStep = 0;
+                            stepStartTime = getRuntime();
                         }
                         break;
 
-                        /*Launching sequence is
-                                // rotate carousel
-                                //lift kicker tiny amount
-                                //tilt shooter for near or far shot
-                                //lift kicker the entire way to launch
-                                //tile shooter to home position
-                                //lower kicker the whole way
-
-                        */
+                    // ------------------------------------------------------
+                    //  LAUNCHING — run a timed step machine
+                    // ------------------------------------------------------
                     case LAUNCHING:
-                        if (getRuntime() > rampUpTimer) {
-                            for (int i = 0; i <= 3; i++) {
 
+                        switch (launchStep) {
 
-                                telemetry.addData("State", currentState);
-                                telemetry.update();
-
+                            // STEP 0 — rotate carousel to position 1
+                            case 0:
                                 carousel.spinCarouselLaunchOne();
-                                telemetry.addData("CP LaunchOne", carousel.carouselPositionLaunchOne);
-                                telemetry.update();
-                                 delayLaunchSequence();
-                                carousel.setTinyKicker();
-                                 delayLaunchSequence();
-                                shooter.setTiltPosition(tiltPosition);
-                                 delayLaunchSequence();
-                                carousel.setFullKicker();
-                                    delayLaunchSequence();
-                                shooter.setHomeTiltPosition();
-                                 delayLaunchSequence();
-                                carousel.setHomePositionKicker();
-                                 delayLaunchSequence();
+                                stepStartTime = getRuntime();
+                                launchStep++;
+                                break;
 
-                                carousel.spinCarouselLaunchTwo();
-                                telemetry.addData("CP LaunchTwo", carousel.carouselPositionLaunchTwo);
-                                telemetry.update();
-                                    delayLaunchSequence();
-                                carousel.setTinyKicker();
-                                     delayLaunchSequence();
-                                shooter.setTiltPosition(tiltPosition);
-                                 delayLaunchSequence();
-                                carousel.setFullKicker();
-                                    delayLaunchSequence();
-                                shooter.setHomeTiltPosition();
-                                    delayLaunchSequence();
-                                carousel.setHomePositionKicker();
-                                    delayLaunchSequence();
+                            // STEP 1 — tiny kicker
+                            case 1:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setTinyKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
 
-                                carousel.spinCarouselLaunchThree();
-                                telemetry.addData("CP LaunchThree", carousel.carouselPositionLaunchThree);
-                                telemetry.update();
-                                    delayLaunchSequence();
-                                carousel.setTinyKicker();
-                                 delayLaunchSequence();
-                                shooter.setTiltPosition(tiltPosition);
-                                 delayLaunchSequence();
-                                shooter.setHomeTiltPosition();
-                                    delayLaunchSequence();
-                                carousel.setHomePositionKicker();
-                                 delayLaunchSequence();
-                                shooter.setShooterPower(0.00);
-                            }
+                            // STEP 2 — tilt shooter
+                            case 2:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setTiltPosition(tiltPosition);
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
 
-                            currentState = State.IDLE;
+                            // STEP 3 — full kicker (launch ball)
+                            case 3:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setFullKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 4 — reset tilt + kicker
+                            case 4:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setHomeTiltPosition();
+                                    carousel.setHomePositionKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 5 — rotate carousel to position 2
+                            case 5:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.spinCarouselLaunchTwo();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 6 — second tiny kicker
+                            case 6:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setTinyKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 7 — tilt again
+                            case 7:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setTiltPosition(tiltPosition);
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 8 — second full kicker
+                            case 8:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setFullKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 9 — reset tilt + kicker again
+                            case 9:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setHomeTiltPosition();
+                                    carousel.setHomePositionKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 10 — rotate to position 3
+                            case 10:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.spinCarouselLaunchThree();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 11 — tiny kicker third time
+                            case 11:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setTinyKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 12 — tilt third time
+                            case 12:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setTiltPosition(tiltPosition);
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 13 — full send #3
+                            case 13:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    carousel.setFullKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                                break;
+
+                            // STEP 14 — reset everything, end sequence
+                            case 14:
+                                if (getRuntime() - stepStartTime > 0.20) {
+                                    shooter.setHomeTiltPosition();
+                                    carousel.setHomePositionKicker();
+                                    shooter.setShooterPower(0);
+                                    currentState = State.IDLE;
+                                }
+                                break;
                         }
+
                         break;
-
-
                 }
                // telemetry.addData("State", currentState);
                 telemetry.addData("Shooter Power", shooterPower);
@@ -231,14 +313,6 @@ public class SpiritTeleop2 extends LinearOpMode {
         }
         telemetry.update();
     }
-        void delayLaunchSequence() {
-            launchSequenceTimer = getRuntime() + 2;
-            if (getRuntime() < launchSequenceTimer) {
-                counter++;
-            } else {
-                launchSequenceTimer = 0;
-            }
-        }
 
      enum State {
         IDLE,
