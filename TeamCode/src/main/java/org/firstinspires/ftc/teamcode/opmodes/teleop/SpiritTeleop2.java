@@ -159,7 +159,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                                 new SleepAction(0.2),
                                 new InstantAction(carousel::setTinyKicker),
                                 new SleepAction(0.2),
-                                new StateAction<Double>(tiltPosition, (p) -> new InstantAction(() -> shooter.setTiltPosition(p))),
+                                new StateAction<>(tiltPosition, (p) -> new InstantAction(() -> shooter.setTiltPosition(p))),
                                 new SleepAction(0.2),
                                 new InstantAction(carousel::setFullKicker),
                                 new SleepAction(0.2),
