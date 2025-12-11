@@ -12,6 +12,7 @@ public class Carousel {
    double kickerDownPosition = .8;
    double kickerTinyLiftPosition = .7;
    double kickerFullLiftPosition = .5;
+   double carouselPositionHome = 0;
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
     double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions
@@ -56,6 +57,10 @@ public class Carousel {
     public void spinCarouselIntakeThree() {
         carouselServo.setPosition(carouselPositionIntakeThree);
     }
+
+    public void spinCarouselHome() {
+        carouselServo.setPosition(carouselPositionHome);
+    }
     public void spinCarouselLaunchOne() {
         carouselServo.setPosition(carouselPositionLaunchOne);
     }
@@ -64,6 +69,8 @@ public class Carousel {
     }
     public void spinCarouselLaunchThree() {
         carouselServo.setPosition(carouselPositionLaunchThree);
+
+
     }
     }
 
