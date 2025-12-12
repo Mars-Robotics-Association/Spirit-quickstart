@@ -9,20 +9,21 @@ public class Carousel {
     private final Servo carouselServo;//turns the carousel
    // double carouselPosition1 = .2;//for testing variable to hold the forward positon of the carousel (will be set in code)
    // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
-   double kickerDownPosition = .8;
-   double kickerTinyLiftPosition = .7;
-   double kickerFullLiftPosition = .5;
-   double carouselPositionHome = 0;
+   double kickerDownPosition = .9;//0
+   double kickerTinyLiftPosition = .7;//.7
+   double kickerFullLiftPosition = .5;//.5
+   double carouselPositionHome = 0.5;
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
     double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions
+    double offSetAdjustment = 75;
     double carouselPositionConversionFactor = (1.0)/(1620.0); // converts degress to servos function inputs (0 to 1.0)
-    double carouselPositionIntakeOne = carouselPositionConversionFactor * 405.0;
-    double carouselPositionIntakeTwo = carouselPositionConversionFactor * 520.0;
-    double carouselPositionIntakeThree = carouselPositionConversionFactor * 635.0;
-    double carouselPositionLaunchOne = carouselPositionConversionFactor * 575.0;
-    double carouselPositionLaunchTwo = carouselPositionConversionFactor * 460.0;
-    double carouselPositionLaunchThree = carouselPositionConversionFactor * 340.0;
+    double carouselPositionIntakeOne = carouselPositionConversionFactor * (6.0 + offSetAdjustment);
+    double carouselPositionIntakeTwo = carouselPositionConversionFactor * (126.0 + offSetAdjustment);
+    double carouselPositionIntakeThree = carouselPositionConversionFactor * (246.0 + offSetAdjustment);
+    double carouselPositionLaunchOne = carouselPositionConversionFactor * (186.0 + offSetAdjustment);
+    double carouselPositionLaunchTwo = carouselPositionConversionFactor * (306.0 + offSetAdjustment);
+    double carouselPositionLaunchThree = carouselPositionConversionFactor * (426.0 + offSetAdjustment);
 
     public Carousel(HardwareMap hardwareMap) {
        kickerServo = hardwareMap.get(Servo.class, "kickerServo");
@@ -41,9 +42,7 @@ public class Carousel {
      kickerServo.setPosition(kickerDownPosition);
     }
     //for testing
-    public void spinCarouselForward(){
-        carouselServo.setPosition(carouselPositionMin);
-    }
+
     //for testing
     public void spinCarouselBackward(){
         carouselServo.setPosition(carouselPositionMax);
