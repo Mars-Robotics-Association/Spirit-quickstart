@@ -18,6 +18,7 @@ public class SpiritTeleop2 extends LinearOpMode {
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
+    static public double tiltToLaunchDelay = 1.0;
     //public static double nearTiltPosition = .9;
     //public static double farTiltPosition = .8;
 
@@ -97,6 +98,9 @@ public class SpiritTeleop2 extends LinearOpMode {
                 }
 
 //----------------------JUST FOR TESTING POSITON OF KICKER SERVO-------
+                if (gamepad2.a) {
+                    carousel.offSetAdjustment = carousel.offSetAdjustment + 5;
+                }
                 if (gamepad2.b) {
                     carousel.setHomePositionKicker();
                 }
@@ -120,18 +124,27 @@ public class SpiritTeleop2 extends LinearOpMode {
                     telemetry.addData("far Tilt ", shooter.farTiltPosition);
                     telemetry.update();
                 }
-                if (gamepad2.a) {
+                if (gamepad1.x) {
                     shooter.setHomeTiltPosition();
                 }
 
 
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
+                //if (gamepad2.dpad_left) {
+                    //carousel.spinCarouselMin();//
+                    //telemetry.addData("carouselHome ", carousel.carouselPositionMin);
+                   // telemetry.update();
+                //}
                 if (gamepad2.dpad_left) {
                     carousel.spinCarouselHome();//
                     telemetry.addData("carouselHome ", carousel.carouselPositionHome);
                     telemetry.update();
                 }
-
+               // if (gamepad2.dpad_up) {
+                   // carousel.spinCarouselMax();//
+                   // telemetry.addData("carouselIntakeOne ", carousel.carouselPositionMax);
+                   // telemetry.update();
+                //}
                 if (gamepad2.dpad_up) {
                     carousel.spinCarouselIntakeOne();//
                     telemetry.addData("carouselIntakeOne ", carousel.carouselPositionIntakeOne);
@@ -184,12 +197,12 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // Near shot (right trigger)
                         if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                            carousel.spinCarouselLaunchOne();
+                            //carousel.spinCarouselLaunchOne();
                             shooterPower = nearShooterPower;
                             shooter.setShooterPower(shooterPower);
-                            carousel.setTinyKicker();
+                            //carousel.setTinyKicker();
                             tiltPosition = shooter.nearTiltPosition;
-                            shooter.setTiltPosition(tiltPosition);
+                            //shooter.setTiltPosition(tiltPosition);
 
                             rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
                             currentState = State.RAMPING;
@@ -200,12 +213,12 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // Far shot (left trigger)
                         if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                            carousel.spinCarouselLaunchOne();
+                           // carousel.spinCarouselLaunchOne();
                             shooterPower = farShooterPower;
                             shooter.setShooterPower(shooterPower);
-                            carousel.setTinyKicker();
-                            tiltPosition = shooter.farTiltPosition;
-                            shooter.setTiltPosition(tiltPosition);
+                           // carousel.setTinyKicker();
+                           tiltPosition = shooter.farTiltPosition;
+                           // shooter.setTiltPosition(tiltPosition);
                             rampUpTimer = getRuntime() + 2.0;
                             currentState = State.RAMPING;
                             telemetry.addData("Left Trigger ", gamepad2.left_trigger);
@@ -243,7 +256,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 1 — tiny kicker
                             case 1:
-                                if (getRuntime() - stepStartTime > 0.40) {
+                                if (getRuntime() - stepStartTime > 0.80) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setTinyKicker();
                                     stepStartTime = getRuntime();
@@ -263,7 +276,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 3 — full kicker (launch ball)
                             case 3:
-                                if (getRuntime() - stepStartTime > 0.50) {
+                                if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();
@@ -314,7 +327,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 8 — second full kicker
                             case 8:
-                                if (getRuntime() - stepStartTime > 0.50) {
+                                if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();
@@ -365,7 +378,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 13 — full send #3
                             case 13:
-                                if (getRuntime() - stepStartTime > 0.40) {
+                                if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();

@@ -18,14 +18,15 @@ public class Carousel {
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
     double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions
-    double offSetAdjustment = 75;
-    double carouselPositionConversionFactor = (1.0)/(1620.0); // converts degress to servos function inputs (0 to 1.0)
-    double carouselPositionIntakeOne = carouselPositionConversionFactor * (6.0 + offSetAdjustment);
-    double carouselPositionIntakeTwo = carouselPositionConversionFactor * (126.0 + offSetAdjustment);
-    double carouselPositionIntakeThree = carouselPositionConversionFactor * (246.0 + offSetAdjustment);
-    double carouselPositionLaunchOne = carouselPositionConversionFactor * (186.0 + offSetAdjustment);
-    double carouselPositionLaunchTwo = carouselPositionConversionFactor * (306.0 + offSetAdjustment);
-    double carouselPositionLaunchThree = carouselPositionConversionFactor * (426.0 + offSetAdjustment);
+    public static double offSetAdjustment = 175;
+    public static int degreeRange = 1667;
+    public static double carouselPositionConversionFactor = (1.0)/(degreeRange); // converts degrees to servos function inputs (0 to 1.0)
+    double carouselPositionIntakeOne = carouselPositionConversionFactor * (0 + offSetAdjustment);
+    double carouselPositionIntakeTwo = carouselPositionConversionFactor * (120.0 + offSetAdjustment);
+    double carouselPositionIntakeThree = carouselPositionConversionFactor * (240.0 + offSetAdjustment);
+    double carouselPositionLaunchOne = carouselPositionConversionFactor * (180.0 + offSetAdjustment);
+    double carouselPositionLaunchTwo = carouselPositionConversionFactor * (310.0 + offSetAdjustment);
+    double carouselPositionLaunchThree = carouselPositionConversionFactor * (430.0 + offSetAdjustment);
 
     public Carousel(HardwareMap hardwareMap) {
        kickerServo = hardwareMap.get(Servo.class, "kickerServo");
@@ -46,9 +47,9 @@ public class Carousel {
     //for testing
 
     //for testing
-    public void spinCarouselBackward(){
-        carouselServo.setPosition(carouselPositionMax);
-    }
+   // public void spinCarouselBackward(){
+      //  carouselServo.setPosition(carouselPositionMax);
+   // }
     public void spinCarouselIntakeOne() {
         carouselServo.setPosition(carouselPositionIntakeOne);
     }
@@ -61,6 +62,13 @@ public class Carousel {
 
     public void spinCarouselHome() {
         carouselServo.setPosition(carouselPositionHome);
+    }
+
+    public void spinCarouselMin() {
+        carouselServo.setPosition(carouselPositionMin);
+    }
+    public void spinCarouselMax() {
+        carouselServo.setPosition(carouselPositionMax);
     }
     public void spinCarouselLaunchOne() {
         carouselServo.setPosition(carouselPositionLaunchOne);
