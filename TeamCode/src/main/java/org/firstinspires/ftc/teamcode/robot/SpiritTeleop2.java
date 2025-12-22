@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -10,12 +11,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
+@Config
 @TeleOp(name = "Spirit", group = "Teleop")
 public class SpiritTeleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
+    //public static double nearTiltPosition = .9;
+    //public static double farTiltPosition = .8;
+
 
     @Override
     public void runOpMode() {
@@ -27,8 +32,7 @@ public class SpiritTeleop2 extends LinearOpMode {
         double farShooterPower = .6;//power for shooter if bot is far from target
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
-        double nearTiltPosition = .35;
-        double farTiltPosition = .4;
+
         double tiltPosition = 0;
         double homeTiltPosition = 0;
         // double carouselPosition1 = .2;//carousel position if moved forward (for testing)
@@ -184,7 +188,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             shooterPower = nearShooterPower;
                             shooter.setShooterPower(shooterPower);
                             carousel.setTinyKicker();
-                            tiltPosition = nearTiltPosition;
+                            tiltPosition = shooter.nearTiltPosition;
                             shooter.setTiltPosition(tiltPosition);
 
                             rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
@@ -200,7 +204,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             shooterPower = farShooterPower;
                             shooter.setShooterPower(shooterPower);
                             carousel.setTinyKicker();
-                            tiltPosition = farTiltPosition;
+                            tiltPosition = shooter.farTiltPosition;
                             shooter.setTiltPosition(tiltPosition);
                             rampUpTimer = getRuntime() + 2.0;
                             currentState = State.RAMPING;
@@ -232,6 +236,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 0 — rotate carousel to position 1
                             case 0:
                                 carousel.spinCarouselLaunchOne();
+                                shooter.setShooterPower(shooterPower);
                                 stepStartTime = getRuntime();
                                 launchStep++;
                                 break;
@@ -239,6 +244,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 1 — tiny kicker
                             case 1:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setTinyKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -248,6 +254,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 2 — tilt shooter
                             case 2:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setTiltPosition(tiltPosition);
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -256,7 +263,8 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 3 — full kicker (launch ball)
                             case 3:
-                                if (getRuntime() - stepStartTime > 0.40) {
+                                if (getRuntime() - stepStartTime > 0.50) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -266,6 +274,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 4 — reset tilt + kicker
                             case 4:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setHomeTiltPosition();
                                     carousel.setHomePositionKicker();
                                     stepStartTime = getRuntime();
@@ -276,6 +285,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 5 — rotate carousel to position 2
                             case 5:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.spinCarouselLaunchTwo();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -285,6 +295,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 6 — second tiny kicker
                             case 6:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setTinyKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -294,6 +305,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 7 — tilt again
                             case 7:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setTiltPosition(tiltPosition);
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -302,7 +314,8 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 8 — second full kicker
                             case 8:
-                                if (getRuntime() - stepStartTime > 0.40) {
+                                if (getRuntime() - stepStartTime > 0.50) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -312,6 +325,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 9 — reset tilt + kicker again
                             case 9:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setHomeTiltPosition();
                                     carousel.setHomePositionKicker();
                                     stepStartTime = getRuntime();
@@ -322,6 +336,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 10 — rotate to position 3
                             case 10:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.spinCarouselLaunchThree();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -331,6 +346,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 11 — tiny kicker third time
                             case 11:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setTinyKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -339,7 +355,8 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 12 — tilt third time
                             case 12:
-                                if (getRuntime() - stepStartTime > 0.40) {
+                                if (getRuntime() - stepStartTime > 0.50) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setTiltPosition(tiltPosition);
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -349,6 +366,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 13 — full send #3
                             case 13:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
                                     stepStartTime = getRuntime();
                                     launchStep++;
@@ -358,6 +376,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // STEP 14 — reset everything, end sequence
                             case 14:
                                 if (getRuntime() - stepStartTime > 0.40) {
+                                    shooter.setShooterPower(shooterPower);
                                     shooter.setHomeTiltPosition();
                                     carousel.setHomePositionKicker();
                                     shooter.setShooterPower(0);

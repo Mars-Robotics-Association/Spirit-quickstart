@@ -1,16 +1,19 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Config
 public class Shooter {
+
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
-   double nearTiltPosition = .35;//for testing
-   double farTiltPosition = .4;//for testing
+   static public double nearTiltPosition = .85;//for testing
+   static public double farTiltPosition = .8;//for testing
     double homeTiltPosition = 0;//for testing
 
 
