@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
@@ -36,14 +37,11 @@ public class SpiritTeleop2 extends LinearOpMode {
 
         double tiltPosition = 0;
         double homeTiltPosition = 0;
-        // double carouselPosition1 = .2;//carousel position if moved forward (for testing)
-        //  double carouselPosition2 = .4;//carousel position if moved backward (for testing)
 
-       // if (TuningOpModes.DRIVE_CLASS.equals(MecanumDrive.class)) {//TRY REMOVING THIS AND LINE 386
-            MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-            Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-            Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
-            Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
+        Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
+        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
 
             /*carousel.spinCarouselHome();//
             telemetry.addData("carouselHome ", carousel.carouselPositionHome);
@@ -86,7 +84,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
             while (opModeIsActive())
 
-
             {
                 //Operate Intake: left bumper is intake and right bumper is eject
                 if (gamepad2.left_bumper) {
@@ -98,9 +95,9 @@ public class SpiritTeleop2 extends LinearOpMode {
                 }
 
 //----------------------JUST FOR TESTING POSITON OF KICKER SERVO-------
-                if (gamepad2.a) {
-                    carousel.offSetAdjustment = carousel.offSetAdjustment + 5;
-                }
+                //if (gamepad2.a) {
+
+               // }
                 if (gamepad2.b) {
                     carousel.setHomePositionKicker();
                 }
@@ -114,7 +111,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                 //------------------JUST FOR TESTING POSITION OF TILT SERVO
                 if (gamepad1.a) {
                     shooter.setNearTiltPosition(shooter.nearTiltPosition);
-
                     telemetry.addData("Near Tile ", shooter.nearTiltPosition);
                     telemetry.update();
                 }
@@ -131,7 +127,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
                 //if (gamepad2.dpad_left) {
-                    //carousel.spinCarouselMin();//
+                    //carousel.spinCarouselMin();//this is 0
                     //telemetry.addData("carouselHome ", carousel.carouselPositionMin);
                    // telemetry.update();
                 //}
@@ -141,7 +137,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                     telemetry.update();
                 }
                // if (gamepad2.dpad_up) {
-                   // carousel.spinCarouselMax();//
+                   // carousel.spinCarouselMax();//this is 1
                    // telemetry.addData("carouselIntakeOne ", carousel.carouselPositionMax);
                    // telemetry.update();
                 //}
@@ -182,28 +178,18 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                 //--------------------------------END CODE FOR TESTING POSITION OF SERVOS
 //------------------CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
-
-
                 switch (currentState) {
 
                     // ------------------------------------------------------
                     //  IDLE — waiting for trigger input
                     // ------------------------------------------------------
                     case IDLE:
-                       // shooter.setShooterPower(0);
-                      //  shooter.setHomeTiltPosition();
-                      //  carousel.setHomePositionKicker();
-                      //  carousel.spinCarouselHome();
 
                         // Near shot (right trigger)
                         if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                            //carousel.spinCarouselLaunchOne();
                             shooterPower = nearShooterPower;
                             shooter.setShooterPower(shooterPower);
-                            //carousel.setTinyKicker();
                             tiltPosition = shooter.nearTiltPosition;
-                            //shooter.setTiltPosition(tiltPosition);
-
                             rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
                             currentState = State.RAMPING;
                             telemetry.addData("Right Trigger ", gamepad2.right_trigger);
@@ -213,12 +199,9 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // Far shot (left trigger)
                         if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                           // carousel.spinCarouselLaunchOne();
                             shooterPower = farShooterPower;
                             shooter.setShooterPower(shooterPower);
-                           // carousel.setTinyKicker();
-                           tiltPosition = shooter.farTiltPosition;
-                           // shooter.setTiltPosition(tiltPosition);
+                            tiltPosition = shooter.farTiltPosition;
                             rampUpTimer = getRuntime() + 2.0;
                             currentState = State.RAMPING;
                             telemetry.addData("Left Trigger ", gamepad2.left_trigger);
@@ -235,6 +218,8 @@ public class SpiritTeleop2 extends LinearOpMode {
                             // Begin launch sequence
                             currentState = State.LAUNCHING;
                             launchStep = 0;
+                            shooter.setHomeTiltPosition();//moved here from IDLE
+                            carousel.setHomePositionKicker();//moved here from IDLE
                             stepStartTime = getRuntime();
                         }
                         break;
@@ -424,7 +409,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                 TelemetryPacket packet = new TelemetryPacket();
                 packet.fieldOverlay().setStroke("#3F51B5");
-                //Drawing.drawRobot(packet.fieldOverlay(), pose);
+                Drawing.drawRobot(packet.fieldOverlay(), pose);
                 FtcDashboard.getInstance().sendTelemetryPacket(packet);
             }
        // }//TRY REMOVING THIS
