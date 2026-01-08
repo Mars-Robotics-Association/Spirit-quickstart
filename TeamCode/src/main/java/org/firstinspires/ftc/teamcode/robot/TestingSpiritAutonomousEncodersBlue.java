@@ -1,20 +1,23 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-@Autonomous(name = "Auto2bkf", group = "Robot")
-public class Auto2bkf extends LinearOpMode {
+@Config
+@Autonomous(name = "SpiritAutonomousEncodersBlue", group = "Robot")
+public class TestingSpiritAutonomousEncodersBlue extends LinearOpMode {
 
     private DcMotorEx leftFront, rightFront, leftBack, rightBack;
     private final ElapsedTime runtime = new ElapsedTime();
 
     // Encoder constants
-    static final double COUNTS_PER_MOTOR_REV = 1440;
+    static final double COUNTS_PER_MOTOR_REV = 751.8;
     static final double DRIVE_GEAR_REDUCTION = 1.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double COUNTS_PER_INCH =
@@ -29,35 +32,64 @@ public class Auto2bkf extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
 
         // Hardware mapping
-        leftFront  = hardwareMap.get(DcMotorEx.class, "leftFront");
+        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotorEx.class, "rightBack");
-
+        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+/*
         // Motor directions
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+*/
 
-        setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        telemetry.addLine("Ready");
+       telemetry.addLine("Ready");
         telemetry.update();
 
         waitForStart();
 
-        // 1. Move backward 5 inches
-        encoderDrive(DRIVE_SPEED, -5, -5, -5, -5, 4.0);
+        // 1. Move forward 43 inches
+        // encoderDrive(DRIVE_SPEED, 43, 43, 43, 43, 4.0);
+        double driveX = 0.0;
+        double driveY = 0.5;
+        double targetPosition = rightBack.getCurrentPosition() - (COUNTS_PER_INCH * 26);
+        telemetry.setAutoClear(false);
+        telemetry.clear();
+        telemetry.addData("Encoder Ticks ",rightBack.getCurrentPosition());
+        telemetry.update();
 
-        // 2. Turn left 25 degrees
-        turnLeft(25);
+        while (rightBack.getCurrentPosition() > targetPosition) {
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
+                            driveY,
+                            driveX
 
-        // 3. Move forward 2 inches
-        encoderDrive(DRIVE_SPEED, 2, 2, 2, 2, 3.0);
+                    ),
+                    0
+            ));
+        }
+
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftBack.setPower(0);
+            rightBack.setPower(0);
+        }
+
+
+
+      /*
+        // 2. Turn left 45 degrees
+        //turnLeft(45);
+
+        // 3. Move forward 18 inches
+        //encoderDrive(DRIVE_SPEED, 18, 18, 18, 18, 3.0);
 
         // 4. Stop
         stopMotors();
@@ -68,15 +100,18 @@ public class Auto2bkf extends LinearOpMode {
     }
 
     // Forward / backward
-    private void encoderDrive(double speed,
+
+
+    /*private void encoderDrive(double speed,
                               double lf, double rf, double lb, double rb,
                               double timeoutS) {
+*/
+        // int lfTarget = leftFront.getCurrentPosition() + (int)(lf * COUNTS_PER_INCH);
+        // int rfTarget = rightFront.getCurrentPosition() + (int)(rf * COUNTS_PER_INCH);
+        //  int lbTarget = leftBack.getCurrentPosition() + (int)(lb * COUNTS_PER_INCH);
+        // int rbTarget = rightBack.getCurrentPosition() + (int)(rb * COUNTS_PER_INCH);
 
-        int lfTarget = leftFront.getCurrentPosition() + (int)(lf * COUNTS_PER_INCH);
-        int rfTarget = rightFront.getCurrentPosition() + (int)(rf * COUNTS_PER_INCH);
-        int lbTarget = leftBack.getCurrentPosition() + (int)(lb * COUNTS_PER_INCH);
-        int rbTarget = rightBack.getCurrentPosition() + (int)(rb * COUNTS_PER_INCH);
-
+/*
         leftFront.setTargetPosition(lfTarget);
         rightFront.setTargetPosition(rfTarget);
         leftBack.setTargetPosition(lbTarget);
@@ -87,7 +122,7 @@ public class Auto2bkf extends LinearOpMode {
         setPower(speed);
 
         while (opModeIsActive() && runtime.seconds() < timeoutS &&
-                leftFront.isBusy() && rightFront.isBusy() &&
+               // leftFront.isBusy() && rightFront.isBusy() &&
                 leftBack.isBusy() && rightBack.isBusy()) {
             telemetry.update();
         }
@@ -99,16 +134,16 @@ public class Auto2bkf extends LinearOpMode {
     private void turnLeft(double degrees) {
         int move = (int)(degrees * COUNTS_PER_DEGREE);
 
-        leftFront.setTargetPosition(leftFront.getCurrentPosition() - move);
+      //  leftFront.setTargetPosition(leftFront.getCurrentPosition() - move);
         leftBack.setTargetPosition(leftBack.getCurrentPosition() - move);
-        rightFront.setTargetPosition(rightFront.getCurrentPosition() + move);
+      //  rightFront.setTargetPosition(rightFront.getCurrentPosition() + move);
         rightBack.setTargetPosition(rightBack.getCurrentPosition() + move);
 
         setMode(DcMotor.RunMode.RUN_TO_POSITION);
         setPower(TURN_SPEED);
 
         while (opModeIsActive() &&
-                leftFront.isBusy() && rightFront.isBusy()) {
+                leftBack.isBusy() && rightBack.isBusy()) {
             telemetry.update();
         }
 
@@ -123,15 +158,17 @@ public class Auto2bkf extends LinearOpMode {
 
     private void setMode(DcMotor.RunMode mode) {
         leftFront.setMode(mode);
-        rightFront.setMode(mode);
+       rightFront.setMode(mode);
         leftBack.setMode(mode);
         rightBack.setMode(mode);
     }
 
-    private void setPower(double power) {
+    public void setPower(double power) {
         leftFront.setPower(power);
-        rightFront.setPower(power);
+       rightFront.setPower(power);
         leftBack.setPower(power);
         rightBack.setPower(power);
     }
-}
+   */
+    }
+

@@ -12,8 +12,8 @@ public class Shooter {
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
-   static public double nearTiltPosition = .85;//for testing
-   static public double farTiltPosition = .8;//for testing
+   static public double nearTiltPosition = .8;//for testing
+   static public double farTiltPosition = .85;//for testing
     double homeTiltPosition = 0;//for testing
 
 

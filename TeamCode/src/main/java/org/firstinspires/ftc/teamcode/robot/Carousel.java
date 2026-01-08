@@ -11,10 +11,14 @@ public class Carousel {
     private final Servo carouselServo;//turns the carousel
    // double carouselPosition1 = .2;//for testing variable to hold the forward positon of the carousel (will be set in code)
    // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
-   double kickerDownPosition = .9;//0
-  static public double kickerTinyLiftPosition = .65;//.7
-   double kickerFullLiftPosition = .5;//.5
-   double carouselPositionHome = 0.5;
+
+  //KICKER POSITIONS
+     public static double kickerDownPosition = .8;//0
+     static public double kickerTinyLiftPosition = .65;//.7
+     double kickerFullLiftPosition = .5;//.5
+
+    //CAROUSEL POSITIONS
+    public static double carouselPositionHome = 0.5;
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
     double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions

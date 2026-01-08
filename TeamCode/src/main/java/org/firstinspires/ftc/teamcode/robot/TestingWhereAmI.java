@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -9,11 +8,10 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
 @TeleOp(name = "WhereAmI", group = "Teleop")
-public class WhereAmI extends LinearOpMode {
+public class TestingWhereAmI extends LinearOpMode {
 
     @Override
     public void runOpMode() {

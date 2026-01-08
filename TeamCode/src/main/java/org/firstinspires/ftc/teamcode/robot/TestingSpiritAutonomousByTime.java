@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "SpiritAutonomousByTime", group = "Robot")
-public class SpiritAutonomousByTime extends LinearOpMode {
+public class TestingSpiritAutonomousByTime extends LinearOpMode {
 
     DcMotor leftFront, rightFront, leftBack, rightBack;
 

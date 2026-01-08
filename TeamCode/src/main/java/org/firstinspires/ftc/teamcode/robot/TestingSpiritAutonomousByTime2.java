@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Drawing;
 
 @Config
 @Autonomous(name = "SpiritAutonomousByTime2", group = "Autonomous")
-public class SpiritAutonomousByTime2 extends LinearOpMode {
+public class TestingSpiritAutonomousByTime2 extends LinearOpMode {
 
     int launchStep = 0;
     int t = 0;

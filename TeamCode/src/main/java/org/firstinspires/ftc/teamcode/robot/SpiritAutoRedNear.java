@@ -1,7 +1,12 @@
+/*
+This class is to be used if the goal is red. IT executes the launch sequence, drives the robot
+ forward for a short period of time, strafes right to place the robot against the field wall and
+ out of the way of the alliance team. Robot must be placed with the rear wells flush against the red
+ target to start.
+ */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
@@ -10,20 +15,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
-@Autonomous(name = "SpiritAutonomous2", group = "Robot")
-public class SpiritAutonomous2 extends LinearOpMode {
+@Autonomous(name = "SpiritAutoRedNear", group = "Robot")
+public class SpiritAutoRedNear extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public double driveTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
     static public double tiltToLaunchDelay = 1.0;
+    static public double defaultLaunchStepDelay = 1.0;//.4 is a good speed for competition
     //public static double nearTiltPosition = .9;
     //public static double farTiltPosition = .8;
-
 
     @Override
     public void runOpMode() {
@@ -48,101 +52,9 @@ public class SpiritAutonomous2 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive())
-
         {
-            //Operate Intake: left bumper is intake and right bumper is eject
-            if (gamepad2.left_bumper) {
-                intake.setPower(1);
-            } else if (gamepad2.right_bumper) {
-                intake.setPower(-1);//sets the power on the intake motor based on the values from the bumps
-            } else {
-                intake.setPower(0);
-            }
 
-//----------------------JUST FOR TESTING POSITON OF KICKER SERVO-------
-            //if (gamepad2.a) {
-
-            // }
-            if (gamepad2.b) {
-                carousel.setHomePositionKicker();
-            }
-            if (gamepad2.x) {
-                carousel.setTinyKicker();
-            }
-            if (gamepad2.y) {
-                carousel.setFullKicker();
-            }
-
-            //------------------JUST FOR TESTING POSITION OF TILT SERVO
-            if (gamepad1.a) {
-                shooter.setNearTiltPosition(shooter.nearTiltPosition);
-                telemetry.addData("Near Tile ", shooter.nearTiltPosition);
-                telemetry.update();
-            }
-
-            if (gamepad1.b) {
-                shooter.setFarTiltPosition(shooter.farTiltPosition);
-                telemetry.addData("far Tilt ", shooter.farTiltPosition);
-                telemetry.update();
-            }
-            if (gamepad1.x) {
-                shooter.setHomeTiltPosition();
-            }
-
-
-//------------------JUST FOR TESTING POSITION OF CAROUSEL
-            //if (gamepad2.dpad_left) {
-            //carousel.spinCarouselMin();//this is 0
-            //telemetry.addData("carouselHome ", carousel.carouselPositionMin);
-            // telemetry.update();
-            //}
-            if (gamepad2.dpad_left) {
-                carousel.spinCarouselHome();//
-                telemetry.addData("carouselHome ", carousel.carouselPositionHome);
-                telemetry.update();
-            }
-            // if (gamepad2.dpad_up) {
-            // carousel.spinCarouselMax();//this is 1
-            // telemetry.addData("carouselIntakeOne ", carousel.carouselPositionMax);
-            // telemetry.update();
-            //}
-            if (gamepad2.dpad_up) {
-                carousel.spinCarouselIntakeOne();//
-                telemetry.addData("carouselIntakeOne ", carousel.carouselPositionIntakeOne);
-                telemetry.update();
-            }
-
-            if (gamepad2.dpad_right) {
-                carousel.spinCarouselIntakeTwo();//
-                telemetry.addData("carouselIntakeTwo ", carousel.carouselPositionIntakeTwo);
-                telemetry.update();
-            }
-
-            if (gamepad2.dpad_down) {
-                carousel.spinCarouselIntakeThree();//
-                telemetry.addData("carouselIntakeThree ", carousel.carouselPositionIntakeThree);
-                telemetry.update();
-            }
-
-            if (gamepad1.dpad_up) {
-                carousel.spinCarouselLaunchOne();//
-                telemetry.addData("carouselLaunchOne ", carousel.carouselPositionLaunchOne);
-                telemetry.update();
-            }
-            if (gamepad1.dpad_right) {
-                carousel.spinCarouselLaunchTwo();//
-                telemetry.addData("carouselLaunchTwo ", carousel.carouselPositionLaunchTwo);
-                telemetry.update();
-            }
-
-            if (gamepad1.dpad_down) {
-                carousel.spinCarouselLaunchThree();//
-                telemetry.addData("carouselLaunchThree ", carousel.carouselPositionLaunchThree);
-                telemetry.update();
-            }
-
-            //--------------------------------END CODE FOR TESTING POSITION OF SERVOS
-//------------------CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
+//STARTING SEQUENCE----------------------------------
             switch (currentState) {
 
                 // ------------------------------------------------------
@@ -150,12 +62,28 @@ public class SpiritAutonomous2 extends LinearOpMode {
                 // ------------------------------------------------------
                 case IDLE:
 
-                    // Near shot (right trigger)
-                        shooterPower = nearShooterPower;
-                        shooter.setShooterPower(shooterPower);
-                        tiltPosition = shooter.nearTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
-                        currentState = State.RAMPING;
+                    // Near shot
+                    shooter.setHomeTiltPosition();//need tilt to be in home position to set kicker down
+                    carousel.setHomePositionKicker();
+                    carousel.spinCarouselLaunchOne();
+
+                    shooterPower = nearShooterPower;
+                    shooter.setShooterPower(shooterPower);
+                    tiltPosition = shooter.nearTiltPosition;//to get ready to launch
+
+                    rampUpTimer = getRuntime() + 3.0;   // 3-second spin-up
+                    currentState = State.RAMPING;
+
+                    //drive forward 12 inches (i.e., 1.5 seconds)
+                    driveTimer = getRuntime()+ .3;
+                    while (getRuntime() < driveTimer){
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(.5, 0
+
+                                ),
+                                0
+                        ));
+                    }
 
                     break;
 
@@ -190,7 +118,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 1 — tiny kicker
                         case 1:
-                            if (getRuntime() - stepStartTime > 0.80) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
                                 shooter.setShooterPower(shooterPower);
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -200,7 +128,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -220,7 +148,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
@@ -231,7 +159,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 5 — rotate carousel to position 2
                         case 5:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 carousel.spinCarouselLaunchTwo();
                                 stepStartTime = getRuntime();
@@ -241,7 +169,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 6 — second tiny kicker
                         case 6:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -251,7 +179,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 7 — tilt again
                         case 7:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -271,7 +199,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 9 — reset tilt + kicker again
                         case 9:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
@@ -282,7 +210,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 10 — rotate to position 3
                         case 10:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 carousel.spinCarouselLaunchThree();
                                 stepStartTime = getRuntime();
@@ -292,7 +220,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 11 — tiny kicker third time
                         case 11:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -302,7 +230,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 12 — tilt third time
                         case 12:
-                            if (getRuntime() - stepStartTime > 0.50) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -322,7 +250,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
 
                         // STEP 14 — reset everything, end sequence
                         case 14:
-                            if (getRuntime() - stepStartTime > 0.40) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
@@ -333,20 +261,13 @@ public class SpiritAutonomous2 extends LinearOpMode {
                             break;
 
                         case 15:
-                            if (getRuntime() - stepStartTime > 0.40) {
-                                driveTimer = getRuntime()+ .5;
-                                while (getRuntime() < driveTimer){
-                                    drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(.5, 0
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
 
-                                            ),
-                                            0
-                                    ));
-                                }
-                                driveTimer = getRuntime()+ 1;
+                                //strafe to the field wall
+                                driveTimer = getRuntime()+ .5;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, .5
+                                            new Vector2d(0, -.5
 
                                             ),
                                             0
@@ -369,7 +290,7 @@ public class SpiritAutonomous2 extends LinearOpMode {
             telemetry.addData("Shooter Power", shooterPower);
             //telemetry.addData("Servo Pos", carousel.getPosition());
             telemetry.update();
-            //------------------------END OF LAUNCH SEQUENCE-----------------------------------
+//------------------------END OF LAUNCH SEQUENCE-----------------------------------
 
             drive.setDrivePowers(new PoseVelocity2d(
                     new Vector2d(
@@ -404,4 +325,3 @@ public class SpiritAutonomous2 extends LinearOpMode {
         DONE,
     }
 }
-
