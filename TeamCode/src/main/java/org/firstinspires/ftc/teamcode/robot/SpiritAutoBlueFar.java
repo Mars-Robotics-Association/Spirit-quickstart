@@ -63,53 +63,43 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
+                        sleep(5000);
 
-                    // Near shot
-                    shooter.setHomeTiltPosition();//need tilt to be in home position to set kicker down
-                    carousel.setHomePositionKicker();
-                    carousel.spinCarouselLaunchOne();
+                        // Near shot
+                        shooter.setHomeTiltPosition();//need tilt to be in home position to set kicker down
+                        carousel.setHomePositionKicker();
+                        carousel.spinCarouselLaunchOne();
 
-                    shooterPower = farShooterPower;
-                    shooter.setShooterPower(shooterPower);
-                    tiltPosition = shooter.farTiltPosition;//to get ready to launch
+                        shooterPower = farShooterPower;
+                        shooter.setShooterPower(shooterPower);
+                        tiltPosition = shooter.farTiltPosition;//to get ready to launch
 
-                    rampUpTimer = getRuntime() + 2.0;   // 3-second spin-up
-                    currentState = State.RAMPING;
-
-                    driveTimer = getRuntime()+ 2.75;
-                    while (getRuntime() < driveTimer) {
-                        drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(-.5, 0
-
-                                ),
-                                0
-                        ));
-                    }
-
-                    /*
-                    //drive forward x inches (i.e., 3 seconds)
-                    driveTimer = getRuntime()+ 1.5;
-                    while (getRuntime() < driveTimer){
-                        drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(0, .5
-
-                                ),
-                                0
-                        ));
-                    }
-                    */
+                        rampUpTimer = getRuntime() + 2.0;   // 3-second spin-up
+                        currentState = State.RAMPING;
 
 
-                    //turn at 45 degree angle, negative  value rotates clockwise, postiive rotates counterclockwise
-                    driveTimer = getRuntime()+ .3;
-                    while (getRuntime() < driveTimer){
-                        drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(0, 0
+                        driveTimer = getRuntime() + 3.4;
+                        while (getRuntime() < driveTimer) {
+                            drive.setDrivePowers(new PoseVelocity2d(
+                                    new Vector2d(-.5, 0
 
-                                ),
-                                .25
-                        ));
-                    }
+                                    ),
+                                    0
+                            ));
+                        }
+
+                        //turn at 45 degree angle, negative  value rotates clockwise, postiive rotates counterclockwise
+
+                        driveTimer = getRuntime() + .3;
+
+                        while (getRuntime() < driveTimer) {
+                            drive.setDrivePowers(new PoseVelocity2d(
+                                    new Vector2d(0, 0
+
+                                    ),
+                                    .60
+                            ));
+                        }
 
 
                     /*
@@ -307,10 +297,10 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
 
                                 //strafe to the field wall
-                                driveTimer = getRuntime()+ .6;
+                                driveTimer = getRuntime()+ 1;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(-.5, 0
+                                            new Vector2d(0, -.5
 
                                             ),
                                             0

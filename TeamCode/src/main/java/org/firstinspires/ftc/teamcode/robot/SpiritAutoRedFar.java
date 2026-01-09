@@ -13,13 +13,12 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
 @Config
-@Autonomous(name = "TestingAutonomousColorSensor", group = "Robot")
-public class TestingAutonomousColorSensor extends LinearOpMode {
+@Autonomous(name = "SpiritAutoRedFar", group = "Robot")
+public class SpiritAutoRedFar extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public double driveTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
@@ -28,13 +27,8 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
     static public double tiltToLaunchDelay = 1.0;
     static public double defaultLaunchStepDelay = 1.0;//.4 is a good speed for competition
     //public static double nearTiltPosition = .9;
-    //public static double farTiltPosition = .8;
-
-    //variable for use of color sensor
-    public ColorSensor numberSignColorSensor;
-    public boolean isBlueAlliance = false;
-    public boolean isRedAlliance = false;
-    //--end variable for use of color sensor
+    //public static double farTiltPosition = .7;
+    static public double farShooterPower = 1;
 
     @Override
     public void runOpMode() {
@@ -42,8 +36,8 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
         telemetry.clear();
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
-        double nearShooterPower = .4;//power for shooter if bot is near target
-        double farShooterPower = .6;//power for shooter if bot is far from target
+        //double nearShooterPower = .4;//power for shooter if bot is near target
+        // double farShooterPower = .6;//power for shooter if bot is far from target
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
 
@@ -57,28 +51,6 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
 
         shooter.setHomeTiltPosition();
 
-        //initialize color sensor
-        numberSignColorSensor = hardwareMap.get(ColorSensor.class, "numberSignColorSensor");
-
-        // read the colors
-        int red = numberSignColorSensor.red();//senses how much red is in the number sign
-        int blue = numberSignColorSensor.blue();//senses how much blue is in the nubmer sign
-
-// Determine which alliance the robot is on
-        if (blue > red) {
-            isBlueAlliance = true;
-            isRedAlliance = false;
-        } else {
-            isBlueAlliance = false;
-            isRedAlliance = true;
-        }
-
-// Telemetry for confirmation
-        telemetry.addData("Red Value", red);
-        telemetry.addData("Blue Value", blue);
-        telemetry.addData("Alliance", isBlueAlliance ? "BLUE" : "RED");
-        telemetry.update();
-
         waitForStart();
 
         while (opModeIsActive())
@@ -91,29 +63,57 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
+                    sleep(5000);
 
                     // Near shot
                     shooter.setHomeTiltPosition();//need tilt to be in home position to set kicker down
                     carousel.setHomePositionKicker();
                     carousel.spinCarouselLaunchOne();
 
-                    shooterPower = nearShooterPower;
+                    shooterPower = farShooterPower;
                     shooter.setShooterPower(shooterPower);
-                    tiltPosition = shooter.nearTiltPosition;//to get ready to launch
+                    tiltPosition = shooter.farTiltPosition;//to get ready to launch
 
-                    rampUpTimer = getRuntime() + 3.0;   // 3-second spin-up
+                    rampUpTimer = getRuntime() + 2.0;   // 3-second spin-up
                     currentState = State.RAMPING;
 
-                    //drive forward 12 inches (i.e., 2 seconds)
-                    driveTimer = getRuntime()+ 1.5;
-                    while (getRuntime() < driveTimer){
+
+                    driveTimer = getRuntime() + 3.4;
+                    while (getRuntime() < driveTimer) {
                         drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(.5, 0
+                                new Vector2d(-.5, 0
 
                                 ),
                                 0
                         ));
                     }
+
+                    //turn at 45 degree angle, negative  value rotates clockwise, postiive rotates counterclockwise
+
+                    driveTimer = getRuntime() + .3;
+
+                    while (getRuntime() < driveTimer) {
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(0, 0
+
+                                ),
+                                -.60
+                        ));
+                    }
+
+
+                    /*
+                    //drive forward x inches (i.e., 3 seconds)
+                    driveTimer = getRuntime()+ 1;
+                    while (getRuntime() < driveTimer){
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(0, -.5
+
+                                ),
+                                0
+                        ));
+                    }
+                    */
 
                     break;
 
@@ -140,10 +140,12 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
 
                         // STEP 0 — rotate carousel to position 1
                         case 0:
-                            carousel.spinCarouselLaunchOne();
-                            shooter.setShooterPower(shooterPower);
-                            stepStartTime = getRuntime();
-                            launchStep++;
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                                carousel.spinCarouselLaunchOne();
+                                shooter.setShooterPower(shooterPower);
+                                stepStartTime = getRuntime();
+                                launchStep++;
+                            }
                             break;
 
                         // STEP 1 — tiny kicker
@@ -284,6 +286,7 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
+                                carousel.spinCarouselLaunchOne();
                                 shooter.setShooterPower(0);
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -291,27 +294,10 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
                             break;
 
                         case 15:
-                        if(isBlueAlliance){
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
 
-                                //strafe to the field wall if on Blue Alliance
-                                driveTimer = getRuntime() + 2;
-                                while (getRuntime() < driveTimer) {
-                                    drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, .5
-
-                                            ),
-                                            0
-                                    ));
-                                }
-
-                            }
-                         }//end of if
-                      else {
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-
-                                //strafe to the field wall if on Blue Alliance
-                                driveTimer = getRuntime() + 2;
+                                //strafe to the field wall
+                                driveTimer = getRuntime()+ .6;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
                                             new Vector2d(0, -.5
@@ -320,11 +306,9 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
                                             0
                                     ));
                                 }
-
+                                currentState = State.DONE;
                             }
-                        }
-                        currentState = State.DONE;
-                        break;
+                            break;
                     }
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
@@ -340,33 +324,16 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
             //telemetry.addData("Servo Pos", carousel.getPosition());
             telemetry.update();
 //------------------------END OF LAUNCH SEQUENCE-----------------------------------
-            if (isBlueAlliance) {
-                tiltPosition = shooter.nearTiltPosition;
-            } else {
-                tiltPosition = shooter.farTiltPosition;
-            }
-            if (isBlueAlliance) {
-                drive.setDrivePowers(new PoseVelocity2d(
-                        new Vector2d(
-                                .5,
-                                0
-                        ),
-                        0
-                ));
 
-                drive.updatePoseEstimate();
-            }
-            else{
-                drive.setDrivePowers(new PoseVelocity2d(
-                        new Vector2d(
-                                -.5,
-                                0
-                        ),
-                        0
-                ));
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x
+                    ),
+                    -gamepad1.right_stick_x
+            ));
 
-                drive.updatePoseEstimate();
-            }
+            drive.updatePoseEstimate();
 
             Pose2d pose = drive.localizer.getPose();
             telemetry.addData("x", pose.position.x);
@@ -380,7 +347,8 @@ public class TestingAutonomousColorSensor extends LinearOpMode {
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
-        
+        // }//TRY REMOVING THIS
+        //telemetry.update();
     }
 
     enum State {

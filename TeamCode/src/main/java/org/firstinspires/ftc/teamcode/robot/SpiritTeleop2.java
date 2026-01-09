@@ -90,7 +90,19 @@ public class SpiritTeleop2 extends LinearOpMode {
             waitForStart();
 
             while (opModeIsActive())
+/*
+                //KILL BUTTON*****************************************************************
+                if(gamepad1.y){
+                    drive.setDrivePowers(new PoseVelocity2d(
+                            new Vector2d(0, 0
 
+                            ),
+                            0
+                    ));
+                }
+//END KILL BUTTON************************************************************
+
+ */
             {
                 //Operate Intake: left bumper is intake and right bumper is eject
                 if (gamepad2.left_bumper) {
@@ -436,17 +448,22 @@ public class SpiritTeleop2 extends LinearOpMode {
                                 if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
+                                    //carousel.setHomePositionKicker();//add
                                     stepStartTime = getRuntime();
                                     launchStep++;
                                 }
                                 break;
-
-                            // STEP 14 — reset everything, end sequence
-                            case 14:
+                            case 14://position kicker down so it does not bump carousel
                                 if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                                   carousel.setHomePositionKicker();
+                                    launchStep++;
+                                }
+                            // STEP 15 — reset everything, end sequence
+                            case 15:
+                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
                                     shooter.setShooterPower(shooterPower);
                                     shooter.setHomeTiltPosition();
-                                    carousel.setHomePositionKicker();
+                                    carousel.spinCarouselLaunchOne();//add
                                     shooter.setShooterPower(0);
                                     currentState = State.IDLE;
                                 }
