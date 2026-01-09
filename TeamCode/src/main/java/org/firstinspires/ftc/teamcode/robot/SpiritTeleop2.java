@@ -23,6 +23,9 @@ public class SpiritTeleop2 extends LinearOpMode {
     static public double tiltToLaunchDelay = 1.0;
     //public static double nearTiltPosition = .9; //this is already in the Shooter class
     //public static double farTiltPosition = .8; //this is already in the shooter Class
+    static public double nearShooterPower = .4;//power for shooter if bot is near target
+    static public double farShooterPower = .8;//power for shooter if bot is far from target
+
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
@@ -35,8 +38,7 @@ public class SpiritTeleop2 extends LinearOpMode {
         telemetry.clear();
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
-        double nearShooterPower = .4;//power for shooter if bot is near target
-        double farShooterPower = .6;//power for shooter if bot is far from target
+
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
 
@@ -299,10 +301,12 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                             // STEP 0 — rotate carousel to position 1
                             case 0:
-                                carousel.spinCarouselLaunchOne();
-                                shooter.setShooterPower(shooterPower);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                                    carousel.spinCarouselLaunchOne();
+                                    shooter.setShooterPower(shooterPower);
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
                                 break;
 
                             // STEP 1 — tiny kicker

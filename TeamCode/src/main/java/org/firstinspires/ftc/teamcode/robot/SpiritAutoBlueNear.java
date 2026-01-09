@@ -35,7 +35,7 @@ public class SpiritAutoBlueNear extends LinearOpMode {
         telemetry.clear();
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
-        double nearShooterPower = .4;//power for shooter if bot is near target
+        double nearShooterPower = .35;//power for shooter if bot is near target
         double farShooterPower = .6;//power for shooter if bot is far from target
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
@@ -110,10 +110,12 @@ public class SpiritAutoBlueNear extends LinearOpMode {
 
                         // STEP 0 — rotate carousel to position 1
                         case 0:
-                            carousel.spinCarouselLaunchOne();
-                            shooter.setShooterPower(shooterPower);
-                            stepStartTime = getRuntime();
-                            launchStep++;
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                                carousel.spinCarouselLaunchOne();
+                                shooter.setShooterPower(shooterPower);
+                                stepStartTime = getRuntime();
+                                launchStep++;
+                            }
                             break;
 
                         // STEP 1 — tiny kicker
@@ -254,6 +256,7 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
+                                carousel.spinCarouselLaunchOne();
                                 shooter.setShooterPower(0);
                                 stepStartTime = getRuntime();
                                 launchStep++;

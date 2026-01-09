@@ -27,7 +27,8 @@ public class SpiritAutoBlueFar extends LinearOpMode {
     static public double tiltToLaunchDelay = 1.0;
     static public double defaultLaunchStepDelay = 1.0;//.4 is a good speed for competition
     //public static double nearTiltPosition = .9;
-    //public static double farTiltPosition = .8;
+    //public static double farTiltPosition = .7;
+    static public double farShooterPower = 1;
 
     @Override
     public void runOpMode() {
@@ -35,8 +36,8 @@ public class SpiritAutoBlueFar extends LinearOpMode {
         telemetry.clear();
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
-        double nearShooterPower = .4;//power for shooter if bot is near target
-        double farShooterPower = .6;//power for shooter if bot is far from target
+        //double nearShooterPower = .4;//power for shooter if bot is near target
+       // double farShooterPower = .6;//power for shooter if bot is far from target
         double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
 
@@ -49,6 +50,7 @@ public class SpiritAutoBlueFar extends LinearOpMode {
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
 
         shooter.setHomeTiltPosition();
+
         waitForStart();
 
         while (opModeIsActive())
@@ -67,33 +69,50 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                     carousel.setHomePositionKicker();
                     carousel.spinCarouselLaunchOne();
 
-                    shooterPower = nearShooterPower;
+                    shooterPower = farShooterPower;
                     shooter.setShooterPower(shooterPower);
-                    tiltPosition = shooter.nearTiltPosition;//to get ready to launch
+                    tiltPosition = shooter.farTiltPosition;//to get ready to launch
 
-                    rampUpTimer = getRuntime() + 3.0;   // 3-second spin-up
+                    rampUpTimer = getRuntime() + 2.0;   // 3-second spin-up
                     currentState = State.RAMPING;
 
+                    driveTimer = getRuntime()+ 2.75;
+                    while (getRuntime() < driveTimer) {
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(-.5, 0
+
+                                ),
+                                0
+                        ));
+                    }
+
+                    /*
                     //drive forward x inches (i.e., 3 seconds)
-                    driveTimer = getRuntime()+ 3;
+                    driveTimer = getRuntime()+ 1.5;
                     while (getRuntime() < driveTimer){
                         drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(0, -.5
+                                new Vector2d(0, .5
 
                                 ),
                                 0
                         ));
                     }
-                    //turn at 45 degree angle
-                    driveTimer = getRuntime()+ 3;
+                    */
+
+
+                    //turn at 45 degree angle, negative  value rotates clockwise, postiive rotates counterclockwise
+                    driveTimer = getRuntime()+ .3;
                     while (getRuntime() < driveTimer){
                         drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(5, 0
+                                new Vector2d(0, 0
 
                                 ),
-                                0
+                                .25
                         ));
                     }
+
+
+                    /*
                     //drive forward x inches (i.e., 3 seconds)
                     driveTimer = getRuntime()+ 1;
                     while (getRuntime() < driveTimer){
@@ -104,6 +123,8 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                                 0
                         ));
                     }
+                    */
+
                     break;
 
                 // ------------------------------------------------------
@@ -129,10 +150,12 @@ public class SpiritAutoBlueFar extends LinearOpMode {
 
                         // STEP 0 — rotate carousel to position 1
                         case 0:
-                            carousel.spinCarouselLaunchOne();
-                            shooter.setShooterPower(shooterPower);
-                            stepStartTime = getRuntime();
-                            launchStep++;
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                                carousel.spinCarouselLaunchOne();
+                                shooter.setShooterPower(shooterPower);
+                                stepStartTime = getRuntime();
+                                launchStep++;
+                            }
                             break;
 
                         // STEP 1 — tiny kicker
@@ -273,6 +296,7 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                                 shooter.setShooterPower(shooterPower);
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
+                                carousel.spinCarouselLaunchOne();
                                 shooter.setShooterPower(0);
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -283,10 +307,10 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
 
                                 //strafe to the field wall
-                                driveTimer = getRuntime()+ 2;
+                                driveTimer = getRuntime()+ .6;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, .5
+                                            new Vector2d(-.5, 0
 
                                             ),
                                             0
