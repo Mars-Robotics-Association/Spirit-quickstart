@@ -12,8 +12,8 @@ public class Shooter {
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
-   static public double nearTiltPosition = .8;//for testing
-   static public double farTiltPosition = .85;//for testing
+   static public double nearTiltPosition = .3;//for testing
+   static public double farTiltPosition = .15;//for testing
     double homeTiltPosition = 0;//for testing
 
 
@@ -31,9 +31,9 @@ public class Shooter {
     /**
      * Set the power to the left and right motors
      */
-    public void setShooterPower(double power) {
-        shooterMotorLeft.setPower(power);
-        shooterMotorRight.setPower(power);
+    public void setShooterPower(double shooterPower) {
+        shooterMotorLeft.setPower(shooterPower);
+        shooterMotorRight.setPower(shooterPower);
     }
 
     //Set position of servo that tilts the shooters

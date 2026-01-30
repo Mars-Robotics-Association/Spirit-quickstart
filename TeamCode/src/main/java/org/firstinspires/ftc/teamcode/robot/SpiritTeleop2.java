@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
-import org.firstinspires.ftc.teamcode.tuning.TuningOpModes;
 
 @Config
-@TeleOp(name = "Spirit", group = "Teleop")
+
+@TeleOp(name = "Spirit", group = "Teleop")//ADD THIS LINE BACK TO USE THE CLASS
+//@Disabled
 public class SpiritTeleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
@@ -21,11 +22,10 @@ public class SpiritTeleop2 extends LinearOpMode {
     double stepStartTime = 0;
     static public double defaultLaunchStepDelay = 1;//.4 will work for competition
     static public double tiltToLaunchDelay = 1.0;
-    //public static double nearTiltPosition = .9; //this is already in the Shooter class
-    //public static double farTiltPosition = .8; //this is already in the shooter Class
-    static public double nearShooterPower = .4;//power for shooter if bot is near target
-    static public double farShooterPower = .8;//power for shooter if bot is far from target
 
+    static public double nearShooterPower = .3;//power for shooter if bot is near target
+    static public double farShooterPower = .425;//power for shooter if bot is far from target
+    static public double shooterPower = 0;//intermediate variable fed to motors
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
@@ -39,7 +39,7 @@ public class SpiritTeleop2 extends LinearOpMode {
         double rampUpTimer = 0;
         boolean rampUpFlag = false;
 
-        double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
+        //double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
         State currentState = State.IDLE;
 
         double tiltPosition = 0;
@@ -448,23 +448,26 @@ public class SpiritTeleop2 extends LinearOpMode {
                                 if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                     shooter.setShooterPower(shooterPower);
                                     carousel.setFullKicker();
-                                    //carousel.setHomePositionKicker();//add
                                     stepStartTime = getRuntime();
                                     launchStep++;
                                 }
                                 break;
                             case 14://position kicker down so it does not bump carousel
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                   carousel.setHomePositionKicker();
+                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
+                                    shooter.setHomeTiltPosition();
+                                    stepStartTime = getRuntime();
                                     launchStep++;
                                 }
                             // STEP 15 — reset everything, end sequence
                             case 15:
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
-                                    shooter.setShooterPower(shooterPower);
-                                    shooter.setHomeTiltPosition();
+                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
+                                    carousel.setHomePositionKicker();
+                                    stepStartTime = getRuntime();
+                                    launchStep++;
+                                }
+                            case 16:
+                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
                                     carousel.spinCarouselLaunchOne();//add
-                                    shooter.setShooterPower(0);
                                     currentState = State.IDLE;
                                 }
                                 break;

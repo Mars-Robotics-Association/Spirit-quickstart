@@ -300,7 +300,7 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                                 driveTimer = getRuntime()+ 1;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, -.5
+                                            new Vector2d(0, .5
 
                                             ),
                                             0

@@ -75,7 +75,7 @@ public class SpiritAutoFar extends LinearOpMode {
                     currentState = State.DONE;
 
                     //drive forward 12 inches (i.e., 1.5 seconds)
-                    driveTimer = getRuntime()+ 1.5;
+                    driveTimer = getRuntime()+ .5;
                     while (getRuntime() < driveTimer){
                         drive.setDrivePowers(new PoseVelocity2d(
                                 new Vector2d(1, 0

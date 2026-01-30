@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.Drawing;
 
 @Config
-@Autonomous(name = "SpiritAutoRedFar", group = "Robot")
-public class SpiritAutoRedFar extends LinearOpMode {
+@Autonomous(name = "TestAutoWithEncoders", group = "Robot")
+public class TestAutoWithEncoders extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public double driveTimer = 0;
     public int counter = 0;//variable to use to cause a waiting period in the launch sequence
@@ -35,7 +35,6 @@ public class SpiritAutoRedFar extends LinearOpMode {
         telemetry.setAutoClear(false);
         telemetry.clear();
         double rampUpTimer = 0;
-        double driveTowardGoalTimer = 0;//this is not in the blue far autonomous
         boolean rampUpFlag = false;
         //double nearShooterPower = .4;//power for shooter if bot is near target
         // double farShooterPower = .6;//power for shooter if bot is far from target
@@ -79,18 +78,16 @@ public class SpiritAutoRedFar extends LinearOpMode {
                     currentState = State.RAMPING;
 
 
-                    driveTimer = getRuntime() + 3.1;
-                    //driveTowardGoalTimer = getRunTime() + 2;
-                    //if(getRuntime() > driveTowardGoadTimer) {
-                        while (getRuntime() < driveTimer) {
-                            drive.setDrivePowers(new PoseVelocity2d(
-                                    new Vector2d(-.5, 0
+                    driveTimer = getRuntime() + 3.4;
+                    while (getRuntime() < driveTimer) {
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(-.5, 0
 
-                                    ),
-                                    0
-                            ));
-                        }
-                   // }
+                                ),
+                                0
+                        ));
+                    }
+
                     //turn at 45 degree angle, negative  value rotates clockwise, postiive rotates counterclockwise
 
                     driveTimer = getRuntime() + .3;
@@ -100,23 +97,23 @@ public class SpiritAutoRedFar extends LinearOpMode {
                                 new Vector2d(0, 0
 
                                 ),
-                                -.90
+                                .60
                         ));
                     }
 
-                    //drive forward x inches (i.e., 3 seconds)
-                    driveTimer = getRuntime() + 1;
-                    driveTowardGoalTimer = getRuntime() + 2;
-                    if(getRuntime() > driveTowardGoalTimer) {
-                        while (getRuntime() < driveTimer) {
-                            drive.setDrivePowers(new PoseVelocity2d(
-                                    new Vector2d(-5, 0
 
-                                    ),
-                                    0
-                            ));
-                        }
+                    /*
+                    //drive forward x inches (i.e., 3 seconds)
+                    driveTimer = getRuntime()+ 1;
+                    while (getRuntime() < driveTimer){
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(0, -.5
+
+                                ),
+                                0
+                        ));
                     }
+                    */
 
                     break;
 
@@ -300,7 +297,7 @@ public class SpiritAutoRedFar extends LinearOpMode {
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
 
                                 //strafe to the field wall
-                                driveTimer = getRuntime() + 1.25;
+                                driveTimer = getRuntime()+ 1;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
                                             new Vector2d(0, -.5
@@ -361,4 +358,5 @@ public class SpiritAutoRedFar extends LinearOpMode {
         DONE,
     }
 }
+
 
