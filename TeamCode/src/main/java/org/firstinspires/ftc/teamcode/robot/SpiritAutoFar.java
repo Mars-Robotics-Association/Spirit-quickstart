@@ -62,221 +62,20 @@ public class SpiritAutoFar extends LinearOpMode {
                 // ------------------------------------------------------
                 case IDLE:
 
-                    // Near shot
-                    shooter.setHomeTiltPosition();//need tilt to be in home position to set kicker down
-                    carousel.setHomePositionKicker();
-                    carousel.spinCarouselLaunchOne();
 
-                    shooterPower = nearShooterPower;
-                    shooter.setShooterPower(shooterPower);
-                    tiltPosition = shooter.nearTiltPosition;//to get ready to launch
-
-                    rampUpTimer = getRuntime() + 3.0;   // 3-second spin-up
-                    currentState = State.DONE;
-
-                    //drive forward 12 inches (i.e., 1.5 seconds)
-                    driveTimer = getRuntime()+ .5;
+                    //drive backward 12 inches (i.e., 1.5 seconds)
+                    driveTimer = getRuntime()+ .4;
                     while (getRuntime() < driveTimer){
                         drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(1, 0
+                                new Vector2d(-1, 0
 
                                 ),
                                 0
                         ));
                     }
-
+                    currentState = State.DONE;
                     break;
 
-                // ------------------------------------------------------
-                //  RAMPING — waiting for flywheel to reach speed
-                // ------------------------------------------------------
-                case RAMPING:
-                    if (getRuntime() > rampUpTimer) {
-                        // Begin launch sequence
-                        currentState = State.LAUNCHING;
-                        launchStep = 0;
-                        shooter.setHomeTiltPosition();//moved here from IDLE
-                        carousel.setHomePositionKicker();//moved here from IDLE
-                        stepStartTime = getRuntime();
-                    }
-                    break;
-
-                // ------------------------------------------------------
-                //  LAUNCHING — run a timed step machine
-                // ------------------------------------------------------
-                case LAUNCHING:
-
-                    switch (launchStep) {
-
-                        // STEP 0 — rotate carousel to position 1
-                        case 0:
-                            carousel.spinCarouselLaunchOne();
-                            shooter.setShooterPower(shooterPower);
-                            stepStartTime = getRuntime();
-                            launchStep++;
-                            break;
-
-                        // STEP 1 — tiny kicker
-                        case 1:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 2 — tilt shooter
-                        case 2:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 3 — full kicker (launch ball)
-                        case 3:
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 4 — reset tilt + kicker
-                        case 4:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setHomeTiltPosition();
-                                carousel.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 5 — rotate carousel to position 2
-                        case 5:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.spinCarouselLaunchTwo();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 6 — second tiny kicker
-                        case 6:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 7 — tilt again
-                        case 7:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 8 — second full kicker
-                        case 8:
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 9 — reset tilt + kicker again
-                        case 9:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setHomeTiltPosition();
-                                carousel.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 10 — rotate to position 3
-                        case 10:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.spinCarouselLaunchThree();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 11 — tiny kicker third time
-                        case 11:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 12 — tilt third time
-                        case 12:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 13 — full send #3
-                        case 13:
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        // STEP 14 — reset everything, end sequence
-                        case 14:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setShooterPower(shooterPower);
-                                shooter.setHomeTiltPosition();
-                                carousel.setHomePositionKicker();
-                                shooter.setShooterPower(0);
-                                stepStartTime = getRuntime();
-                                launchStep++;
-                            }
-                            break;
-
-                        case 15:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-
-                                //strafe to the field wall
-                                driveTimer = getRuntime()+ 2;
-                                while (getRuntime() < driveTimer) {
-                                    drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, .5
-
-                                            ),
-                                            0
-                                    ));
-                                }
-                                currentState = State.DONE;
-                            }
-                            break;
-                    }
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0
@@ -286,10 +85,7 @@ public class SpiritAutoFar extends LinearOpMode {
                     ));
                     break;
             }
-            // telemetry.addData("State", currentState);
-            telemetry.addData("Shooter Power", shooterPower);
-            //telemetry.addData("Servo Pos", carousel.getPosition());
-            telemetry.update();
+
 //------------------------END OF LAUNCH SEQUENCE-----------------------------------
 
             drive.setDrivePowers(new PoseVelocity2d(
@@ -320,10 +116,6 @@ public class SpiritAutoFar extends LinearOpMode {
 
     enum State {
         IDLE,
-        RAMPING,
-        LAUNCHING,
         DONE,
     }
 }
-
-

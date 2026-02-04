@@ -30,7 +30,7 @@ public class TestingSpiritAutonomousByTime2 extends LinearOpMode {
     public void runOpMode() {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Shooter shooter = new Shooter(hardwareMap);
+        ShooterForSenecaValley shooter = new ShooterForSenecaValley(hardwareMap);
         Carousel carousel = new Carousel(hardwareMap);
 
         shooter.setHomeTiltPosition();
@@ -95,7 +95,7 @@ public class TestingSpiritAutonomousByTime2 extends LinearOpMode {
 
     /* ---------------- LAUNCH STEP MACHINE ---------------- */
 
-    void runLaunchSequence(Shooter shooter, Carousel carousel) {
+    void runLaunchSequence(ShooterForSenecaValley shooter, Carousel carousel) {
 
         switch (launchStep) {
 

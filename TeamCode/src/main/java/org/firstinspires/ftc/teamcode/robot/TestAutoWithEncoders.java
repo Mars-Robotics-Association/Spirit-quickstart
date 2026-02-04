@@ -11,11 +11,13 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+@Disabled
 @Config
 @Autonomous(name = "TestAutoWithEncoders", group = "Robot")
 public class TestAutoWithEncoders extends LinearOpMode {
@@ -46,7 +48,7 @@ public class TestAutoWithEncoders extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-        Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
+        ShooterForSenecaValley shooter = new ShooterForSenecaValley(hardwareMap);//instantiate a new shooter
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
 
         shooter.setHomeTiltPosition();
