@@ -1,8 +1,8 @@
 /*
-This class is to be used if the goal is blue. IT executes the launch sequence, drives the robot
- forward for a short period of time, strafes right to place the robot against the field wall and
- out of the way of the alliance team. Robot must be placed with the rear wells flush against the BLUDE
- target to start.
+This class is to be used if the goal is red and the shot is from the back wall. IT executes the launch sequence, and
+drives the robot forward off of the tape (by time), At start, the robot must be placed at an angle against the back wall
+with the right front wheel against the wall and the right rear wheel at the 7th nub of the floor matt.
+
  */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;

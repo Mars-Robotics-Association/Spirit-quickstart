@@ -1,7 +1,7 @@
 /*
-This class is to be used if the goal is red and for a near shot.
-It drives backwards 6 inches (.33 seconds) and executes the launch sequence, then strafes right to place the robot against the field wall and
- out of the way of the alliance team. Robot must be placed with the rear wells flush against the red
+This class is to be used if the goal is blue and the shot is near the goal.
+It drives backwards 6 inches (by time) and executes the launch sequence, then strafes right to place the robot against the
+field wall and out of the way of the alliance team. Robot must be placed with the rear wells flush against the blue
  target to start.
  */
 package org.firstinspires.ftc.teamcode.robot;

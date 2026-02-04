@@ -1,8 +1,5 @@
 /*
-This class is to be used if the goal is blue. IT executes the launch sequence, drives the robot
- forward for a short period of time, strafes right to place the robot against the field wall and
- out of the way of the alliance team. Robot must be placed with the rear wells flush against the BLUDE
- target to start.
+This class simply moves the robot backward 6 inches and off of the tape.  It does not shoot
  */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -19,15 +16,8 @@ import org.firstinspires.ftc.teamcode.Drawing;
 @Config
 @Autonomous(name = "SpiritAutoFar", group = "Robot")
 public class SpiritAutoFar extends LinearOpMode {
-    public double launchSequenceTimer = 0;
+
     public double driveTimer = 0;
-    public int counter = 0;//variable to use to cause a waiting period in the launch sequence
-    int launchStep = 0;
-    double stepStartTime = 0;
-    static public double tiltToLaunchDelay = 1.0;
-    static public double defaultLaunchStepDelay = 1.0;//.4 is a good speed for competition
-    //public static double nearTiltPosition = .9;
-    //public static double farTiltPosition = .8;
 
     @Override
     public void runOpMode() {
