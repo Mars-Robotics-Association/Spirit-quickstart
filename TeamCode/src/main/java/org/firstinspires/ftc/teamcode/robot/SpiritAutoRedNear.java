@@ -26,7 +26,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
     int launchStep = 0;
     double stepStartTime = 0;
-    static public double defaultLaunchStepDelay = 1;//.4 will work for competition
+    static public double defaultLaunchStepDelay = 1;//.4 will work to speed things up
     static public double tiltToLaunchDelay = 1.0;
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------

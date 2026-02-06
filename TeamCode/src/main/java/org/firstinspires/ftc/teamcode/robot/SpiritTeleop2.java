@@ -44,16 +44,18 @@ public class SpiritTeleop2 extends LinearOpMode {
         Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
         Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
+        Lift lift = new Lift(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
 
         shooter.setHomeTiltPosition();
+        lift.homeLift();
         waitForStart();
 
-        while (opModeIsActive())
+        while (opModeIsActive()){
 /*
                 //KILL BUTTON*****************************************************************
-                if(gamepad1.y){
+                if(gamepad1.a){
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0
 
@@ -62,9 +64,19 @@ public class SpiritTeleop2 extends LinearOpMode {
                     ));
                 }
 //END KILL BUTTON************************************************************
+*/
+//LIFT ROBOT OFF OF MATT****************************************************
 
- */
-        {
+            if (gamepad2.a){//(gamepad2.x  && gamepad2.b ){
+                lift.engageLift();
+
+            }
+
+            //reset lift position
+            if (gamepad1.dpad_left) {
+                lift.homeLift();
+            }
+
             telemetry.addData("Test", 0);
             //Operate Intake: left bumper is intake and right bumper is eject
             if (gamepad2.left_bumper) {
@@ -143,11 +155,14 @@ public class SpiritTeleop2 extends LinearOpMode {
             }
             //--------------------------END TESTING OF CAROUSEL
 
+//TEST LIFT
+            if (gamepad1.dpad_left) {
+                lift.homeLift();
+            }
 
 
 
-
-            // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
+                // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
                 on gamepad 1, the intake begins spinning and the carousel spins to intakePositionOne.
@@ -221,9 +236,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                         shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
                         tiltPosition = shooter.nearTiltPosition;
                         rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
-
-
-
                         currentState = State.RAMPING;
 
                     }

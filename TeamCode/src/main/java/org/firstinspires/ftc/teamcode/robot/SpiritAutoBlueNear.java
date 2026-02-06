@@ -42,18 +42,16 @@ public class SpiritAutoBlueNear extends LinearOpMode {
         double driveTimer = 0;
         boolean rampUpFlag = false;
 
-        //double shooterPower = 0;//power for shooter which is set for near or far shot based on which trigger is pulled
         State currentState = State.IDLE;
 
-        double tiltPosition = 0;
-        //double homeTiltPosition = 0;
+       double tiltPosition = 0;//this is only used for testing, not in production
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
         Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
-
 
         shooter.setHomeTiltPosition();
         waitForStart();
@@ -152,9 +150,6 @@ public class SpiritAutoBlueNear extends LinearOpMode {
             //--------------------------END TESTING OF CAROUSEL
 
 
-
-
-
             // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
@@ -220,7 +215,7 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    // Near shot
+                    // Near shot, get shooter motors, tile and ramp up all set up and drive backwards 6 inches
 
                     //shooter.shooterVelocity = shooter.nearShooterVelocity;
                     shooter.shooterMotorLeft.setPower(.3);
@@ -447,6 +442,7 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                             }
                             break;
                     }
+                    //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0

@@ -23,22 +23,11 @@ public class SpiritAutoFar extends LinearOpMode {
     public void runOpMode() {
         telemetry.setAutoClear(false);
         telemetry.clear();
-        double rampUpTimer = 0;
-        boolean rampUpFlag = false;
-        double nearShooterPower = .4;//power for shooter if bot is near target
-        double farShooterPower = .6;//power for shooter if bot is far from target
-        double shooterPower = 0;//power for shooter which is set to nearShooterPower or farShooterPower based on which trigger is pulled
+
         State currentState = State.IDLE;
 
-        double tiltPosition = 0;
-        double homeTiltPosition = 0;
-
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-        Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
-        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
 
-        shooter.setHomeTiltPosition();
         waitForStart();
 
         while (opModeIsActive())
@@ -51,8 +40,6 @@ public class SpiritAutoFar extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-
-
                     //drive backward 12 inches (i.e., 1.5 seconds)
                     driveTimer = getRuntime()+ .4;
                     while (getRuntime() < driveTimer){
@@ -66,6 +53,7 @@ public class SpiritAutoFar extends LinearOpMode {
                     currentState = State.DONE;
                     break;
 
+                    //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0

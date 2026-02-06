@@ -59,22 +59,22 @@ public class SpiritAutoRedFar extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive())
-            //CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
+            //CODE FOR WHEN THE AUTONOMOUS STARTS----------------------------------
             switch (currentState) {
 
                 // ------------------------------------------------------
-                //  IDLE — waiting for trigger input
+                //  IDLE
                 // ------------------------------------------------------
                 case IDLE:
-
-                    // Far shot (left trigger)
+                    //Far shot red target
+                    // set shooter power and apply to motors to get them spinning. set tilt, set timer, set ramp up timer
 
                     shooter.shooterMotorLeft.setPower(.425);
                     shooter.shooterMotorRight.setPower(.425);
                     shooter.shooterVelocity = Shooter.farShooterVelocity;
                     shooter.setShooterVelocity(Shooter.shooterVelocity, telemetry);
                     tiltPosition = shooter.farTiltPosition;
-                    rampUpTimer = getRuntime() + 6.0;
+                    rampUpTimer = getRuntime() + 2.0;
                     currentState = State.RAMPING;
 
                     break;
@@ -321,7 +321,6 @@ public class SpiritAutoRedFar extends LinearOpMode {
         telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
         telemetry.update();
     }
-
 
     enum State {
         IDLE,
