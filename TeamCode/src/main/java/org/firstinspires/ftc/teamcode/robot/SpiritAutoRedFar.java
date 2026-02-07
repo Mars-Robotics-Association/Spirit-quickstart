@@ -1,9 +1,3 @@
-/*
-This class is to be used if the goal is red and the shot is from the back wall. IT executes the launch sequence, and
-drives the robot forward off of the tape (by time), At start, the robot must be placed at an angle against the back wall
-with the right front wheel against the wall and the right rear wheel at the 7th nub of the floor matt.
-
- */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -18,6 +12,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+/**
+ * Red-alliance Far autonomous OpMode.
+ *
+ * <p>Executes the full 3-ball far-shot launch sequence, then drives forward off the
+ * tape (by time) to park.
+ *
+ * <p><b>Starting position:</b> the robot must be placed at an angle against the back wall
+ * with the right front wheel against the wall and the right rear wheel at the 7th nub
+ * of the floor mat.
+ *
+ * @see SpiritAutoBlueFar
+ */
 @Config
 @Autonomous(name = "SpiritAutoRedFar", group = "Teleop")
 public class SpiritAutoRedFar extends LinearOpMode {

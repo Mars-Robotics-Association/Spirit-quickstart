@@ -1,9 +1,3 @@
-/*
-This class is to be used if the goal is blue and the shot is near the goal.
-It drives backwards 6 inches (by time) and executes the launch sequence, then strafes right to place the robot against the
-field wall and out of the way of the alliance team. Robot must be placed with the rear wells flush against the blue
- target to start.
- */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -18,6 +12,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+/**
+ * Blue-alliance Near autonomous OpMode.
+ *
+ * <p>Drives backward 6 inches (by time), executes the full 3-ball near-shot launch
+ * sequence, then strafes right (+0.5 y power, 0.75 s) to park against the field wall
+ * and out of the way of the alliance partner.
+ *
+ * <p>Robot must be placed with the rear wells flush against the blue target to start.
+ *
+ * @see SpiritAutoRedNear
+ * @see SpiritAutoNear
+ */
 @Config
 @Autonomous(name = "SpiritAutoBlueNear", group = "Teleop")
 public class SpiritAutoBlueNear extends LinearOpMode {
