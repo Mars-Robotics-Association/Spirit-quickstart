@@ -41,7 +41,7 @@ public class RedNear extends LinearOpMode {
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
     boolean triggerHeld = false;        // edge detection
-    double intakePower = 1.0;
+
     //-------------------------------------------
     @Override
     public void runOpMode() {
@@ -69,11 +69,11 @@ public class RedNear extends LinearOpMode {
             telemetry.addData("Test", 0);
             //Operate Intake: left bumper is intake and right bumper is eject
             if (gamepad2.left_bumper) {
-                intake.setPower(1);
+                intake.run();
             } else if (gamepad2.right_bumper) {
-                intake.setPower(-1);
+                intake.eject();
             } else {
-                intake.setPower(0);
+                intake.stop();
             }
 
             //JUST FOR TESTING POSITON OF KICKER SERVO-------
@@ -153,7 +153,7 @@ public class RedNear extends LinearOpMode {
 
             // While trigger is held, keep intake running
             if (triggerPressed) {
-                intake.setPower(intakePower);
+                intake.run();
             }
 
             // Detect NEW trigger pull (rising edge)
@@ -162,15 +162,15 @@ public class RedNear extends LinearOpMode {
 
                 // Advance carousel one position per pull
                 if (intakeStep == 0) {
-                    intake.setPower(intakePower);
+                    intake.run();
                     carousel.spinCarouselIntakeOne();
                     intakeStep = 1;
                 } else if (intakeStep == 1) {
-                    intake.setPower(intakePower);
+                    intake.run();
                     carousel.spinCarouselIntakeTwo();
                     intakeStep = 2;
                 } else if (intakeStep == 2) {
-                    intake.setPower(intakePower);
+                    intake.run();
                     carousel.spinCarouselIntakeThree();
                     intakeStep = 0;
                 }
@@ -181,7 +181,7 @@ public class RedNear extends LinearOpMode {
             // Detect trigger release
             if (!triggerPressed && triggerHeld) {
                 triggerHeld = false;
-                intake.setPower(0);   // Stop intake when released
+                intake.stop();
             }
             //END INTAKE SEQUENCE---------------------------------------
 

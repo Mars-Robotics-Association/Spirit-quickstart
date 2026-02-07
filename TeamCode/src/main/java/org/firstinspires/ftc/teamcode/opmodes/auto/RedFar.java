@@ -39,7 +39,7 @@ public class RedFar extends LinearOpMode {
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
     boolean triggerHeld = false;        // edge detection
-    double intakePower = 1.0;
+
 
     //-------------------------------------------
     @Override
