@@ -28,10 +28,9 @@ import org.firstinspires.ftc.teamcode.Drawing;
 @Autonomous(name = "SpiritAutoRedFar", group = "Teleop")
 public class SpiritAutoRedFar extends LinearOpMode {
     public double launchSequenceTimer = 0;
-    //public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
-    static public double defaultLaunchStepDelay = 1;//.4 will work for competition
+    static public double defaultLaunchStepDelay = 1;
     static public double tiltToLaunchDelay = 1.0;
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
@@ -42,17 +41,14 @@ public class SpiritAutoRedFar extends LinearOpMode {
     //-------------------------------------------
     @Override
     public void runOpMode() {
-//        telemetry.setAutoClear(false);
         telemetry.clear();
         double rampUpTimer = 0;
         double driveTimer = 0;
         boolean rampUpFlag = false;
 
-        //double shooterPower = 0;//power for shooter which is set for near or far shot based on which trigger is pulled
         State currentState = State.IDLE;
 
         double tiltPosition = 0;
-        //double homeTiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
@@ -94,11 +90,8 @@ public class SpiritAutoRedFar extends LinearOpMode {
                         // Begin launch sequence
                         currentState = State.LAUNCHING;
                         launchStep = 0;
-                        //carousel.spinCarouselLaunchOne();
-
-
-                        shooter.setHomeTiltPosition();//moved here from IDLE
-                        carousel.setHomePositionKicker();//moved here from IDLE
+                        shooter.setHomeTiltPosition();
+                        carousel.setHomePositionKicker();
                         stepStartTime = getRuntime();
 
                     }
@@ -267,7 +260,7 @@ public class SpiritAutoRedFar extends LinearOpMode {
                             }
                         case 16:
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
-                                carousel.spinCarouselLaunchOne();//add
+                                carousel.spinCarouselLaunchOne();
                                 shooter.shooterVelocity = 0;
                                 shooter.update();
 
@@ -308,11 +301,6 @@ public class SpiritAutoRedFar extends LinearOpMode {
         drive.updatePoseEstimate();
 
         Pose2d pose = drive.localizer.getPose();
-        // telemetry.addData("x", pose.position.x);
-        // telemetry.addData("y", pose.position.y);
-        // telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
-        // telemetry.update();
-
 
         TelemetryPacket packet = new TelemetryPacket();
         packet.fieldOverlay().setStroke("#3F51B5");

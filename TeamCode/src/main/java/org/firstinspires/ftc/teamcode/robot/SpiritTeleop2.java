@@ -42,7 +42,6 @@ import org.firstinspires.ftc.teamcode.Drawing;
 @TeleOp(name = "SpiritTeleop2", group = "Teleop")
 public class SpiritTeleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
-    //public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int ballNumber = 0;
     int launchSubStep = 0;
     double stepStartTime = 0;
@@ -56,17 +55,14 @@ public class SpiritTeleop2 extends LinearOpMode {
     //-------------------------------------------
     @Override
     public void runOpMode() {
-//        telemetry.setAutoClear(false);
         telemetry.clear();
         double rampUpTimer = 0;
         double driveTimer = 0;
         boolean rampUpFlag = false;
 
-        //double shooterPower = 0;//power for shooter which is set for near or far shot based on which trigger is pulled
         State currentState = State.IDLE;
 
         double tiltPosition = 0;
-        //double homeTiltPosition = 0;
 
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -81,19 +77,6 @@ public class SpiritTeleop2 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-/*
-                //KILL BUTTON*****************************************************************
-                if(gamepad1.a){
-                    drive.setDrivePowers(new PoseVelocity2d(
-                            new Vector2d(0, 0
-
-                            ),
-                            0
-                    ));
-                }
-//END KILL BUTTON************************************************************
-*/
-//LIFT ROBOT OFF OF MATT****************************************************
 
             if (gamepad2.a){//(gamepad2.x  && gamepad2.b ){
                 lift.engageLift();
@@ -143,18 +126,10 @@ public class SpiritTeleop2 extends LinearOpMode {
 //--------------------------------END CODE FOR TESTING POSITION OF TILT SERVO
 
 //------------------JUST FOR TESTING POSITION OF CAROUSEL
-            //if (gamepad2.dpad_left) {
-            //carousel.spinCarouselMin();//this is 0
-
-            //}
             if (gamepad2.dpad_left) {
                 carousel.spinCarouselHome();//
 
             }
-            // if (gamepad2.dpad_up) {
-            // carousel.spinCarouselMax();//this is 1
-
-            //}
             if (gamepad2.dpad_up) {
                 carousel.spinCarouselIntakeOne();//
 
@@ -257,7 +232,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                 case IDLE:
                     // Near shot (right trigger)
                     if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                        //shooter.shooterVelocity = shooter.nearShooterVelocity;
                         shooter.shooterMotorLeft.setPower(.3);
                         shooter.shooterMotorRight.setPower(.3);
                         shooter.shooterVelocity = Shooter.nearShooterVelocity;
@@ -405,11 +379,6 @@ public class SpiritTeleop2 extends LinearOpMode {
             drive.updatePoseEstimate();
 
             Pose2d pose = drive.localizer.getPose();
-           // telemetry.addData("x", pose.position.x);
-           // telemetry.addData("y", pose.position.y);
-           // telemetry.addData("heading (deg)", Math.toDegrees(pose.heading.toDouble()));
-           // telemetry.update();
-
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.fieldOverlay().setStroke("#3F51B5");

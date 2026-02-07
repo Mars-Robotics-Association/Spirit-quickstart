@@ -80,10 +80,6 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
 
-        //enable the encoders on the shooter motors
-       // shooterMotorLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-       // shooterMotorRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
 
         shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -100,10 +96,6 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
      */
     public void update() {
         telemetry.addData("Target T/S", shooterVelocity);
-      // shooterMotorLeft.setVelocity(shooterVelocity);//if using encoders, use this code. Otherwise, set power
-      // shooterMotorRight.setVelocity(shooterVelocity);//if using encoders, use this code. Otherwise, set power
-//        shooterMotorLeft.setPower(shooterPower);
-//        shooterMotorRight.setPower(shooterPower);
 
         //fail safe
         if (shooterVelocity == 0){
@@ -111,11 +103,6 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
            shooterMotorRight.setPower(0);
            return;
        }
-        //convert target velocity to feed forward
-
-       // double feedLeftForward = shooterVelocity/maxShooterVelocityLeft;//target/max (moved to class variable)
-        //double feedRightForward = shooterVelocity/maxShooterVelocityRight;//target/max (moved to class variable)
-
         //measure current velocity
         telemetry.addData("FeedLeftForward ", feedLeftForward);
         telemetry.addData("FeedRightForward ", feedRightForward);
@@ -136,12 +123,9 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
 
         //set the power of the shooter motors to their current speed plus or minus the feed foward factors
         //so it is constantly adjusting itself to the target
-      //shooterMotorLeft.setPower(feedbackLeft + feedLeftForward);
         actualMotorPower = (feedbackLeft + feedLeftForward) * 1000;
         shooterMotorLeft.setPower(feedbackLeft + feedLeftForward);
        shooterMotorRight.setPower(feedbackRight + feedRightForward);
-        //shooterMotorLeft.setPower(speed);
-       // shooterMotorRight.setPower(speed);
     }
 
 

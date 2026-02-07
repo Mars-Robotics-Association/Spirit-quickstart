@@ -91,8 +91,6 @@ public class SpiritAutoFar extends LinearOpMode {
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
         }
-        // }//TRY REMOVING THIS
-        //telemetry.update();
     }
 
     enum State {

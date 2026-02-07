@@ -31,9 +31,6 @@ public class Carousel {
     private final Servo kickerServo;
     /** Rotates the carousel to position balls. */
     private final Servo carouselServo;
-   // double carouselPosition1 = .2;//for testing variable to hold the forward positon of the carousel (will be set in code)
-   // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
-
   //KICKER POSITIONS
      public static double kickerDownPosition = .8;//0
      static public double kickerTinyLiftPosition = .65;//.7
@@ -79,12 +76,6 @@ public class Carousel {
     public void setHomePositionKicker(){
      kickerServo.setPosition(kickerDownPosition);
     }
-    //for testing
-
-    //for testing
-   // public void spinCarouselBackward(){
-      //  carouselServo.setPosition(carouselPositionMax);
-   // }
     /** Rotates the carousel to intake slot 1 (0 degrees + offset). */
     public void spinCarouselIntakeOne() {
         carouselServo.setPosition(carouselPositionIntakeOne);
