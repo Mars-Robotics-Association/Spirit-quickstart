@@ -1,4 +1,61 @@
-# Road Runner Quickstart
+# Spirit Quickstart
 
-Check out the [docs](https://rr.brott.dev/docs/v1-0/tuning/).
+Team Spirit's FTC robot code, forked from the [Road Runner quickstart](https://rr.brott.dev/docs/v1-0/tuning/). Everything below describes what the team built on top of commit `08f0898` (the upstream quickstart baseline).
 
+## What Changed from the Quickstart
+
+**30 commits, ~3,160 lines added across 20 files.** The quickstart shipped with a drive system and tuning scaffolding; the team added an entire robot around it.
+
+### MecanumDrive moved to `robot/` package
+
+The quickstart's `MecanumDrive.java` was relocated from the root `teamcode` package into `teamcode.robot`. The four tuning OpModes (`LocalizationTest`, `ManualFeedbackTuner`, `SplineTest`, `TuningOpModes`) were updated to import from the new location. The IMU orientation was configured to `LogoFacingDirection.RIGHT` / `UsbFacingDirection.UP`, and only `rightFront` is reversed -- the other three motors run in their default direction.
+
+### Robot Subsystems
+
+Four new hardware subsystem classes were added in `teamcode.robot`:
+
+- **Intake** -- Single DC motor (`intakeMotor`). Thin wrapper: just `setPower()`.
+- **Shooter** -- Dual flywheel motors (`shooterMotorLeft`, `shooterMotorRight`) plus a `tiltServo` that angles the shooter for near vs. far shots. Velocity control uses a hand-rolled feedforward + proportional feedback loop with exponential smoothing, rather than the SDK's built-in `RUN_USING_ENCODER` PID (which is commented out). Near target is ~650 tps, far target is ~925 tps.
+- **Carousel** -- Two servos: `carouselServo` (continuous rotation, holds 3 balls at 120-degree spacing) and `kickerServo` (pushes balls into the shooter). Positions are computed from a degree-to-servo conversion factor with a configurable offset. Intake positions and launch positions are staggered so the carousel rotates to feed balls one at a time.
+- **Lift** -- Encoder-driven motor (`liftMotor`) with `RUN_TO_POSITION` to raise the robot. Target is 1300 ticks.
+
+### Teleop: State Machine Launch Sequence
+
+`SpiritTeleop2` is the main driver-controlled OpMode. The most interesting part is the 16-step timed state machine that fires all three balls from the carousel:
+
+1. Gamepad2 trigger pull enters **RAMPING** state (2-second flywheel spin-up)
+2. Transitions to **LAUNCHING**, which cycles through three identical fire-reset sequences: rotate carousel to position -> tiny kicker nudge -> tilt shooter -> full kicker fire -> reset tilt and kicker
+3. Right trigger = near shot (lower tilt, lower velocity); left trigger = far shot (higher tilt, higher velocity)
+4. After all 3 balls are fired, the shooter powers down and returns to **IDLE**
+
+Gamepad1's right trigger runs a separate 3-step intake sequence that advances the carousel through intake positions on successive pulls, with rising-edge detection to avoid repeat triggers.
+
+### Autonomous Routines
+
+Five autonomous OpModes, all using timed drive commands (not Road Runner trajectories):
+
+- **SpiritAutoFar** -- Simplest: drives backward for 0.4 seconds to get off the starting tape, then stops.
+- **SpiritAutoBlueNear / SpiritAutoRedNear** -- Backs up, executes the full 3-ball launch sequence at near-shot settings, then drives forward and strafes to park.
+- **SpiritAutoBlueFar / SpiritAutoRedFar** -- Same pattern but with far-shot velocity and tilt.
+- **TestingSpiritAutonomousEncodersBlue** -- An experimental encoder-based autonomous (marked `@Disabled`) that drives by encoder tick counts instead of time. Uses `COUNTS_PER_INCH` conversion with 751.8 ticks/rev and 4-inch wheels.
+
+### Sensor Samples
+
+Two sample/reference files were added (not used in competition code):
+- `SensorGoBildaPinpointSpirit` -- Sample code for the goBILDA Pinpoint odometry computer
+- `SensorLimelight3ASpirit` -- Sample code for the Limelight 3A vision sensor
+
+### Build Tooling
+
+Gradle wrapper bumped from 8.9 to 8.13, Android Gradle Plugin from 8.7.0 to 8.13.0.
+
+## Development Timeline
+
+The commit history tells the story of iterative hardware bring-up:
+
+1. **Initial bring-up** (Nov 2025) -- Drive + intake working, then sensor samples added
+2. **Bug fixes** -- A series of "compare not assign" commits (likely `=` vs `==` bugs in conditionals)
+3. **State machine rewrite** (Dec 2025) -- Moved from inline logic to the IDLE/RAMPING/LAUNCHING state engine; several reverts and do-overs as the state machine was debugged ("if the cases are commented out, driving & shooting do not work")
+4. **Servo tuning** (Dec 2025-Jan 2026) -- Carousel positions, kicker lift heights, and tilt angles refined through iterative testing
+5. **Autonomous development** (Jan 2026) -- Started with teleop-converted autonomous, then split into color/distance variants
+6. **Competition refinement** (Jan-Feb 2026) -- "Reverted to code used at Seneca Valley", tuned tilt and speed, added lift mechanism
