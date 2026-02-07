@@ -53,8 +53,29 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Mecanum drivetrain implementation built on the Road Runner v1.0 quickstart.
+ *
+ * <p>This class manages the four mecanum drive motors ({@code leftFront}, {@code leftBack},
+ * {@code rightBack}, {@code rightFront}), the IMU, and provides trajectory-following
+ * and teleop drive capabilities. Motor {@code rightFront} is reversed so all motors
+ * spin in the correct direction for mecanum kinematics.
+ *
+ * <p>Drive parameters (feedforward gains, PID, velocity/acceleration limits) are stored
+ * in the inner {@link Params} class and are tunable via FTC Dashboard.
+ *
+ * <p>Localization is handled by the {@link DriveLocalizer} inner class, which fuses
+ * drive-motor encoder data with IMU heading.
+ *
+ * @see Localizer
+ */
 @Config
 public final class MecanumDrive {
+    /**
+     * Tunable drive parameters exposed to FTC Dashboard via {@code @Config}.
+     * Includes IMU orientation, drive model constants, feedforward gains,
+     * velocity/acceleration profile limits, and path-controller PID gains.
+     */
     public static class Params {
         // IMU orientation
         // TODO: fill in these values based on
@@ -122,6 +143,10 @@ public final class MecanumDrive {
     private final DownsampledWriter driveCommandWriter = new DownsampledWriter("DRIVE_COMMAND", 50_000_000);
     private final DownsampledWriter mecanumCommandWriter = new DownsampledWriter("MECANUM_COMMAND", 50_000_000);
 
+    /**
+     * Localizer that uses the four drive-motor encoders and the IMU heading
+     * to estimate the robot's pose on the field.
+     */
     public class DriveLocalizer implements Localizer {
         public final Encoder leftFront, leftBack, rightBack, rightFront;
         public final IMU imu;
@@ -218,6 +243,13 @@ public final class MecanumDrive {
         }
     }
 
+    /**
+     * Constructs the mecanum drive, initializes motors with brake mode,
+     * configures the IMU, and creates the drive localizer.
+     *
+     * @param hardwareMap the robot's hardware map
+     * @param pose        the starting pose of the robot on the field
+     */
     public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
@@ -257,6 +289,12 @@ public final class MecanumDrive {
         FlightRecorder.write("MECANUM_PARAMS", PARAMS);
     }
 
+    /**
+     * Sets mecanum wheel powers from a desired robot-centric velocity.
+     * Used for teleop driving and timed autonomous movements.
+     *
+     * @param powers desired robot velocity (x = forward/back, y = strafe, heading = turn)
+     */
     public void setDrivePowers(PoseVelocity2d powers) {
         MecanumKinematics.WheelVelocities<Time> wheelVels = new MecanumKinematics(1).inverse(
                 PoseVelocity2dDual.constant(powers, 1));
@@ -272,6 +310,7 @@ public final class MecanumDrive {
         rightFront.setPower(wheelVels.rightFront.get(0) / maxPowerMag);
     }
 
+    /** Road Runner action that follows a time-based trajectory using the holonomic controller. */
     public final class FollowTrajectoryAction implements Action {
         public final TimeTrajectory timeTrajectory;
         private double beginTs = -1;
@@ -376,6 +415,7 @@ public final class MecanumDrive {
         }
     }
 
+    /** Road Runner action that executes a point turn using the holonomic controller. */
     public final class TurnAction implements Action {
         private final TimeTurn turn;
 
@@ -455,6 +495,12 @@ public final class MecanumDrive {
         }
     }
 
+    /**
+     * Updates the robot's estimated pose from the localizer and records it
+     * to pose history (for dashboard drawing) and the flight recorder.
+     *
+     * @return the current robot velocity
+     */
     public PoseVelocity2d updatePoseEstimate() {
         PoseVelocity2d vel = localizer.update();
         poseHistory.add(localizer.getPose());
@@ -486,6 +532,12 @@ public final class MecanumDrive {
         c.strokePolyline(xPoints, yPoints);
     }
 
+    /**
+     * Creates a new trajectory builder starting from the given pose.
+     *
+     * @param beginPose the starting pose for the trajectory
+     * @return a builder for chaining trajectory segments
+     */
     public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
         return new TrajectoryActionBuilder(
                 TurnAction::new,

@@ -1,9 +1,3 @@
-/*
-This class is to be used if the goal is red and the shot is near the goal.
-It drives backwards 6 inches (by time) and executes the launch sequence, then strafes left to place the robot against the
-field wall and out of the way of the alliance team. Robot must be placed with the rear wells flush against the red
- target to start.
- */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -18,6 +12,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+/**
+ * Red-alliance Near autonomous OpMode.
+ *
+ * <p>Drives backward 6 inches (by time), executes the full 3-ball near-shot launch
+ * sequence, then strafes left (-0.5 y power, 0.7 s) to park against the field wall
+ * and out of the way of the alliance partner.
+ *
+ * <p>Robot must be placed with the rear wells flush against the red target to start.
+ *
+ * @see SpiritAutoBlueNear
+ * @see SpiritAutoNear
+ */
 @Config
 @Autonomous(name = "SpiritAutoRedNear", group = "Teleop")
 public class SpiritAutoRedNear extends LinearOpMode {

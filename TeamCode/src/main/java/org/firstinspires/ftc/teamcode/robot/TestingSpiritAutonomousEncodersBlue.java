@@ -11,6 +11,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+/**
+ * Experimental encoder-based autonomous for the blue alliance (currently disabled).
+ *
+ * <p>Uses the {@code rightBack} motor encoder to drive a measured distance (26 inches)
+ * rather than relying on timed movements. This was a test to explore encoder-based
+ * navigation as an alternative to time-based driving.
+ */
 @Disabled
 @Config
 @Autonomous(name = "SpiritAutonomousEncodersBlue", group = "Robot")

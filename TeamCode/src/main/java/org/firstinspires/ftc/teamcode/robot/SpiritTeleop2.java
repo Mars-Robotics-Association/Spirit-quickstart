@@ -11,6 +11,33 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+/**
+ * Main teleop OpMode for Team Spirit's robot.
+ *
+ * <p><b>Gamepad 1 (driver):</b>
+ * <ul>
+ *   <li>Left stick — mecanum drive (forward/back and strafe)</li>
+ *   <li>Right stick X — rotation</li>
+ *   <li>Right trigger — intake + carousel advance sequence (3-step cycle)</li>
+ *   <li>A / B / X — tilt servo to near / far / home</li>
+ *   <li>D-pad up/right/down — carousel to launch positions 1/2/3</li>
+ *   <li>D-pad left — home the lift</li>
+ * </ul>
+ *
+ * <p><b>Gamepad 2 (operator):</b>
+ * <ul>
+ *   <li>Left/right bumper — intake in / eject</li>
+ *   <li>Right trigger — near shot launch sequence</li>
+ *   <li>Left trigger — far shot launch sequence</li>
+ *   <li>A — engage lift</li>
+ *   <li>B / X / Y — kicker home / tiny / full (testing)</li>
+ *   <li>D-pad — carousel to intake/home positions (testing)</li>
+ * </ul>
+ *
+ * <p>The launch sequence is a 16-step timed state machine (IDLE &rarr; RAMPING &rarr;
+ * LAUNCHING) that spins up the flywheels, then cycles through all three carousel
+ * positions — tilting, kicking, and resetting for each ball.
+ */
 @Config
 @TeleOp(name = "SpiritTeleop2", group = "Teleop")
 public class SpiritTeleop2 extends LinearOpMode {

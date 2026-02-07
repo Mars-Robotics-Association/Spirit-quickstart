@@ -1,6 +1,3 @@
-/*
-This class simply moves the robot backward 6 inches and off of the tape.  It does not shoot
- */
 package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -13,6 +10,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Drawing;
 
+/**
+ * Simple autonomous OpMode that drives the robot backward approximately 6 inches
+ * (by time) to move off the tape. Does not shoot.
+ *
+ * <p>Useful as a minimal autonomous when only parking points are needed.
+ */
 @Config
 @Autonomous(name = "SpiritAutoFar", group = "Robot")
 public class SpiritAutoFar extends LinearOpMode {

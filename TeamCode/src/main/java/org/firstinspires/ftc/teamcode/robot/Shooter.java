@@ -8,6 +8,23 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+/**
+ * Subsystem controlling the dual-flywheel ball shooter and its tilt servo.
+ *
+ * <p>The shooter uses two motors ({@code "shooterMotorLeft"} and {@code "shooterMotorRight"})
+ * spinning in opposite directions to launch balls, and a servo ({@code "tiltServo"}) to
+ * adjust the launch angle for near vs. far targets.
+ *
+ * <p>Velocity control uses a feedforward + proportional feedback loop with exponential
+ * smoothing (see {@link #setShooterVelocity}). The feedforward values
+ * ({@link #feedLeftForward}, {@link #feedRightForward}) set a baseline power proportional
+ * to the desired speed, while the feedback term corrects any error between the smoothed
+ * target and actual velocities using gain {@link #kp}.
+ *
+ * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
+ *
+ * @see Carousel
+ */
 @Config
 public class Shooter {
 
@@ -48,6 +65,13 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
             static public double feedRightForward = .35;
     //*********************************************
 
+    /**
+     * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
+     * The right motor is reversed so both flywheels spin inward.
+     *
+     * @param hardwareMap the robot's hardware map containing {@code "shooterMotorLeft"},
+     *                    {@code "shooterMotorRight"}, and {@code "tiltServo"}
+     */
     public Shooter(HardwareMap hardwareMap) {
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
@@ -64,9 +88,15 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
     }
 
     /**
-     * Set the power to the left and right motors
+     * Runs the feedforward + feedback velocity control loop for both shooter motors.
+     *
+     * <p>Applies exponential smoothing to both the target and actual velocities, then
+     * computes a proportional correction term added to the static feedforward power.
+     * If {@code shooterVelocity} is 0, both motors are stopped immediately.
+     *
+     * @param shooterVelocity desired flywheel velocity in ticks per second
+     * @param telemetry       telemetry instance for logging velocity diagnostics
      */
-
     public void setShooterVelocity(double shooterVelocity, Telemetry telemetry) {
         telemetry.addData("Target T/S", shooterVelocity);
       // shooterMotorLeft.setVelocity(shooterVelocity);//if using encoders, use this code. Otherwise, set power
@@ -115,20 +145,34 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
 
 
 
-    //Set position of servo that tilts the shooters
+    /**
+     * Sets the tilt servo to an arbitrary position.
+     *
+     * @param tiltPositon servo position (0.0 to 1.0)
+     */
     public void setTiltPosition(double tiltPositon) {
         tiltServo.setPosition(tiltPositon);
     }
 
-    //FOR TESTING
+    /**
+     * Sets the tilt servo to the near-target launch angle.
+     *
+     * @param nearTiltPosition servo position for near shots
+     */
     public void setNearTiltPosition(double nearTiltPosition) {
         tiltServo.setPosition(nearTiltPosition);
     }
 
+    /**
+     * Sets the tilt servo to the far-target launch angle.
+     *
+     * @param farTiltPosition servo position for far shots
+     */
     public void setFarTiltPosition(double farTiltPosition) {
         tiltServo.setPosition(farTiltPosition);
     }
 
+    /** Resets the tilt servo to the home (flat) position. */
     public void setHomeTiltPosition() {
         tiltServo.setPosition(homeTiltPosition);
     }
