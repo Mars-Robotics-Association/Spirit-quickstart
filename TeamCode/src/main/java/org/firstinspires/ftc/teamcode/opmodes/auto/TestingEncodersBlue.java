@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
  */
 @Disabled
 @Config
-@Autonomous(name = "SpiritAutonomousEncodersBlue", group = "Robot")
-public class TestingSpiritAutonomousEncodersBlue extends LinearOpMode {
+@Autonomous(name = "TestingEncodersBlue", group = "Autonomous Testing")
+public class TestingEncodersBlue extends LinearOpMode {
 
     private DcMotorEx leftFront, rightFront, leftBack, rightBack;
     private final ElapsedTime runtime = new ElapsedTime();

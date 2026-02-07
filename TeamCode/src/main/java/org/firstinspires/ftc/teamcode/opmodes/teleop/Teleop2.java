@@ -44,8 +44,8 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
  * positions — rotating, tilting, kicking, and resetting for each ball.
  */
 @Config
-@TeleOp(name = "SpiritTeleop2", group = "Teleop")
-public class SpiritTeleop2 extends LinearOpMode {
+@TeleOp(name = "Teleop2", group = "Teleop")
+public class Teleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
     int ballNumber = 0;
     int launchSubStep = 0;

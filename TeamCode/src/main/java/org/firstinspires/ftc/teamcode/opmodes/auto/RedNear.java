@@ -16,20 +16,20 @@ import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Shooter;
 
 /**
- * Blue-alliance Near autonomous OpMode.
+ * Red-alliance Near autonomous OpMode.
  *
  * <p>Drives backward 6 inches (by time), executes the full 3-ball near-shot launch
- * sequence, then strafes right (+0.5 y power, 0.75 s) to park against the field wall
+ * sequence, then strafes left (-0.5 y power, 0.7 s) to park against the field wall
  * and out of the way of the alliance partner.
  *
- * <p>Robot must be placed with the rear wells flush against the blue target to start.
+ * <p>Robot must be placed with the rear wells flush against the red target to start.
  *
- * @see SpiritAutoRedNear
- * @see SpiritAutoNear
+ * @see BlueNear
+ * @see AutoDetectAllianceNear
  */
 @Config
-@Autonomous(name = "SpiritAutoBlueNear", group = "Teleop")
-public class SpiritAutoBlueNear extends LinearOpMode {
+@Autonomous(name = "Red Near", group = "Autonomous")
+public class RedNear extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public double driveTimer = 0;
 
@@ -52,14 +52,14 @@ public class SpiritAutoBlueNear extends LinearOpMode {
 
         State currentState = State.IDLE;
 
-       double tiltPosition = 0;
-
+        double tiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
+
 
         shooter.setHomeTiltPosition();
         waitForStart();
@@ -137,6 +137,9 @@ public class SpiritAutoBlueNear extends LinearOpMode {
             //--------------------------END TESTING OF CAROUSEL
 
 
+
+
+
             // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
@@ -202,22 +205,22 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    // Near shot, get shooter motors, tile and ramp up all set up and drive backwards 6 inches
+                    // Near shot
 
-                    shooter.shooterVelocity = Shooter.nearShooterVelocity;
-                    shooter.update();
-                    tiltPosition = shooter.nearTiltPosition;
-                    rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
+                        shooter.shooterVelocity = Shooter.nearShooterVelocity;
+                        shooter.update();
+                        tiltPosition = shooter.nearTiltPosition;
+                        rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
 
                     //drive backward 6 inches (i.e., .2 seconds)
-                    driveTimer = getRuntime()+ .25;
-                    while (getRuntime() < driveTimer) {
-                        drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(1, 0
+                        driveTimer = getRuntime()+ .25;
+                        while (getRuntime() < driveTimer) {
+                            drive.setDrivePowers(new PoseVelocity2d(
+                                    new Vector2d(1, 0
 
-                                ),
-                                0
-                        ));
+                                    ),
+                                    0
+                            ));
 
 
                         currentState = State.RAMPING;
@@ -409,10 +412,10 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                                 shooter.update();
 
                                 //strafe to the field wall
-                                driveTimer = getRuntime()+ .75;
+                                driveTimer = getRuntime()+ .7;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, .5
+                                            new Vector2d(0, -.5
 
                                             ),
                                             0
@@ -423,7 +426,6 @@ public class SpiritAutoBlueNear extends LinearOpMode {
                             }
                             break;
                     }
-                    //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0

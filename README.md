@@ -15,23 +15,24 @@ Four new hardware subsystem classes were added in `teamcode.robot`:
 
 ### Teleop: State Machine Launch Sequence
 
-`SpiritTeleop2` is the main driver-controlled OpMode. The most interesting part is the 16-step timed state machine that fires all three balls from the carousel:
+`Teleop2` (in `opmodes.teleop`) is the main driver-controlled OpMode. The most interesting part is the timed state machine that fires all three balls from the carousel using a loop with sub-steps:
 
 1. Gamepad2 trigger pull enters **RAMPING** state (2-second flywheel spin-up)
-2. Transitions to **LAUNCHING**, which cycles through three identical fire-reset sequences: rotate carousel to position -> tiny kicker nudge -> tilt shooter -> full kicker fire -> reset tilt and kicker
+2. Transitions to **LAUNCHING**, which loops through `ballNumber` 0-2, each with 5 sub-steps: rotate carousel to launch position → tiny kicker nudge → tilt shooter → full kicker fire → reset tilt and kicker
 3. Right trigger = near shot (lower tilt, lower velocity); left trigger = far shot (higher tilt, higher velocity)
-4. After all 3 balls are fired, the shooter powers down and returns to **IDLE**
+4. After all 3 balls are fired, a cleanup phase homes the tilt, kicker, and carousel, then returns to **IDLE**
 
 Gamepad1's right trigger runs a separate 3-step intake sequence that advances the carousel through intake positions on successive pulls, with rising-edge detection to avoid repeat triggers.
 
 ### Autonomous Routines
 
-Five autonomous OpModes, all using timed drive commands (not Road Runner trajectories):
+Six autonomous OpModes (in `opmodes.auto`), all using timed drive commands (not Road Runner trajectories):
 
-- **SpiritAutoFar** -- Simplest: drives backward for 0.4 seconds to get off the starting tape, then stops.
-- **SpiritAutoBlueNear / SpiritAutoRedNear** -- Backs up, executes the full 3-ball launch sequence at near-shot settings, then drives forward and strafes to park.
-- **SpiritAutoBlueFar / SpiritAutoRedFar** -- Same pattern but with far-shot velocity and tilt.
-- **TestingSpiritAutonomousEncodersBlue** -- An experimental encoder-based autonomous (marked `@Disabled`) that drives by encoder tick counts instead of time. Uses `COUNTS_PER_INCH` conversion with 751.8 ticks/rev and 4-inch wheels.
+- **JustMove** -- Simplest: drives backward for 0.4 seconds to get off the starting tape for move points, then stops.
+- **BlueNear / RedNear** -- Backs up, executes the full 3-ball launch sequence at near-shot settings, then strafes to park against the field wall.
+- **BlueFar / RedFar** -- Same pattern but with far-shot velocity and tilt.
+- **AutoDetectAllianceNear** -- Uses a REV Color/Distance Sensor to detect alliance color during init, then runs the near-shot sequence and strafes in the correct direction.
+- **TestingEncodersBlue** -- An experimental encoder-based autonomous (marked `@Disabled`) that drives by encoder tick counts instead of time. Uses `COUNTS_PER_INCH` conversion with 751.8 ticks/rev and 4-inch wheels.
 
 ## Development Timeline
 

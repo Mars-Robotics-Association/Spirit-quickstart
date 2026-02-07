@@ -15,11 +15,11 @@ import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
  * Simple autonomous OpMode that drives the robot backward approximately 6 inches
  * (by time) to move off the tape. Does not shoot.
  *
- * <p>Useful as a minimal autonomous when only parking points are needed.
+ * <p>Useful as a minimal autonomous when only move points are needed.
  */
 @Config
-@Autonomous(name = "SpiritAutoFar", group = "Robot")
-public class SpiritAutoFar extends LinearOpMode {
+@Autonomous(name = "Just Move", group = "Autonomous")
+public class JustMove extends LinearOpMode {
 
     public double driveTimer = 0;
 
