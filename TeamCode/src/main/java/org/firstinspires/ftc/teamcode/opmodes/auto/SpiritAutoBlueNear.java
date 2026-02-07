@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,26 +8,31 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.Carousel;
+import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Shooter;
 
 /**
- * Red-alliance Far autonomous OpMode.
+ * Blue-alliance Near autonomous OpMode.
  *
- * <p>Executes the full 3-ball far-shot launch sequence, then drives forward off the
- * tape (by time) to park.
+ * <p>Drives backward 6 inches (by time), executes the full 3-ball near-shot launch
+ * sequence, then strafes right (+0.5 y power, 0.75 s) to park against the field wall
+ * and out of the way of the alliance partner.
  *
- * <p><b>Starting position:</b> the robot must be placed at an angle against the back wall
- * with the right front wheel against the wall and the right rear wheel at the 7th nub
- * of the floor mat.
+ * <p>Robot must be placed with the rear wells flush against the blue target to start.
  *
- * @see SpiritAutoBlueFar
+ * @see SpiritAutoRedNear
+ * @see SpiritAutoNear
  */
 @Config
-@Autonomous(name = "SpiritAutoRedFar", group = "Teleop")
-public class SpiritAutoRedFar extends LinearOpMode {
+@Autonomous(name = "SpiritAutoBlueNear", group = "Teleop")
+public class SpiritAutoBlueNear extends LinearOpMode {
     public double launchSequenceTimer = 0;
+    public double driveTimer = 0;
+
     int launchStep = 0;
     double stepStartTime = 0;
     static public double defaultLaunchStepDelay = 1;
@@ -37,7 +42,6 @@ public class SpiritAutoRedFar extends LinearOpMode {
     int intakeStep = 0;                 // 0 → 1 → 2
     boolean triggerHeld = false;        // edge detection
     double intakePower = 1.0;
-
     //-------------------------------------------
     @Override
     public void runOpMode() {
@@ -48,35 +52,177 @@ public class SpiritAutoRedFar extends LinearOpMode {
 
         State currentState = State.IDLE;
 
-        double tiltPosition = 0;
+       double tiltPosition = 0;
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
-
 
         shooter.setHomeTiltPosition();
         waitForStart();
 
         while (opModeIsActive())
-            //CODE FOR WHEN THE AUTONOMOUS STARTS----------------------------------
+        {
+            telemetry.addData("Test", 0);
+            //Operate Intake: left bumper is intake and right bumper is eject
+            if (gamepad2.left_bumper) {
+                intake.setPower(1);
+            } else if (gamepad2.right_bumper) {
+                intake.setPower(-1);
+            } else {
+                intake.setPower(0);
+            }
+
+            //JUST FOR TESTING POSITON OF KICKER SERVO-------
+
+            if (gamepad2.b) {
+                carousel.setHomePositionKicker();
+            }
+            if (gamepad2.x) {
+                carousel.setTinyKicker();
+            }
+            if (gamepad2.y) {
+                carousel.setFullKicker();
+            }
+            //JUST FOR TESTING POSITION OF TILT SERVO
+            if (gamepad1.a) {
+                shooter.setNearTiltPosition(shooter.nearTiltPosition);
+
+            }
+
+            if (gamepad1.b) {
+                shooter.setFarTiltPosition(shooter.farTiltPosition);
+
+            }
+            if (gamepad1.x) {
+                shooter.setHomeTiltPosition();
+            }
+
+//--------------------------------END CODE FOR TESTING POSITION OF TILT SERVO
+
+//------------------JUST FOR TESTING POSITION OF CAROUSEL
+            if (gamepad2.dpad_left) {
+                carousel.spinCarouselHome();
+
+            }
+            if (gamepad2.dpad_up) {
+                carousel.spinCarouselIntakeOne();
+
+            }
+
+            if (gamepad2.dpad_right) {
+                carousel.spinCarouselIntakeTwo();
+
+            }
+
+            if (gamepad2.dpad_down) {
+                carousel.spinCarouselIntakeThree();
+
+            }
+
+            if (gamepad1.dpad_up) {
+                carousel.spinCarouselLaunchOne();
+
+            }
+            if (gamepad1.dpad_right) {
+                carousel.spinCarouselLaunchTwo();
+            }
+
+            if (gamepad1.dpad_down) {
+                carousel.spinCarouselLaunchThree();
+            }
+            //--------------------------END TESTING OF CAROUSEL
+
+
+            // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
+                /*
+                This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
+                on gamepad 1, the intake begins spinning and the carousel spins to intakePositionOne.
+                On the second trigger pull, the intake spins and the carousel advances to intakePositionTwo.
+                On the third trigger pull, the intake spins and the carousel advances to intakePositionThree,
+                then resets for the next cycle.
+                */
+
+            boolean triggerPressed = gamepad1.right_trigger > 0.25;
+
+            // While trigger is held, keep intake running
+            if (triggerPressed) {
+                intake.setPower(intakePower);
+            }
+
+            // Detect NEW trigger pull (rising edge)
+            if (triggerPressed && !triggerHeld) {
+                triggerHeld = true;
+
+                // Advance carousel one position per pull
+                if (intakeStep == 0) {
+                    intake.setPower(intakePower);
+                    carousel.spinCarouselIntakeOne();
+                    intakeStep = 1;
+                } else if (intakeStep == 1) {
+                    intake.setPower(intakePower);
+                    carousel.spinCarouselIntakeTwo();
+                    intakeStep = 2;
+                } else if (intakeStep == 2) {
+                    intake.setPower(intakePower);
+                    carousel.spinCarouselIntakeThree();
+                    intakeStep = 0;
+                }
+
+
+            }
+
+            // Detect trigger release
+            if (!triggerPressed && triggerHeld) {
+                triggerHeld = false;
+                intake.setPower(0);   // Stop intake when released
+            }
+            //END INTAKE SEQUENCE---------------------------------------
+
+            //MANUAL LOAD-----------------------------
+            if (gamepad2.a) {
+                carousel.setHomePositionKicker();
+                carousel.setHomePositionKicker();
+                carousel.spinCarouselLaunchOne();
+                carousel.setTinyKicker();
+            }
+            //END MANUAL LOAD-----------------------------------------------
+
+            if (gamepad2.b) {
+                carousel.setHomePositionKicker();
+            }
+
+            //CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
             switch (currentState) {
 
                 // ------------------------------------------------------
-                //  IDLE
+                //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    //Far shot red target
-                    // set shooter power and apply to motors to get them spinning. set tilt, set timer, set ramp up timer
+                    // Near shot, get shooter motors, tile and ramp up all set up and drive backwards 6 inches
 
-                    shooter.shooterVelocity = Shooter.farShooterVelocity;
+                    shooter.shooterVelocity = Shooter.nearShooterVelocity;
                     shooter.update();
-                    tiltPosition = shooter.farTiltPosition;
-                    rampUpTimer = getRuntime() + 2.0;
-                    currentState = State.RAMPING;
+                    tiltPosition = shooter.nearTiltPosition;
+                    rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
 
+                    //drive backward 6 inches (i.e., .2 seconds)
+                    driveTimer = getRuntime()+ .25;
+                    while (getRuntime() < driveTimer) {
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(1, 0
+
+                                ),
+                                0
+                        ));
+
+
+                        currentState = State.RAMPING;
+
+                    }
                     break;
 
                 // ------------------------------------------------------
@@ -115,7 +261,7 @@ public class SpiritAutoRedFar extends LinearOpMode {
                         // STEP 1 — tiny kicker
                         case 1:
                             shooter.update();
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -263,19 +409,21 @@ public class SpiritAutoRedFar extends LinearOpMode {
                                 shooter.update();
 
                                 //strafe to the field wall
-                                driveTimer = getRuntime() + .4;
+                                driveTimer = getRuntime()+ .75;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(-1, 0
+                                            new Vector2d(0, .5
 
                                             ),
                                             0
                                     ));
                                 }
+
                                 currentState = State.DONE;
                             }
                             break;
                     }
+                    //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0
@@ -286,27 +434,29 @@ public class SpiritAutoRedFar extends LinearOpMode {
                     break;
             }
 
-        //------------------------END OF TRIGGER CONTROL-----------------------------------
+            //------------------------END OF TRIGGER CONTROL-----------------------------------
 
-        drive.setDrivePowers(new PoseVelocity2d(
-                new Vector2d(
-                        -gamepad1.left_stick_y,
-                        -gamepad1.left_stick_x
-                ),
-                -gamepad1.right_stick_x
-        ));
+            drive.setDrivePowers(new PoseVelocity2d(
+                    new Vector2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x
+                    ),
+                    -gamepad1.right_stick_x
+            ));
 
-        drive.updatePoseEstimate();
+            drive.updatePoseEstimate();
 
-        Pose2d pose = drive.localizer.getPose();
+            Pose2d pose = drive.localizer.getPose();
 
-        TelemetryPacket packet = new TelemetryPacket();
-        packet.fieldOverlay().setStroke("#3F51B5");
-        Drawing.drawRobot(packet.fieldOverlay(), pose);
-        FtcDashboard.getInstance().sendTelemetryPacket(packet);
-        telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
-        telemetry.addData("shooterPower ", shooter.shooterPower);
-        telemetry.update();
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.fieldOverlay().setStroke("#3F51B5");
+            Drawing.drawRobot(packet.fieldOverlay(), pose);
+            FtcDashboard.getInstance().sendTelemetryPacket(packet);
+            telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
+            telemetry.addData("shooterPower ", shooter.shooterPower);
+            telemetry.update();
+        }
+
     }
 
     enum State {

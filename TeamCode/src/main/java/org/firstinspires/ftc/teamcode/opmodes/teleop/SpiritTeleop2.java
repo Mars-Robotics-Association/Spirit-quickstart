@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -10,6 +10,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.Carousel;
+import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.Lift;
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Shooter;
 
 /**
  * Main teleop OpMode for Team Spirit's robot.

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,32 +8,28 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.Carousel;
+import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Shooter;
 
 /**
- * Color-sensor auto-selecting Near autonomous OpMode.
+ * Red-alliance Near autonomous OpMode.
  *
- * <p>Uses a REV Color/Distance Sensor V2 ({@code "colorSensor"}) to detect the alliance
- * color during init. The detected color is displayed on telemetry so drivers can verify
- * before pressing Start.
+ * <p>Drives backward 6 inches (by time), executes the full 3-ball near-shot launch
+ * sequence, then strafes left (-0.5 y power, 0.7 s) to park against the field wall
+ * and out of the way of the alliance partner.
  *
- * <p>On start, the robot drives backward 6 inches (by time), executes the full 3-ball
- * near-shot launch sequence, then strafes toward the field wall:
- * <ul>
- *   <li><b>Blue:</b> strafes right (+0.5 y power, 0.75 s)</li>
- *   <li><b>Red:</b> strafes left (-0.5 y power, 0.7 s)</li>
- * </ul>
- *
- * <p>Robot must be placed with the rear wells flush against the target to start.
+ * <p>Robot must be placed with the rear wells flush against the red target to start.
  *
  * @see SpiritAutoBlueNear
- * @see SpiritAutoRedNear
+ * @see SpiritAutoNear
  */
 @Config
-@Autonomous(name = "SpiritAutoNear", group = "Teleop")
-public class SpiritAutoNear extends LinearOpMode {
+@Autonomous(name = "SpiritAutoRedNear", group = "Teleop")
+public class SpiritAutoRedNear extends LinearOpMode {
     public double launchSequenceTimer = 0;
     public double driveTimer = 0;
 
@@ -56,8 +52,7 @@ public class SpiritAutoNear extends LinearOpMode {
 
         State currentState = State.IDLE;
 
-       double tiltPosition = 0;
-
+        double tiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
@@ -65,29 +60,13 @@ public class SpiritAutoNear extends LinearOpMode {
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
 
-        // Color sensor for auto-detecting alliance color
-        ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        boolean isBlue = true; // default to blue
 
         shooter.setHomeTiltPosition();
-
-        // During init, continuously read the color sensor and display detected color
-        while (!isStarted() && !isStopRequested()) {
-            int red = colorSensor.red();
-            int blue = colorSensor.blue();
-            isBlue = blue > red;
-
-            telemetry.addData("Detected Alliance", isBlue ? "BLUE" : "RED");
-            telemetry.addData("Red Value", red);
-            telemetry.addData("Blue Value", blue);
-            telemetry.addData("Status", "Waiting for Start...");
-            telemetry.update();
-        }
+        waitForStart();
 
         while (opModeIsActive())
         {
             telemetry.addData("Test", 0);
-            telemetry.addData("Alliance", isBlue ? "BLUE" : "RED");
             //Operate Intake: left bumper is intake and right bumper is eject
             if (gamepad2.left_bumper) {
                 intake.setPower(1);
@@ -158,6 +137,9 @@ public class SpiritAutoNear extends LinearOpMode {
             //--------------------------END TESTING OF CAROUSEL
 
 
+
+
+
             // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
@@ -223,22 +205,22 @@ public class SpiritAutoNear extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    // Near shot, get shooter motors, tile and ramp up all set up and drive backwards 6 inches
+                    // Near shot
 
-                    shooter.shooterVelocity = Shooter.nearShooterVelocity;
-                    shooter.update();
-                    tiltPosition = shooter.nearTiltPosition;
-                    rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
+                        shooter.shooterVelocity = Shooter.nearShooterVelocity;
+                        shooter.update();
+                        tiltPosition = shooter.nearTiltPosition;
+                        rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
 
                     //drive backward 6 inches (i.e., .2 seconds)
-                    driveTimer = getRuntime()+ .25;
-                    while (getRuntime() < driveTimer) {
-                        drive.setDrivePowers(new PoseVelocity2d(
-                                new Vector2d(1, 0
+                        driveTimer = getRuntime()+ .25;
+                        while (getRuntime() < driveTimer) {
+                            drive.setDrivePowers(new PoseVelocity2d(
+                                    new Vector2d(1, 0
 
-                                ),
-                                0
-                        ));
+                                    ),
+                                    0
+                            ));
 
 
                         currentState = State.RAMPING;
@@ -429,13 +411,11 @@ public class SpiritAutoNear extends LinearOpMode {
                                 shooter.shooterVelocity = 0;
                                 shooter.update();
 
-                                //strafe to the field wall — direction based on detected color
-                                double strafePower = isBlue ? 0.5 : -0.5;
-                                double strafeDuration = isBlue ? 0.75 : 0.7;
-                                driveTimer = getRuntime() + strafeDuration;
+                                //strafe to the field wall
+                                driveTimer = getRuntime()+ .7;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(0, strafePower
+                                            new Vector2d(0, -.5
 
                                             ),
                                             0
@@ -446,7 +426,6 @@ public class SpiritAutoNear extends LinearOpMode {
                             }
                             break;
                     }
-                    //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0
@@ -489,3 +468,4 @@ public class SpiritAutoNear extends LinearOpMode {
         DONE,
     }
 }
+

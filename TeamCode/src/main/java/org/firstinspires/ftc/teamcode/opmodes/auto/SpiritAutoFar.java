@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 
 /**
  * Simple autonomous OpMode that drives the robot backward approximately 6 inches

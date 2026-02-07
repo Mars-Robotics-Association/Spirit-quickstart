@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -8,26 +8,39 @@ import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.robot.Carousel;
+import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
+import org.firstinspires.ftc.teamcode.robot.Shooter;
 
 /**
- * Blue-alliance Far autonomous OpMode.
+ * Color-sensor auto-selecting Near autonomous OpMode.
  *
- * <p>Executes the full 3-ball far-shot launch sequence, then drives forward off the
- * tape (by time) to park.
+ * <p>Uses a REV Color/Distance Sensor V2 ({@code "colorSensor"}) to detect the alliance
+ * color during init. The detected color is displayed on telemetry so drivers can verify
+ * before pressing Start.
  *
- * <p><b>Starting position:</b> the robot must be placed at an angle on the back wall
- * with the right front wheel against the wall and the right rear wheel at the 7th nub
- * of the floor mat.
+ * <p>On start, the robot drives backward 6 inches (by time), executes the full 3-ball
+ * near-shot launch sequence, then strafes toward the field wall:
+ * <ul>
+ *   <li><b>Blue:</b> strafes right (+0.5 y power, 0.75 s)</li>
+ *   <li><b>Red:</b> strafes left (-0.5 y power, 0.7 s)</li>
+ * </ul>
  *
- * @see SpiritAutoRedFar
+ * <p>Robot must be placed with the rear wells flush against the target to start.
+ *
+ * @see SpiritAutoBlueNear
+ * @see SpiritAutoRedNear
  */
 @Config
-@Autonomous(name = "SpiritAutoBlueFar", group = "Teleop")
-public class SpiritAutoBlueFar extends LinearOpMode {
+@Autonomous(name = "SpiritAutoNear", group = "Teleop")
+public class SpiritAutoNear extends LinearOpMode {
     public double launchSequenceTimer = 0;
+    public double driveTimer = 0;
+
     int launchStep = 0;
     double stepStartTime = 0;
     static public double defaultLaunchStepDelay = 1;
@@ -47,7 +60,8 @@ public class SpiritAutoBlueFar extends LinearOpMode {
 
         State currentState = State.IDLE;
 
-        double tiltPosition = 0;
+       double tiltPosition = 0;
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
@@ -55,13 +69,29 @@ public class SpiritAutoBlueFar extends LinearOpMode {
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
 
+        // Color sensor for auto-detecting alliance color
+        ColorSensor colorSensor = hardwareMap.get(ColorSensor.class, "colorSensor");
+        boolean isBlue = true; // default to blue
 
         shooter.setHomeTiltPosition();
-        waitForStart();
+
+        // During init, continuously read the color sensor and display detected color
+        while (!isStarted() && !isStopRequested()) {
+            int red = colorSensor.red();
+            int blue = colorSensor.blue();
+            isBlue = blue > red;
+
+            telemetry.addData("Detected Alliance", isBlue ? "BLUE" : "RED");
+            telemetry.addData("Red Value", red);
+            telemetry.addData("Blue Value", blue);
+            telemetry.addData("Status", "Waiting for Start...");
+            telemetry.update();
+        }
 
         while (opModeIsActive())
         {
             telemetry.addData("Test", 0);
+            telemetry.addData("Alliance", isBlue ? "BLUE" : "RED");
             //Operate Intake: left bumper is intake and right bumper is eject
             if (gamepad2.left_bumper) {
                 intake.setPower(1);
@@ -132,9 +162,6 @@ public class SpiritAutoBlueFar extends LinearOpMode {
             //--------------------------END TESTING OF CAROUSEL
 
 
-
-
-
             // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
@@ -200,14 +227,27 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    // Far shot (left trigger)
+                    // Near shot, get shooter motors, tile and ramp up all set up and drive backwards 6 inches
 
-                        shooter.shooterVelocity = Shooter.farShooterVelocity;
-                        shooter.update();
-                        tiltPosition = shooter.farTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;
+                    shooter.shooterVelocity = Shooter.nearShooterVelocity;
+                    shooter.update();
+                    tiltPosition = shooter.nearTiltPosition;
+                    rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
+
+                    //drive backward 6 inches (i.e., .2 seconds)
+                    driveTimer = getRuntime()+ .25;
+                    while (getRuntime() < driveTimer) {
+                        drive.setDrivePowers(new PoseVelocity2d(
+                                new Vector2d(1, 0
+
+                                ),
+                                0
+                        ));
+
+
                         currentState = State.RAMPING;
 
+                    }
                     break;
 
                 // ------------------------------------------------------
@@ -246,7 +286,7 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                         // STEP 1 — tiny kicker
                         case 1:
                             shooter.update();
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -393,31 +433,33 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                                 shooter.shooterVelocity = 0;
                                 shooter.update();
 
-                                //strafe to the field wall
-                                driveTimer = getRuntime() + .4;
+                                //strafe to the field wall — direction based on detected color
+                                double strafePower = isBlue ? 0.5 : -0.5;
+                                double strafeDuration = isBlue ? 0.75 : 0.7;
+                                driveTimer = getRuntime() + strafeDuration;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(-1, 0
+                                            new Vector2d(0, strafePower
 
                                             ),
                                             0
                                     ));
                                 }
 
-
                                 currentState = State.DONE;
                             }
                             break;
                     }
-                        case DONE:
-                            drive.setDrivePowers(new PoseVelocity2d(
-                                    new Vector2d(0, 0
+                    //stop robot wheels
+                case DONE:
+                    drive.setDrivePowers(new PoseVelocity2d(
+                            new Vector2d(0, 0
 
-                                    ),
-                                    0
-                            ));
-                            break;
-                    }
+                            ),
+                            0
+                    ));
+                    break;
+            }
 
             //------------------------END OF TRIGGER CONTROL-----------------------------------
 
@@ -451,4 +493,3 @@ public class SpiritAutoBlueFar extends LinearOpMode {
         DONE,
     }
 }
-

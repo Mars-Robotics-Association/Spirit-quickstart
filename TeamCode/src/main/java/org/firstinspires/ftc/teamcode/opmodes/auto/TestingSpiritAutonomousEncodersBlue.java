@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.robot;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.Pose2d;
@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 
 /**
  * Experimental encoder-based autonomous for the blue alliance (currently disabled).
