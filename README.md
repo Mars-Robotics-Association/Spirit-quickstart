@@ -44,3 +44,4 @@ The commit history tells the story of iterative hardware bring-up:
 4. **Servo tuning** (Dec 2025-Jan 2026) -- Carousel positions, kicker lift heights, and tilt angles refined through iterative testing
 5. **Autonomous development** (Jan 2026) -- Started with teleop-converted autonomous, then split into color/distance variants
 6. **Competition refinement** (Jan-Feb 2026) -- "Reverted to code used at Seneca Valley", tuned tilt and speed, added lift mechanism
+7. **Code review & cleanup** (Feb 2026) -- Fixed lift homing bug, added Javadoc across all subsystems and OpModes, refactored the 16-step launch state machine into a loop with sub-steps, extracted `ShooterMotor` class with power quantization and separate target/actual smoothing factors, removed dead code and redundant comments, reorganized OpModes into `opmodes.auto` and `opmodes.teleop` packages with concise class names
