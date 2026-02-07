@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.robot.Carousel;
 import org.firstinspires.ftc.teamcode.robot.Intake;
+import org.firstinspires.ftc.teamcode.robot.LaunchSequence;
 import org.firstinspires.ftc.teamcode.robot.Lift;
 import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Shooter;
@@ -46,12 +47,6 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
 @Config
 @TeleOp(name = "Teleop2", group = "Teleop")
 public class Teleop2 extends LinearOpMode {
-    public double launchSequenceTimer = 0;
-    int ballNumber = 0;
-    int launchSubStep = 0;
-    double stepStartTime = 0;
-    static public double defaultLaunchStepDelay = 1;//.4 will work for competition
-    static public double tiltToLaunchDelay = 1.0;
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
@@ -61,13 +56,6 @@ public class Teleop2 extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry.clear();
-        double rampUpTimer = 0;
-        double driveTimer = 0;
-        boolean rampUpFlag = false;
-
-        State currentState = State.IDLE;
-
-        double tiltPosition = 0;
 
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
@@ -75,7 +63,7 @@ public class Teleop2 extends LinearOpMode {
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
         Lift lift = new Lift(hardwareMap);
-
+        LaunchSequence launchSequence = new LaunchSequence(shooter, carousel, this::getRuntime);
 
         shooter.setHomeTiltPosition();
         lift.homeLift();
@@ -83,9 +71,8 @@ public class Teleop2 extends LinearOpMode {
 
         while (opModeIsActive()){
 
-            if (gamepad2.a){//(gamepad2.x  && gamepad2.b ){
+            if (gamepad2.a){
                 lift.engageLift();
-
             }
 
             //reset lift position
@@ -228,145 +215,21 @@ public class Teleop2 extends LinearOpMode {
                 carousel.setHomePositionKicker();
             }
 
-            //CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
-            switch (currentState) {
-
-                // ------------------------------------------------------
-                //  IDLE — waiting for trigger input
-                // ------------------------------------------------------
-                case IDLE:
-                    // Near shot (right trigger)
-                    if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                        shooter.shooterVelocity = Shooter.nearShooterVelocity;
-                        shooter.update();
-                        tiltPosition = shooter.nearTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
-                        currentState = State.RAMPING;
-
-                    }
-
-                    // Far shot (left trigger)
-                    if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                        shooter.shooterVelocity = Shooter.farShooterVelocity;
-                        shooter.update();
-                        tiltPosition = shooter.farTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;
-                        currentState = State.RAMPING;
-                    }
-                    break;
-
-                // ------------------------------------------------------
-                //  RAMPING — waiting for flywheel to reach speed
-                // ------------------------------------------------------
-                case RAMPING:
-                    shooter.update();
-                    if (getRuntime() > rampUpTimer) {
-                        // Begin launch sequence
-                        currentState = State.LAUNCHING;
-                        ballNumber = 0;
-                        launchSubStep = 0;
-
-                        shooter.setHomeTiltPosition();
-                        carousel.setHomePositionKicker();
-                        stepStartTime = getRuntime();
-
-                    }
-                    break;
-
-                // ------------------------------------------------------
-                //  LAUNCHING — 3-ball launch loop + cleanup
-                // ------------------------------------------------------
-                case LAUNCHING:
-                    shooter.update();
-
-                    if (ballNumber < 3) {
-                        // Per-ball launch sequence (5 sub-steps; last ball skips sub-step 4)
-                        switch (launchSubStep) {
-                            case 0: // Rotate carousel to launch position
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                    switch (ballNumber) {
-                                        case 0: carousel.spinCarouselLaunchOne(); break;
-                                        case 1: carousel.spinCarouselLaunchTwo(); break;
-                                        case 2: carousel.spinCarouselLaunchThree(); break;
-                                    }
-                                    stepStartTime = getRuntime();
-                                    launchSubStep++;
-                                }
-                                break;
-
-                            case 1: // Tiny kicker
-                                double kickerDelay = (ballNumber == 0)
-                                        ? defaultLaunchStepDelay + .2
-                                        : defaultLaunchStepDelay;
-                                if (getRuntime() - stepStartTime > kickerDelay) {
-                                    carousel.setTinyKicker();
-                                    stepStartTime = getRuntime();
-                                    launchSubStep++;
-                                }
-                                break;
-
-                            case 2: // Tilt shooter
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                    shooter.setTiltPosition(tiltPosition);
-                                    stepStartTime = getRuntime();
-                                    launchSubStep++;
-                                }
-                                break;
-
-                            case 3: // Full kicker (launch ball)
-                                if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
-                                    carousel.setFullKicker();
-                                    stepStartTime = getRuntime();
-                                    if (ballNumber == 2) {
-                                        // Last ball — skip reset, go to cleanup
-                                        ballNumber = 3;
-                                        launchSubStep = 0;
-                                    } else {
-                                        launchSubStep++;
-                                    }
-                                }
-                                break;
-
-                            case 4: // Reset tilt + kicker (first two balls only)
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                    shooter.setHomeTiltPosition();
-                                    carousel.setHomePositionKicker();
-                                    stepStartTime = getRuntime();
-                                    ballNumber++;
-                                    launchSubStep = 0;
-                                }
-                                break;
-                        }
-                    } else {
-                        // Cleanup phase after all 3 balls launched
-                        switch (launchSubStep) {
-                            case 0: // Home tilt
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
-                                    shooter.setHomeTiltPosition();
-                                    stepStartTime = getRuntime();
-                                    launchSubStep++;
-                                }
-                                break;
-                            case 1: // Home kicker
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
-                                    carousel.setHomePositionKicker();
-                                    stepStartTime = getRuntime();
-                                    launchSubStep++;
-                                }
-                                break;
-                            case 2: // Reset carousel and stop shooter
-                                if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
-                                    carousel.spinCarouselLaunchOne();
-                                    shooter.shooterVelocity = 0;
-                                    shooter.update();
-                                    currentState = State.IDLE;
-                                }
-                                break;
-                        }
-                    }
-                    break;
+            //CODE FOR LAUNCH SEQUENCE VIA TRIGGERS----------------------------------
+            if (!launchSequence.isRunning()) {
+                // Near shot (right trigger)
+                if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                    launchSequence.start(Shooter.nearShooterVelocity, Shooter.nearTiltPosition);
+                }
+                // Far shot (left trigger)
+                if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1) {
+                    launchSequence.start(Shooter.farShooterVelocity, Shooter.farTiltPosition);
+                }
             }
-
+            launchSequence.update();
+            if (launchSequence.isDone()) {
+                launchSequence.reset();
+            }
             //------------------------END OF TRIGGER CONTROL-----------------------------------
 
             drive.setDrivePowers(new PoseVelocity2d(
@@ -391,11 +254,4 @@ public class Teleop2 extends LinearOpMode {
         }
 
     }
-
-    enum State {
-        IDLE,
-        RAMPING,
-        LAUNCHING,
-    }
 }
-
