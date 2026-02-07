@@ -19,7 +19,6 @@ public class Lift {
     }
 
     public void homeLift() {
-        liftMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setTargetPosition(0);
         liftMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(0.2);
