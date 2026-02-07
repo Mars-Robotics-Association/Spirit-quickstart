@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * adjust the launch angle for near vs. far targets.
  *
  * <p>Velocity control uses a feedforward + proportional feedback loop with exponential
- * smoothing (see {@link #setShooterVelocity}). The feedforward values
+ * smoothing (see {@link #update}). The feedforward values
  * ({@link #feedLeftForward}, {@link #feedRightForward}) set a baseline power proportional
  * to the desired speed, while the feedback term corrects any error between the smoothed
  * target and actual velocities using gain {@link #kp}.
@@ -31,6 +31,7 @@ public class Shooter {
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
+    private final Telemetry telemetry;
     static public double nearTiltPosition = .03;//for testing
     static public double farTiltPosition = .15;//for testing
     static public double homeTiltPosition = 0;//for testing
@@ -71,8 +72,10 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
      *
      * @param hardwareMap the robot's hardware map containing {@code "shooterMotorLeft"},
      *                    {@code "shooterMotorRight"}, and {@code "tiltServo"}
+     * @param telemetry   telemetry instance for logging velocity diagnostics
      */
-    public Shooter(HardwareMap hardwareMap) {
+    public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
+        this.telemetry = telemetry;
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
@@ -88,16 +91,14 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
     }
 
     /**
-     * Runs the feedforward + feedback velocity control loop for both shooter motors.
+     * Runs one iteration of the feedforward + feedback velocity control loop.
      *
      * <p>Applies exponential smoothing to both the target and actual velocities, then
      * computes a proportional correction term added to the static feedforward power.
-     * If {@code shooterVelocity} is 0, both motors are stopped immediately.
-     *
-     * @param shooterVelocity desired flywheel velocity in ticks per second
-     * @param telemetry       telemetry instance for logging velocity diagnostics
+     * If {@link #shooterVelocity} is 0, both motors are stopped immediately.
+     * Set {@link #shooterVelocity} before calling this method to change the target speed.
      */
-    public void setShooterVelocity(double shooterVelocity, Telemetry telemetry) {
+    public void update() {
         telemetry.addData("Target T/S", shooterVelocity);
       // shooterMotorLeft.setVelocity(shooterVelocity);//if using encoders, use this code. Otherwise, set power
       // shooterMotorRight.setVelocity(shooterVelocity);//if using encoders, use this code. Otherwise, set power

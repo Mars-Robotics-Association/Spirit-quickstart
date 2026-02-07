@@ -56,9 +56,9 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-        Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
-        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
+        Shooter shooter = new Shooter(hardwareMap, telemetry);//instantiate a new shooter
+        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
 
 
         shooter.setHomeTiltPosition();
@@ -232,7 +232,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
                         shooter.shooterMotorLeft.setPower(.3);
                         shooter.shooterMotorRight.setPower(.3);
                         shooter.shooterVelocity = Shooter.nearShooterVelocity;
-                        shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                        shooter.update();
                         tiltPosition = shooter.nearTiltPosition;
                         rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
 
@@ -256,7 +256,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
                 //  RAMPING — waiting for flywheel to reach speed
                 // ------------------------------------------------------
                 case RAMPING:
-                    shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                    shooter.update();
                     if (getRuntime() > rampUpTimer) {
                         // Begin launch sequence
                         currentState = State.LAUNCHING;
@@ -282,7 +282,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
                         case 0:
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 carousel.spinCarouselLaunchOne();
-                                shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                                shooter.update();
                                 stepStartTime = getRuntime();
                                 launchStep++;
                             }
@@ -290,7 +290,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 1 — tiny kicker
                         case 1:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -300,7 +300,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -310,7 +310,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 3 — full kicker (launch ball)
                         case 3:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();
@@ -320,7 +320,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
@@ -331,7 +331,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 5 — rotate carousel to position 2
                         case 5:
-                            shooter.setShooterVelocity(shooter.shooterVelocity,telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 carousel.spinCarouselLaunchTwo();
                                 stepStartTime = getRuntime();
@@ -341,7 +341,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 6 — second tiny kicker
                         case 6:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -351,7 +351,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 7 — tilt again
                         case 7:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -361,7 +361,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 8 — second full kicker
                         case 8:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();
@@ -371,7 +371,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 9 — reset tilt + kicker again
                         case 9:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setHomeTiltPosition();
                                 carousel.setHomePositionKicker();
@@ -382,7 +382,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 10 — rotate to position 3
                         case 10:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 carousel.spinCarouselLaunchThree();
                                 stepStartTime = getRuntime();
@@ -392,7 +392,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 11 — tiny kicker third time
                         case 11:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 carousel.setTinyKicker();
                                 stepStartTime = getRuntime();
@@ -402,7 +402,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
 
                         // STEP 12 — tilt third time
                         case 12:
-                            shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                            shooter.update();
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
@@ -413,7 +413,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
                         // STEP 13 — full send #3
                         case 13:
                             if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
-                                shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                                shooter.update();
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -436,7 +436,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
                                 carousel.spinCarouselLaunchOne();//add
                                 shooter.shooterVelocity = 0;
-                                shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
+                                shooter.update();
 
                                 //strafe to the field wall
                                 driveTimer = getRuntime()+ .7;

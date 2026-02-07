@@ -1,14 +1,8 @@
-# Spirit Quickstart
+# Spirit DECODE
 
 Team Spirit's FTC robot code, forked from the [Road Runner quickstart](https://rr.brott.dev/docs/v1-0/tuning/). Everything below describes what the team built on top of commit `08f0898` (the upstream quickstart baseline).
 
 ## What Changed from the Quickstart
-
-**30 commits, ~3,160 lines added across 20 files.** The quickstart shipped with a drive system and tuning scaffolding; the team added an entire robot around it.
-
-### MecanumDrive moved to `robot/` package
-
-The quickstart's `MecanumDrive.java` was relocated from the root `teamcode` package into `teamcode.robot`. The four tuning OpModes (`LocalizationTest`, `ManualFeedbackTuner`, `SplineTest`, `TuningOpModes`) were updated to import from the new location. The IMU orientation was configured to `LogoFacingDirection.RIGHT` / `UsbFacingDirection.UP`, and only `rightFront` is reversed -- the other three motors run in their default direction.
 
 ### Robot Subsystems
 
@@ -38,16 +32,6 @@ Five autonomous OpModes, all using timed drive commands (not Road Runner traject
 - **SpiritAutoBlueNear / SpiritAutoRedNear** -- Backs up, executes the full 3-ball launch sequence at near-shot settings, then drives forward and strafes to park.
 - **SpiritAutoBlueFar / SpiritAutoRedFar** -- Same pattern but with far-shot velocity and tilt.
 - **TestingSpiritAutonomousEncodersBlue** -- An experimental encoder-based autonomous (marked `@Disabled`) that drives by encoder tick counts instead of time. Uses `COUNTS_PER_INCH` conversion with 751.8 ticks/rev and 4-inch wheels.
-
-### Sensor Samples
-
-Two sample/reference files were added (not used in competition code):
-- `SensorGoBildaPinpointSpirit` -- Sample code for the goBILDA Pinpoint odometry computer
-- `SensorLimelight3ASpirit` -- Sample code for the Limelight 3A vision sensor
-
-### Build Tooling
-
-Gradle wrapper bumped from 8.9 to 8.13, Android Gradle Plugin from 8.7.0 to 8.13.0.
 
 ## Development Timeline
 
