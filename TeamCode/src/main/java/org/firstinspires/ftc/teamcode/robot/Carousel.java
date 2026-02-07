@@ -31,10 +31,10 @@ public class Carousel {
     private final Servo kickerServo;
     /** Rotates the carousel to position balls. */
     private final Servo carouselServo;
-  //KICKER POSITIONS
-     public static double kickerDownPosition = .8;//0
-     static public double kickerTinyLiftPosition = .65;//.7
-     double kickerFullLiftPosition = .5;//.5
+    //KICKER POSITIONS
+    public static double kickerDownPosition = .8;//0
+    static public double kickerTinyLiftPosition = .65;//.7
+    double kickerFullLiftPosition = .5;//.5
 
     //CAROUSEL POSITIONS
     public static double carouselPositionHome = 0.5;
@@ -43,7 +43,7 @@ public class Carousel {
     //carousel positions
     public static double offSetAdjustment = 175;
     public static int degreeRange = 1667;
-    public static double carouselPositionConversionFactor = (1.0)/(degreeRange); // converts degrees to servos function inputs (0 to 1.0)
+    public static double carouselPositionConversionFactor = (1.0) / (degreeRange); // converts degrees to servos function inputs (0 to 1.0)
     double carouselPositionIntakeOne = carouselPositionConversionFactor * (0 + offSetAdjustment);
     double carouselPositionIntakeTwo = carouselPositionConversionFactor * (120.0 + offSetAdjustment);
     double carouselPositionIntakeThree = carouselPositionConversionFactor * (240.0 + offSetAdjustment);
@@ -58,8 +58,8 @@ public class Carousel {
      *                    and {@code "carouselServo"}
      */
     public Carousel(HardwareMap hardwareMap) {
-       kickerServo = hardwareMap.get(Servo.class, "kickerServo");
-       carouselServo = hardwareMap.get(Servo.class, "carouselServo");
+        kickerServo = hardwareMap.get(Servo.class, "kickerServo");
+        carouselServo = hardwareMap.get(Servo.class, "carouselServo");
     }
 
     /** Raises the kicker slightly to seat a ball against the shooter flywheel. */
@@ -113,8 +113,6 @@ public class Carousel {
     /** Rotates the carousel to launch slot 3 (430 degrees + offset). */
     public void spinCarouselLaunchThree() {
         carouselServo.setPosition(carouselPositionLaunchThree);
-
-
     }
-    }
+}
 
