@@ -54,10 +54,10 @@ public class SpiritAutoBlueNear extends LinearOpMode {
 
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
+        Intake intake = new Intake(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
-        Shooter shooter = new Shooter(hardwareMap, telemetry);//instantiate a new shooter
-        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
+        Shooter shooter = new Shooter(hardwareMap, telemetry);
+        Carousel carousel = new Carousel(hardwareMap);
 
         shooter.setHomeTiltPosition();
         waitForStart();
@@ -82,7 +82,7 @@ public class SpiritAutoBlueNear extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 intake.setPower(1);
             } else if (gamepad2.right_bumper) {
-                intake.setPower(-1);//sets the power on the intake motor based on the values from the bumps
+                intake.setPower(-1);
             } else {
                 intake.setPower(0);
             }

@@ -70,9 +70,9 @@ public class SpiritTeleop2 extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-        Shooter shooter = new Shooter(hardwareMap, telemetry);//instantiate a new shooter
-        Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
+        Intake intake = new Intake(hardwareMap);
+        Shooter shooter = new Shooter(hardwareMap, telemetry);
+        Carousel carousel = new Carousel(hardwareMap);
         Lift lift = new Lift(hardwareMap);
 
 
@@ -110,7 +110,7 @@ public class SpiritTeleop2 extends LinearOpMode {
             if (gamepad2.left_bumper) {
                 intake.setPower(1);
             } else if (gamepad2.right_bumper) {
-                intake.setPower(-1);//sets the power on the intake motor based on the values from the bumps
+                intake.setPower(-1);
             } else {
                 intake.setPower(0);
             }
