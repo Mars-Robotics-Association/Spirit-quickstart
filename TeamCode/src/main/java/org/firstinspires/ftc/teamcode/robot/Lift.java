@@ -26,7 +26,6 @@ public class Lift {
         liftMotor = hardwareMap.get(DcMotorEx.class, "liftMotor");
 
         liftMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
         liftMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
