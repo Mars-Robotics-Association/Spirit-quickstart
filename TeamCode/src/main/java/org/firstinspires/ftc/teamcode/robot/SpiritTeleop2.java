@@ -232,8 +232,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                 case IDLE:
                     // Near shot (right trigger)
                     if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                        shooter.shooterMotorLeft.setPower(.3);
-                        shooter.shooterMotorRight.setPower(.3);
                         shooter.shooterVelocity = Shooter.nearShooterVelocity;
                         shooter.update();
                         tiltPosition = shooter.nearTiltPosition;
@@ -244,8 +242,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                     // Far shot (left trigger)
                     if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                        shooter.shooterMotorLeft.setPower(.425);
-                        shooter.shooterMotorRight.setPower(.425);
                         shooter.shooterVelocity = Shooter.farShooterVelocity;
                         shooter.update();
                         tiltPosition = shooter.farTiltPosition;
@@ -384,13 +380,8 @@ public class SpiritTeleop2 extends LinearOpMode {
             packet.fieldOverlay().setStroke("#3F51B5");
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-           telemetry.addData("Actual Left Shooter Velocity  ", shooter.shooterMotorLeft.getVelocity());
-           telemetry.addData("Actual Right Shooter Velocity  ", shooter.shooterMotorRight.getVelocity());
            telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
            telemetry.addData("shooterPower ", shooter.shooterPower);
-           telemetry.addData(" smoothing vel left ", shooter.smoothActualLeftShooterVelocity);
-            telemetry.addData(" smoothing vel right", shooter.smoothActualRightShooterVelocity);
-            telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
            telemetry.update();
         }
 

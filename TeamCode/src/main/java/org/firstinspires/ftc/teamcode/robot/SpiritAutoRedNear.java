@@ -204,8 +204,6 @@ public class SpiritAutoRedNear extends LinearOpMode {
                 case IDLE:
                     // Near shot
 
-                        shooter.shooterMotorLeft.setPower(.3);
-                        shooter.shooterMotorRight.setPower(.3);
                         shooter.shooterVelocity = Shooter.nearShooterVelocity;
                         shooter.update();
                         tiltPosition = shooter.nearTiltPosition;
@@ -453,13 +451,8 @@ public class SpiritAutoRedNear extends LinearOpMode {
             packet.fieldOverlay().setStroke("#3F51B5");
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-            telemetry.addData("Actual Left Shooter Velocity  ", shooter.shooterMotorLeft.getVelocity());
-            telemetry.addData("Actual Right Shooter Velocity  ", shooter.shooterMotorRight.getVelocity());
             telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
             telemetry.addData("shooterPower ", shooter.shooterPower);
-            telemetry.addData(" smoothing vel left ", shooter.smoothActualLeftShooterVelocity);
-            telemetry.addData(" smoothing vel right", shooter.smoothActualRightShooterVelocity);
-            telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
             telemetry.update();
         }
 

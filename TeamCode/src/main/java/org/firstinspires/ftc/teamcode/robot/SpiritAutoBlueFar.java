@@ -202,8 +202,6 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                 case IDLE:
                     // Far shot (left trigger)
 
-                        shooter.shooterMotorLeft.setPower(.425);
-                        shooter.shooterMotorRight.setPower(.425);
                         shooter.shooterVelocity = Shooter.farShooterVelocity;
                         shooter.update();
                         tiltPosition = shooter.farTiltPosition;
@@ -439,13 +437,8 @@ public class SpiritAutoBlueFar extends LinearOpMode {
             packet.fieldOverlay().setStroke("#3F51B5");
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-            telemetry.addData("Actual Left Shooter Velocity  ", shooter.shooterMotorLeft.getVelocity());
-            telemetry.addData("Actual Right Shooter Velocity  ", shooter.shooterMotorRight.getVelocity());
             telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
             telemetry.addData("shooterPower ", shooter.shooterPower);
-            telemetry.addData(" smoothing vel left ", shooter.smoothActualLeftShooterVelocity);
-            telemetry.addData(" smoothing vel right", shooter.smoothActualRightShooterVelocity);
-            telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
             telemetry.update();
         }
 

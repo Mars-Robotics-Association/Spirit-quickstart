@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -11,9 +10,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 /**
  * Subsystem controlling the dual-flywheel ball shooter and its tilt servo.
  *
- * <p>The shooter uses two motors ({@code "shooterMotorLeft"} and {@code "shooterMotorRight"})
- * spinning in opposite directions to launch balls, and a servo ({@code "tiltServo"}) to
- * adjust the launch angle for near vs. far targets.
+ * <p>The shooter uses two {@link ShooterMotor} instances ({@code "shooterMotorLeft"} and
+ * {@code "shooterMotorRight"}) spinning in opposite directions to launch balls, and a
+ * servo ({@code "tiltServo"}) to adjust the launch angle for near vs. far targets.
  *
  * <p>Velocity control uses a feedforward + proportional feedback loop with exponential
  * smoothing (see {@link #update}). The feedforward values
@@ -28,8 +27,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class Shooter {
 
-    public final DcMotorEx shooterMotorLeft;
-    public final DcMotorEx shooterMotorRight;
+    private final ShooterMotor left;
+    private final ShooterMotor right;
     public final Servo tiltServo;
     private final Telemetry telemetry;
     static public double nearTiltPosition = .03;//for testing
@@ -49,13 +48,8 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
     static public double farShooterVelocity = 925;//tps for use with encoders to set shooter speed
 
     static public double shooterVelocity = 0;
-    static public double maxShooterVelocityLeft = 2350;//tps when power set to 1
-    static public double maxShooterVelocityRight = 2460;//tps when power set to 1
 
     double smoothTargetShooterVelocity = 0;
-    double smoothActualLeftShooterVelocity = 0;
-    double smoothActualRightShooterVelocity = 0;
-    public static double actualMotorPower = 0;
 
     static public double kp = 0.002;
     static public double smoothingFactor = .1;
@@ -77,13 +71,12 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
     public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
-        shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
-        shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
+        left = new ShooterMotor(hardwareMap, "shooterMotorLeft", telemetry,
+                DcMotorSimple.Direction.FORWARD);
+        right = new ShooterMotor(hardwareMap, "shooterMotorRight", telemetry,
+                DcMotorSimple.Direction.REVERSE);
 
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
-
-        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     /**
@@ -99,33 +92,15 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
 
         //fail safe
         if (shooterVelocity == 0){
-           shooterMotorLeft.setPower(0);
-           shooterMotorRight.setPower(0);
+           left.stop();
+           right.stop();
            return;
        }
-        //measure current velocity
-        telemetry.addData("FeedLeftForward ", feedLeftForward);
-        telemetry.addData("FeedRightForward ", feedRightForward);
-        double actualLeftVelocity = shooterMotorLeft.getVelocity();//removed mw's negative from shooterMotorLeft
-        double actualRightVelocity = shooterMotorRight.getVelocity();//removed mw's negative from shooterMotorRight
-
         //calculate smoothing
         smoothTargetShooterVelocity = (shooterVelocity * smoothingFactor) + (1 -  smoothingFactor) * smoothTargetShooterVelocity;
-        smoothActualLeftShooterVelocity = (actualLeftVelocity * smoothingFactor) + (1 -  smoothingFactor) * smoothActualLeftShooterVelocity;
-        smoothActualRightShooterVelocity = (actualRightVelocity * smoothingFactor) + (1 -  smoothingFactor) * smoothActualRightShooterVelocity;
 
-        //how fast am I going versus how fast I want to go
-        double feedbackLeft = (smoothTargetShooterVelocity - smoothActualLeftShooterVelocity) * kp;
-        double feedbackRight = (smoothTargetShooterVelocity - smoothActualRightShooterVelocity) * kp;
-
-        telemetry.addData("FeedbackLeft", feedbackLeft);
-        telemetry.addData("FeedbackRight", feedbackRight);
-
-        //set the power of the shooter motors to their current speed plus or minus the feed foward factors
-        //so it is constantly adjusting itself to the target
-        actualMotorPower = (feedbackLeft + feedLeftForward) * 1000;
-        shooterMotorLeft.setPower(feedbackLeft + feedLeftForward);
-       shooterMotorRight.setPower(feedbackRight + feedRightForward);
+        left.update(smoothTargetShooterVelocity, feedLeftForward, kp, smoothingFactor);
+        right.update(smoothTargetShooterVelocity, feedRightForward, kp, smoothingFactor);
     }
 
 
@@ -163,6 +138,3 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
     }
 
 }
-
-
-
