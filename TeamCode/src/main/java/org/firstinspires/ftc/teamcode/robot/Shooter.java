@@ -31,34 +31,35 @@ public class Shooter {
     private final ShooterMotor right;
     public final Servo tiltServo;
     private final Telemetry telemetry;
-    static public double nearTiltPosition = .03;//for testing
-    static public double farTiltPosition = .15;//for testing
-    static public double homeTiltPosition = 0;//for testing
-    /* *****************BALLPARK VELOCITY OF ENCODED SHOOTER MOTORS
+    /** Tilt servo position for near-target shots. */
+    static public double nearTiltPosition = .03;
+    /** Tilt servo position for far-target shots. */
+    static public double farTiltPosition = .15;
+    /** Tilt servo home (flat) position. */
+    static public double homeTiltPosition = 0;
 
+    /** Target flywheel velocity for near shots (ticks per second). */
+    static public double nearShooterVelocity = 650;
+    /** Target flywheel velocity for far shots (ticks per second). */
+    static public double farShooterVelocity = 925;
 
-/*The near target as measured by tachometer is between 1700 and 1900 rpm so say 1800 (as measured by Mr. Beckstead on 1/21/2026).
-The far target as measured by tachometer is between 3600 and 3700 rpm so say 3650
-
-So, velocity for near target = (1800 rotations per minute /28 ticks per seconds)/60 seconds = 840 tps
-So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/60 seconds = 1,703 tps
-
-   */
-    static public double nearShooterVelocity = 650;//tps for use with encoders to set shooter speed
-    static public double farShooterVelocity = 925;//tps for use with encoders to set shooter speed
-
+    /** Current target velocity (ticks per second). Set before calling {@link #update}. */
     static public double shooterVelocity = 0;
 
     double smoothTargetShooterVelocity = 0;
 
+    /** Proportional gain for the feedback term of the velocity controller. */
     static public double kp = 0.002;
-    static public double smoothingFactor = .1;
+    /** Exponential smoothing factor (0..1) applied to the target velocity. */
+    static public double targetSmoothingFactor = .1;
+    /** Exponential smoothing factor (0..1) applied to actual motor velocities. */
+    static public double actualSmoothingFactor = .1;
     public double shooterPower = 1;
-    static public double speed = .2;
 
+    /** Static feedforward power for the left flywheel motor. */
     static public double feedLeftForward = .41;
-            static public double feedRightForward = .35;
-    //*********************************************
+    /** Static feedforward power for the right flywheel motor. */
+    static public double feedRightForward = .35;
 
     /**
      * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
@@ -91,18 +92,17 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
         telemetry.addData("Target T/S", shooterVelocity);
 
         //fail safe
-        if (shooterVelocity == 0){
-           left.stop();
-           right.stop();
-           return;
-       }
+        if (shooterVelocity == 0) {
+            left.stop();
+            right.stop();
+            return;
+        }
         //calculate smoothing
-        smoothTargetShooterVelocity = (shooterVelocity * smoothingFactor) + (1 -  smoothingFactor) * smoothTargetShooterVelocity;
+        smoothTargetShooterVelocity = (shooterVelocity * targetSmoothingFactor) + (1 - targetSmoothingFactor) * smoothTargetShooterVelocity;
 
-        left.update(smoothTargetShooterVelocity, feedLeftForward, kp, smoothingFactor);
-        right.update(smoothTargetShooterVelocity, feedRightForward, kp, smoothingFactor);
+        left.update(smoothTargetShooterVelocity, feedLeftForward, kp, actualSmoothingFactor);
+        right.update(smoothTargetShooterVelocity, feedRightForward, kp, actualSmoothingFactor);
     }
-
 
 
     /**
@@ -132,7 +132,9 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
         tiltServo.setPosition(farTiltPosition);
     }
 
-    /** Resets the tilt servo to the home (flat) position. */
+    /**
+     * Resets the tilt servo to the home (flat) position.
+     */
     public void setHomeTiltPosition() {
         tiltServo.setPosition(homeTiltPosition);
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -16,13 +17,17 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * <p>Telemetry diagnostics are reported automatically during {@link #update},
  * using the hardware name to distinguish left from right.
  */
+@Config
 public class ShooterMotor {
+
+    static public double powerQuantum = 0.01;
 
     private final DcMotorEx motor;
     private final String name;
     private final Telemetry telemetry;
     public double smoothActualVelocity = 0;
     public double actualMotorPower = 0;
+    private double lastSetPower = 0;
 
     /**
      * Constructs a ShooterMotor, looking up the motor from the hardware map.
@@ -44,18 +49,17 @@ public class ShooterMotor {
      * Runs one iteration of smoothing + proportional feedback for this motor and sets power.
      * Reports velocity, smoothing, feedback, and power telemetry using the motor name.
      *
-     * @param smoothTargetVelocity the smoothed target velocity (ticks/sec)
-     * @param feedForward          the static feedforward power for this motor
-     * @param kp                   proportional gain
-     * @param smoothingFactor      exponential smoothing factor (0..1)
+     * @param targetVelocity  the target velocity (ticks/sec)
+     * @param feedForward     the static feedforward power for this motor
+     * @param kp              proportional gain
+     * @param smoothingFactor exponential smoothing factor (0..1)
      */
-    public void update(double smoothTargetVelocity, double feedForward, double kp, double smoothingFactor) {
+    public void update(double targetVelocity, double feedForward, double kp, double smoothingFactor) {
         double actualVelocity = motor.getVelocity();
         smoothActualVelocity = (actualVelocity * smoothingFactor) + (1 - smoothingFactor) * smoothActualVelocity;
 
-        double feedback = (smoothTargetVelocity - smoothActualVelocity) * kp;
-        actualMotorPower = feedback + feedForward;
-        motor.setPower(actualMotorPower);
+        double feedback = (targetVelocity - smoothActualVelocity) * kp;
+        setPower(feedback + feedForward);
 
         telemetry.addData(name + " Actual Velocity", actualVelocity);
         telemetry.addData(name + " Smooth Velocity", smoothActualVelocity);
@@ -65,16 +69,21 @@ public class ShooterMotor {
     }
 
     /**
-     * Returns the raw encoder velocity in ticks per second.
-     *
-     * @return current motor velocity
+     * Quantizes power to {@link #powerQuantum} and writes to the motor only if changed.
      */
-    public double getVelocity() {
-        return motor.getVelocity();
+    private void setPower(double power) {
+        double scale = 1.0 / powerQuantum;
+        actualMotorPower = Math.round(power * scale) / scale;
+        if (actualMotorPower != lastSetPower) {
+            motor.setPower(actualMotorPower);
+            lastSetPower = actualMotorPower;
+        }
     }
 
-    /** Stops the motor by setting power to 0. */
+    /**
+     * Stops the motor by setting power to 0.
+     */
     public void stop() {
-        motor.setPower(0);
+        setPower(0);
     }
 }
