@@ -6,32 +6,33 @@ Team Spirit's FTC robot code, forked from the [Road Runner quickstart](https://r
 
 ### Robot Subsystems
 
-Four new hardware subsystem classes were added in `teamcode.robot`:
+Subsystem and shared-logic classes in `teamcode.robot`:
 
-- **Intake** -- Single DC motor (`intakeMotor`). Thin wrapper: just `setPower()`.
+- **Intake** -- Single DC motor (`intakeMotor`). Three intent-based methods: `run()`, `eject()`, and `stop()`.
 - **Shooter** -- Dual flywheel motors (`shooterMotorLeft`, `shooterMotorRight`) plus a `tiltServo` that angles the shooter for near vs. far shots. Velocity control uses a hand-rolled feedforward + proportional feedback loop with exponential smoothing, rather than the SDK's built-in `RUN_USING_ENCODER` PID (which is commented out). Near target is ~650 tps, far target is ~925 tps.
 - **Carousel** -- Two servos: `carouselServo` (continuous rotation, holds 3 balls at 120-degree spacing) and `kickerServo` (pushes balls into the shooter). Positions are computed from a degree-to-servo conversion factor with a configurable offset. Intake positions and launch positions are staggered so the carousel rotates to feed balls one at a time.
 - **Lift** -- Encoder-driven motor (`liftMotor`) with `RUN_TO_POSITION` to raise the robot. Target is 1300 ticks.
+- **LaunchSequence** -- Reusable 3-ball launch state machine shared by Teleop and all shooting autonomous routines. Encapsulates the timed sequence: flywheel ramp-up (RAMPING), per-ball carousel rotate → kicker nudge → tilt → fire loop (LAUNCHING), and cleanup phase (CLEANUP → DONE). Timing constants are tunable via FTC Dashboard.
+- **AllianceSensor** -- REV Color/Distance Sensor V2 wrapper that compares red and blue channels to detect alliance color. Used by `AutoDetectAllianceNear`.
 
 ### Teleop: State Machine Launch Sequence
 
-`Teleop2` (in `opmodes.teleop`) is the main driver-controlled OpMode. The most interesting part is the timed state machine that fires all three balls from the carousel using a loop with sub-steps:
+`Teleop2` (in `opmodes.teleop`) is the main driver-controlled OpMode. The launch sequence delegates to a shared `LaunchSequence` class (in `robot`) that both Teleop and the autonomous routines use:
 
-1. Gamepad2 trigger pull enters **RAMPING** state (2-second flywheel spin-up)
-2. Transitions to **LAUNCHING**, which loops through `ballNumber` 0-2, each with 5 sub-steps: rotate carousel to launch position → tiny kicker nudge → tilt shooter → full kicker fire → reset tilt and kicker
-3. Right trigger = near shot (lower tilt, lower velocity); left trigger = far shot (higher tilt, higher velocity)
-4. After all 3 balls are fired, a cleanup phase homes the tilt, kicker, and carousel, then returns to **IDLE**
+1. Gamepad2 trigger pull starts the `LaunchSequence` — a 2-second flywheel ramp-up, then loops through 3 balls with sub-steps: rotate carousel → tiny kicker nudge → tilt shooter → full kicker fire → reset tilt and kicker, then a cleanup phase
+2. Right trigger = near shot (lower tilt, lower velocity); left trigger = far shot (higher tilt, higher velocity)
+3. The `LaunchSequence` resets to IDLE after completion, ready for reuse
 
 Gamepad1's right trigger runs a separate 3-step intake sequence that advances the carousel through intake positions on successive pulls, with rising-edge detection to avoid repeat triggers.
 
 ### Autonomous Routines
 
-Six autonomous OpModes (in `opmodes.auto`), all using timed drive commands (not Road Runner trajectories):
+Six autonomous OpModes (in `opmodes.auto`), all using timed drive commands (not Road Runner trajectories). The shooting OpModes share two abstract base classes (`BaseNearAuto`, `BaseFarAuto`) that handle hardware init, the `LaunchSequence`, and parking — leaving each concrete OpMode as a thin subclass that just sets the alliance color:
 
 - **JustMove** -- Simplest: drives backward for 0.4 seconds to get off the starting tape for move points, then stops.
-- **BlueNear / RedNear** -- Backs up, executes the full 3-ball launch sequence at near-shot settings, then strafes to park against the field wall.
-- **BlueFar / RedFar** -- Same pattern but with far-shot velocity and tilt.
-- **AutoDetectAllianceNear** -- Uses a REV Color/Distance Sensor to detect alliance color during init, then runs the near-shot sequence and strafes in the correct direction.
+- **BlueNear / RedNear** -- Extend `BaseNearAuto`. Backs up 0.25s, executes the 3-ball near-shot `LaunchSequence`, then strafes to park against the field wall (direction and duration vary by alliance).
+- **BlueFar / RedFar** -- Extend `BaseFarAuto`. Executes the 3-ball far-shot `LaunchSequence`, then drives forward 0.4s to park.
+- **AutoDetectAllianceNear** -- Extends `BaseNearAuto` with an `onInit()` hook that uses an `AllianceSensor` (REV Color/Distance Sensor) to detect alliance color during init. Drivers see the detected color on telemetry before pressing Start.
 - **TestingEncodersBlue** -- An experimental encoder-based autonomous (marked `@Disabled`) that drives by encoder tick counts instead of time. Uses `COUNTS_PER_INCH` conversion with 751.8 ticks/rev and 4-inch wheels.
 
 ## Development Timeline
@@ -45,3 +46,4 @@ The commit history tells the story of iterative hardware bring-up:
 5. **Autonomous development** (Jan 2026) -- Started with teleop-converted autonomous, then split into color/distance variants
 6. **Competition refinement** (Jan-Feb 2026) -- "Reverted to code used at Seneca Valley", tuned tilt and speed, added lift mechanism
 7. **Code review & cleanup** (Feb 2026) -- Fixed lift homing bug, added Javadoc across all subsystems and OpModes, refactored the 16-step launch state machine into a loop with sub-steps, extracted `ShooterMotor` class with power quantization and separate target/actual smoothing factors, removed dead code and redundant comments, reorganized OpModes into `opmodes.auto` and `opmodes.teleop` packages with concise class names
+8. **Continued refactoring** (Feb 2026) -- Replaced `Intake.setPower()` with intent-based `run()`/`eject()`/`stop()` API, fixed motor mode initialization for Lift and ShooterMotor, extracted the duplicated ~170-line launch state machine from 5 auto OpModes and Teleop into a shared `LaunchSequence` class (RAMPING → LAUNCHING → CLEANUP → DONE), introduced `BaseNearAuto` and `BaseFarAuto` abstract base classes to eliminate remaining autonomous duplication, and extracted `AllianceSensor` subsystem for color-sensor alliance detection

@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -34,10 +35,9 @@ public class JustMove extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
 
-//STARTING SEQUENCE----------------------------------
+            //STARTING SEQUENCE----------------------------------
             switch (currentState) {
 
                 // ------------------------------------------------------
@@ -45,8 +45,8 @@ public class JustMove extends LinearOpMode {
                 // ------------------------------------------------------
                 case IDLE:
                     //drive backward 12 inches (i.e., 1.5 seconds)
-                    driveTimer = getRuntime()+ .4;
-                    while (getRuntime() < driveTimer){
+                    driveTimer = getRuntime() + .4;
+                    while (getRuntime() < driveTimer) {
                         drive.setDrivePowers(new PoseVelocity2d(
                                 new Vector2d(-1, 0
 
@@ -57,7 +57,7 @@ public class JustMove extends LinearOpMode {
                     currentState = State.DONE;
                     break;
 
-                    //stop robot wheels
+                //stop robot wheels
                 case DONE:
                     drive.setDrivePowers(new PoseVelocity2d(
                             new Vector2d(0, 0
