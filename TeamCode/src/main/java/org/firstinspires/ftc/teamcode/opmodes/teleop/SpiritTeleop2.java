@@ -249,7 +249,6 @@ public class SpiritTeleop2 extends LinearOpMode {
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
            telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
-           telemetry.addData("shooterPower ", shooter.shooterPower);
            telemetry.update();
         }
 

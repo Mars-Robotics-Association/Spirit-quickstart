@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -14,11 +15,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * {@code "shooterMotorRight"}) spinning in opposite directions to launch balls, and a
  * servo ({@code "tiltServo"}) to adjust the launch angle for near vs. far targets.
  *
- * <p>Velocity control uses a feedforward + proportional feedback loop with exponential
- * smoothing (see {@link #update}). The feedforward values
- * ({@link #feedLeftForward}, {@link #feedRightForward}) set a baseline power proportional
- * to the desired speed, while the feedback term corrects any error between the smoothed
- * target and actual velocities using gain {@link #kp}.
+ * <p>Velocity control uses a voltage-based feedforward + proportional feedback loop with
+ * exponential smoothing (see {@link #update}). The feedforward model is
+ * {@code voltage = kS + kV * velocity}, and the feedback term corrects any error between
+ * the smoothed target and actual velocities using gain {@link #kp}. The total voltage is
+ * converted to motor power by dividing by the current battery voltage.
  *
  * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
  *
@@ -31,6 +32,8 @@ public class Shooter {
     private final ShooterMotor right;
     public final Servo tiltServo;
     private final Telemetry telemetry;
+    private final VoltageSensor voltageSensor;
+
     /** Tilt servo position for near-target shots. */
     static public double nearTiltPosition = .03;
     /** Tilt servo position for far-target shots. */
@@ -48,18 +51,21 @@ public class Shooter {
 
     double smoothTargetShooterVelocity = 0;
 
-    /** Proportional gain for the feedback term of the velocity controller. */
+    /** Proportional gain for the feedback term (volts per tick/sec error). */
     static public double kp = 0.002;
     /** Exponential smoothing factor (0..1) applied to the target velocity. */
     static public double targetSmoothingFactor = .1;
     /** Exponential smoothing factor (0..1) applied to actual motor velocities. */
     static public double actualSmoothingFactor = .1;
-    public double shooterPower = 1;
 
-    /** Static feedforward power for the left flywheel motor. */
-    static public double feedLeftForward = .41;
-    /** Static feedforward power for the right flywheel motor. */
-    static public double feedRightForward = .35;
+    /** Left motor static friction voltage (volts). From feedforward tuning. */
+    static public double leftKS = 1.5109;
+    /** Left motor velocity gain (volts per tick/sec). From feedforward tuning. */
+    static public double leftKV = 0.005178;
+    /** Right motor static friction voltage (volts). From feedforward tuning. */
+    static public double rightKS = 1.3725;
+    /** Right motor velocity gain (volts per tick/sec). From feedforward tuning. */
+    static public double rightKV = 0.004908;
 
     /**
      * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
@@ -77,7 +83,8 @@ public class Shooter {
         right = new ShooterMotor(hardwareMap, "shooterMotorRight", telemetry,
                 DcMotorSimple.Direction.REVERSE);
 
-        tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
+        tiltServo = hardwareMap.get(Servo.class, "tiltServo");
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
 
     /**
@@ -105,8 +112,9 @@ public class Shooter {
             smoothTargetShooterVelocity = shooterVelocity;
         }
 
-        left.update(smoothTargetShooterVelocity, feedLeftForward, kp, actualSmoothingFactor);
-        right.update(smoothTargetShooterVelocity, feedRightForward, kp, actualSmoothingFactor);
+        double batteryVoltage = voltageSensor.getVoltage();
+        left.update(smoothTargetShooterVelocity, leftKS, leftKV, kp, actualSmoothingFactor, batteryVoltage);
+        right.update(smoothTargetShooterVelocity, rightKS, rightKV, kp, actualSmoothingFactor, batteryVoltage);
     }
 
 

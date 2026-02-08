@@ -86,7 +86,6 @@ public abstract class BaseFarAuto extends LinearOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
             telemetry.addData("Alliance", isBlue ? "BLUE" : "RED");
             telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
-            telemetry.addData("shooterPower ", shooter.shooterPower);
             telemetry.update();
         }
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -48,25 +49,34 @@ public class ShooterMotor {
     }
 
     /**
-     * Runs one iteration of smoothing + proportional feedback for this motor and sets power.
-     * Reports velocity, smoothing, feedback, and power telemetry using the motor name.
+     * Runs one iteration of the voltage-based feedforward + feedback loop for this motor.
+     *
+     * <p>The feedforward model is {@code voltage = kS + kV * targetVelocity}, matching
+     * the model from {@code FlywheelsFeedforwardTuning}. The feedback term
+     * {@code kP * (target - actual)} is also in volts. The total voltage is converted
+     * to a duty-cycle power by dividing by the current battery voltage.
      *
      * @param targetVelocity  the target velocity (ticks/sec)
-     * @param feedForward     the static feedforward power for this motor
-     * @param kp              proportional gain
+     * @param kS              static friction voltage (volts)
+     * @param kV              velocity feedforward gain (volts per tick/sec)
+     * @param kp              proportional gain (volts per tick/sec error)
      * @param smoothingFactor exponential smoothing factor (0..1)
+     * @param batteryVoltage  current battery voltage for power conversion
      */
-    public void update(double targetVelocity, double feedForward, double kp, double smoothingFactor) {
+    public void update(double targetVelocity, double kS, double kV, double kp,
+                       double smoothingFactor, double batteryVoltage) {
         double actualVelocity = motor.getVelocity();
         smoothActualVelocity = (actualVelocity * smoothingFactor) + (1 - smoothingFactor) * smoothActualVelocity;
 
-        double feedback = (targetVelocity - smoothActualVelocity) * kp;
-        setPower(feedback + feedForward);
+        double feedforward = kS + kV * targetVelocity;
+        double feedback = kp * (targetVelocity - smoothActualVelocity);
+        double voltage = feedforward + feedback;
+        setPower(voltage / batteryVoltage);
 
         telemetry.addData(name + " Actual Velocity", actualVelocity);
         telemetry.addData(name + " Smooth Velocity", smoothActualVelocity);
-        telemetry.addData(name + " Feed Forward", feedForward);
-        telemetry.addData(name + " Feedback", feedback);
+        telemetry.addData(name + " Feedforward (V)", feedforward);
+        telemetry.addData(name + " Feedback (V)", feedback);
         telemetry.addData(name + " Motor Power", actualMotorPower);
     }
 
