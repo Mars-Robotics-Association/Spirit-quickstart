@@ -28,9 +28,9 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
  *
  * <p>Robot must be placed with the rear wells flush against the target to start.
  *
- * @see BlueNear
- * @see RedNear
- * @see AutoDetectAllianceNear
+ * @see SpiritNearBlue
+ * @see SpiritNearRed
+ * @see SpiritNearDetectAlliance
  */
 public abstract class BaseNearAuto extends LinearOpMode {
 
@@ -44,7 +44,7 @@ public abstract class BaseNearAuto extends LinearOpMode {
      * Called after hardware is initialized but before {@link #waitForStart()}.
      * Subclasses can override to run init-phase logic (e.g. color sensor reading).
      */
-    protected void onInit(Shooter shooter) {
+    protected void onInit() {
         // default: no-op
     }
 
@@ -53,7 +53,6 @@ public abstract class BaseNearAuto extends LinearOpMode {
         telemetry.clear();
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Intake intake = new Intake(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         Shooter shooter = new Shooter(hardwareMap, telemetry);
         Carousel carousel = new Carousel(hardwareMap);
@@ -61,7 +60,7 @@ public abstract class BaseNearAuto extends LinearOpMode {
 
         shooter.setHomeTiltPosition();
 
-        onInit(shooter);
+        onInit();
 
         waitForStart();
 

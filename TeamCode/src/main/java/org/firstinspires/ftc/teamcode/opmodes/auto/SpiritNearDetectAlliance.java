@@ -13,20 +13,20 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
  * The detected color is displayed on telemetry so drivers can verify before
  * pressing Start.
  *
- * @see BlueNear
- * @see RedNear
+ * @see SpiritNearBlue
+ * @see SpiritNearRed
  * @see BaseNearAuto
  */
 @Config
-@Autonomous(name = "Auto-Detect Alliance Near", group = "Autonomous")
-public class AutoDetectAllianceNear extends BaseNearAuto {
+@Autonomous(name = "SpiritNearDetectAlliance", group = "Autonomous")
+public class SpiritNearDetectAlliance extends BaseNearAuto {
 
-    public AutoDetectAllianceNear() {
+    public SpiritNearDetectAlliance() {
         super(true); // default to blue; overridden by color sensor in onInit
     }
 
     @Override
-    protected void onInit(Shooter shooter) {
+    protected void onInit() {
         AllianceSensor allianceSensor = new AllianceSensor(hardwareMap);
 
         // During init, continuously read the color sensor and display detected color

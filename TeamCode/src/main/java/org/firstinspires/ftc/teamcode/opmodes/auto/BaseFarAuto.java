@@ -25,8 +25,8 @@ import org.firstinspires.ftc.teamcode.robot.Shooter;
  * with the right front wheel against the wall and the right rear wheel at the 7th nub
  * of the floor mat.
  *
- * @see BlueFar
- * @see RedFar
+ * @see SpiritFarBlue
+ * @see SpiritFarRed
  */
 public abstract class BaseFarAuto extends LinearOpMode {
 

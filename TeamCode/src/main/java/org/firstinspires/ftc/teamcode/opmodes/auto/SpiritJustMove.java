@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
  * <p>Useful as a minimal autonomous when only move points are needed.
  */
 @Config
-@Autonomous(name = "Just Move", group = "Autonomous")
-public class JustMove extends LinearOpMode {
+@Autonomous(name = "SpiritJustMove", group = "Autonomous")
+public class SpiritJustMove extends LinearOpMode {
 
     public double driveTimer = 0;
 

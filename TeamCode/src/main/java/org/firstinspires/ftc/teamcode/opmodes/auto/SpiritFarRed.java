@@ -6,13 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 /**
  * Red-alliance Far autonomous OpMode.
  *
- * @see BlueFar
+ * @see SpiritFarBlue
  * @see BaseFarAuto
  */
 @Config
-@Autonomous(name = "Red Far", group = "Autonomous")
-public class RedFar extends BaseFarAuto {
-    public RedFar() {
+@Autonomous(name = "SpiritFarRed", group = "Autonomous")
+public class SpiritFarRed extends BaseFarAuto {
+    public SpiritFarRed() {
         super(false);
     }
 }

@@ -6,14 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 /**
  * Blue-alliance Near autonomous OpMode.
  *
- * @see RedNear
- * @see AutoDetectAllianceNear
+ * @see SpiritNearRed
+ * @see SpiritNearDetectAlliance
  * @see BaseNearAuto
  */
 @Config
-@Autonomous(name = "Blue Near", group = "Autonomous")
-public class BlueNear extends BaseNearAuto {
-    public BlueNear() {
+@Autonomous(name = "SpiritNearBlue", group = "Autonomous")
+public class SpiritNearBlue extends BaseNearAuto {
+    public SpiritNearBlue() {
         super(true);
     }
 }
