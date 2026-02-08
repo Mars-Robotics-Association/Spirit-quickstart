@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
  * feedback term is {@code kP * (smoothedTarget - smoothedVelocity)}.
  */
 @Config
-@TeleOp(name = "Flywheels PID Tuning", group = "Tuning")
+@TeleOp(name = "Flywheels Feedback Tuning", group = "Tuning")
 public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
 
     public static boolean useLeftMotor = true;
@@ -39,6 +39,7 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initHardware();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         telemetry.addLine("Ready. Press START to begin.");

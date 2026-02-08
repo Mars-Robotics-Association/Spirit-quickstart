@@ -34,65 +34,70 @@ import java.util.List;
 @TeleOp(name = "FlywheelsFeedforwardTuning", group = "Tuning")
 public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
 
-    /** Velocity (ticks/s) above which we consider the flywheel to be moving. */
+    /**
+     * Velocity (ticks/s) above which we consider the flywheel to be moving.
+     */
     private static final double MOVING_THRESHOLD = 5.0;
 
-    /** How much to increase power each loop iteration during ramping phases. */
+    /**
+     * How much to increase power each loop iteration during ramping phases.
+     */
     private static final double POWER_STEP = 0.001;
 
-    /** Milliseconds to pause between power steps so the motor can respond. */
+    /**
+     * Milliseconds to pause between power steps so the motor can respond.
+     */
     private static final long STEP_DELAY_MS = 30;
 
-    /** Milliseconds to let the motor settle at each power level during kV ramp. */
+    /**
+     * Milliseconds to let the motor settle at each power level during kV ramp.
+     */
     private static final long KV_SETTLE_MS = 150;
 
-    /** Power increment between kV sample points. */
+    /**
+     * Power increment between kV sample points.
+     */
     private static final double KV_SAMPLE_STEP = 0.02;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        initHardware();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         telemetry.addLine("Ready. Press START to begin tuning.");
         telemetry.update();
 
         waitForStart();
-        if (isStopRequested()) return;
-
-        // --- Tune left motor ---
-        double[] leftResult = tuneMotor(leftMotor, voltageSensor, "Left");
-        if (isStopRequested()) return;
 
         // --- Tune right motor ---
         double[] rightResult = tuneMotor(rightMotor, voltageSensor, "Right");
-        if (isStopRequested()) return;
 
-        // --- Report final results ---
-        telemetry.clear();
-        telemetry.addLine("=== TUNING COMPLETE ===");
-        telemetry.addLine("");
-        if (leftResult != null) {
-            telemetry.addData("Left stiction (V)", "%.4f", leftResult[0]);
-            telemetry.addData("Left kS (V)", "%.4f", leftResult[1]);
-            telemetry.addData("Left kV (V/(t/s))", "%.6f", leftResult[2]);
-        } else {
-            telemetry.addLine("Left: FAILED");
-        }
-        telemetry.addLine("");
-        if (rightResult != null) {
-            telemetry.addData("Right stiction (V)", "%.4f", rightResult[0]);
-            telemetry.addData("Right kS (V)", "%.4f", rightResult[1]);
-            telemetry.addData("Right kV (V/(t/s))", "%.6f", rightResult[2]);
-        } else {
-            telemetry.addLine("Right: FAILED");
-        }
-        telemetry.addLine("");
-        telemetry.addLine("voltage = kS + kV * velocity_ticks_per_sec");
-        telemetry.update();
+        // --- Tune left motor ---
+        double[] leftResult = null;// tuneMotor(leftMotor, voltageSensor, "Left");
 
-        // Keep displaying until stopped
         while (opModeIsActive()) {
-            sleep(100);
+            // --- Report final results ---
+            telemetry.clear();
+            telemetry.addLine("=== TUNING COMPLETE ===");
+            telemetry.addLine("");
+            if (leftResult != null) {
+                telemetry.addData("Left stiction (V)", "%.4f", leftResult[0]);
+                telemetry.addData("Left kS (V)", "%.4f", leftResult[1]);
+                telemetry.addData("Left kV (V/(t/s))", "%.6f", leftResult[2]);
+            } else {
+                telemetry.addLine("Left: FAILED");
+            }
+            telemetry.addLine("");
+            if (rightResult != null) {
+                telemetry.addData("Right stiction (V)", "%.4f", rightResult[0]);
+                telemetry.addData("Right kS (V)", "%.4f", rightResult[1]);
+                telemetry.addData("Right kV (V/(t/s))", "%.6f", rightResult[2]);
+            } else {
+                telemetry.addLine("Right: FAILED");
+            }
+            telemetry.addLine("");
+            telemetry.addLine("voltage = kS + kV * velocity_ticks_per_sec");
+            telemetry.update();
         }
     }
 
@@ -182,15 +187,19 @@ public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
             telemetry.update();
         }
 
-        motor.setPower(0);
+        telemetry.addLine("Loop complete");
+        telemetry.update();
 
-        if (!opModeIsActive()) return null;
+        motor.setPower(0);
 
         if (samples.size() < 3) {
             telemetry.addLine(label + ": ERROR - not enough samples for regression!");
             telemetry.update();
             return null;
         }
+
+        telemetry.addLine("start regression");
+        telemetry.update();
 
         // --- Least-squares regression: voltage = kS + kV * velocity ---
         // x = velocity, y = voltage

@@ -7,12 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public abstract class FlywheelsTuningBase extends LinearOpMode {
-    protected final DcMotorEx leftMotor;
-    protected final DcMotorEx rightMotor;
-    protected final VoltageSensor voltageSensor;
+    protected DcMotorEx leftMotor;
+    protected DcMotorEx rightMotor;
+    protected VoltageSensor voltageSensor;
 
-
-    protected FlywheelsTuningBase() {
+    protected void initHardware() {
         leftMotor = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -23,4 +22,6 @@ public abstract class FlywheelsTuningBase extends LinearOpMode {
 
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
     }
+
+
 }
