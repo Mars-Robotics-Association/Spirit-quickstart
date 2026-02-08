@@ -32,7 +32,7 @@ import java.util.List;
  * <p>The left motor runs first, then the right motor.
  */
 @TeleOp(name = "FlywheelsFeedforwardTuning", group = "Tuning")
-public class FlywheelsFeedforwardTuning extends LinearOpMode {
+public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
 
     /** Velocity (ticks/s) above which we consider the flywheel to be moving. */
     private static final double MOVING_THRESHOLD = 5.0;
@@ -52,16 +52,6 @@ public class FlywheelsFeedforwardTuning extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-        DcMotorEx leftMotor = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
-        leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        DcMotorEx rightMotor = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
-        rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         telemetry.addLine("Ready. Press START to begin tuning.");
         telemetry.update();
