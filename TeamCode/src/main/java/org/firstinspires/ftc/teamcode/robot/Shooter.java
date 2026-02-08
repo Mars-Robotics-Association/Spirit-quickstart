@@ -99,6 +99,11 @@ public class Shooter {
         }
         //calculate smoothing
         smoothTargetShooterVelocity = (shooterVelocity * targetSmoothingFactor) + (1 - targetSmoothingFactor) * smoothTargetShooterVelocity;
+        // An IIR filter approaches its target asymptotically (never truly arrives).
+        // Snap to the exact target once we're within 1% to avoid lingering error.
+        if (Math.abs(smoothTargetShooterVelocity - shooterVelocity) / shooterVelocity < 0.01) {
+            smoothTargetShooterVelocity = shooterVelocity;
+        }
 
         left.update(smoothTargetShooterVelocity, feedLeftForward, kp, actualSmoothingFactor);
         right.update(smoothTargetShooterVelocity, feedRightForward, kp, actualSmoothingFactor);
