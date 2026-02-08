@@ -32,10 +32,10 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
     public static double velocityAlpha = 0.05;
     public static double kP = 0.002;
 
-    public static double leftKS = 0;
-    public static double leftKV = 0;
-    public static double rightKS = 0;
-    public static double rightKV = 0;
+    public static double leftKS = 1.5109;
+    public static double leftKV = 0.005178;
+    public static double rightKS = 1.3725;
+    public static double rightKV = 0.004908;
 
     @Override
     public void runOpMode() throws InterruptedException {

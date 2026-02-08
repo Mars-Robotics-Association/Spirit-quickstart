@@ -73,11 +73,12 @@ public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
         double[] rightResult = tuneMotor(rightMotor, voltageSensor, "Right");
 
         // --- Tune left motor ---
-        double[] leftResult = null;// tuneMotor(leftMotor, voltageSensor, "Left");
+        double[] leftResult = tuneMotor(leftMotor, voltageSensor, "Left");
 
         while (opModeIsActive()) {
             // --- Report final results ---
-            telemetry.clear();
+            //telemetry.clear();
+            telemetry.addData("now", System.nanoTime());
             telemetry.addLine("=== TUNING COMPLETE ===");
             telemetry.addLine("");
             if (leftResult != null) {
