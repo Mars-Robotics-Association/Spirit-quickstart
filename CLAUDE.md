@@ -49,3 +49,7 @@ The SDK's velocity PIDF `F` coefficient is a kV, but scaled by 32767. To calcula
 
 SDK 11.0 added rising/falling edge detection methods directly on the Gamepad object, e.g. `gamepad1.leftBumperWasPressed()` and `gamepad1.leftBumperWasReleased()`. SDK 11.1 extended this to triggers. See `ConceptGamepadEdgeDetection` sample for usage. Code targeting older SDK versions must track previous button state manually.
 
+### FTC Dashboard field overlay
+
+When using FTC Dashboard telemetry alongside field overlay drawing (e.g., in `DrivingBase`), use `DashboardTelemetryPacketAccess` to get the underlying `TelemetryPacket` and draw on its `fieldOverlay()` directly. Do not create a separate `TelemetryPacket` and send it manually — that writes extra telemetry lines and duplicates data on the dashboard.
+
