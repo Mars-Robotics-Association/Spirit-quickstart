@@ -30,6 +30,7 @@ public class ShooterMotor {
     public double smoothActualVelocity = 0;
     public double actualMotorPower = 0;
     private double lastSetPower = 0;
+    private final double batteryVoltage;
 
     /**
      * Constructs a ShooterMotor, looking up the motor from the hardware map.
@@ -40,12 +41,13 @@ public class ShooterMotor {
      * @param direction   the spin direction for this motor
      */
     public ShooterMotor(HardwareMap hardwareMap, String name, Telemetry telemetry,
-                        DcMotorSimple.Direction direction) {
+                        DcMotorSimple.Direction direction, double batteryVoltage) {
         this.name = name;
         this.telemetry = telemetry;
         this.motor = hardwareMap.get(DcMotorEx.class, name);
         this.motor.setDirection(direction);
         this.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.batteryVoltage = batteryVoltage;
     }
 
     /**
@@ -61,10 +63,9 @@ public class ShooterMotor {
      * @param kV              velocity feedforward gain (volts per tick/sec)
      * @param kp              proportional gain (volts per tick/sec error)
      * @param smoothingFactor exponential smoothing factor (0..1)
-     * @param batteryVoltage  current battery voltage for power conversion
      */
     public void update(double targetVelocity, double kS, double kV, double kp,
-                       double smoothingFactor, double batteryVoltage) {
+                       double smoothingFactor) {
         double actualVelocity = motor.getVelocity();
         smoothActualVelocity = (actualVelocity * smoothingFactor) + (1 - smoothingFactor) * smoothActualVelocity;
 
