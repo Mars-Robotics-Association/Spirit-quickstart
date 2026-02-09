@@ -52,12 +52,12 @@ public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
     /**
      * Milliseconds to let the motor settle at each power level during kV ramp.
      */
-    private static final long KV_SETTLE_MS = 150;
+    private static final long KV_SETTLE_MS = 5000;
 
     /**
      * Power increment between kV sample points.
      */
-    private static final double KV_SAMPLE_STEP = 0.02;
+    private static final double KV_SAMPLE_STEP = 0.1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -168,7 +168,7 @@ public class FlywheelsFeedforwardTuning extends FlywheelsTuningBase {
             double velSum = 0;
             double voltSum = 0;
             int count = 0;
-            for (int i = 0; i < 5 && opModeIsActive(); i++) {
+            for (int i = 0; i < 25 && opModeIsActive(); i++) {
                 velSum += Math.abs(motor.getVelocity());
                 voltSum += p * voltageSensor.getVoltage();
                 count++;
