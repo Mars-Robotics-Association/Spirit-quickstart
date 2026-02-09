@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.robot.LaunchSequence;
 import org.firstinspires.ftc.teamcode.robot.Lift;
 import org.firstinspires.ftc.teamcode.robot.MecanumDrive;
 import org.firstinspires.ftc.teamcode.robot.Shooter;
+import org.firstinspires.ftc.teamcode.utils.DashboardTelemetryPacketAccess;
 
 /**
  * Main teleop OpMode for Team Spirit's robot.
@@ -56,8 +58,9 @@ public class SpiritTeleop2 extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry.clear();
+        DashboardTelemetryPacketAccess dashboardPacketAccess = new DashboardTelemetryPacketAccess();
 
-        telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, dashboardPacketAccess.dashboardTelemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);
         Shooter shooter = new Shooter(hardwareMap, telemetry);
@@ -69,9 +72,9 @@ public class SpiritTeleop2 extends LinearOpMode {
         lift.homeLift();
         waitForStart();
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
 
-            if (gamepad2.a){
+            if (gamepad2.a) {
                 lift.engageLift();
             }
 
@@ -156,8 +159,7 @@ public class SpiritTeleop2 extends LinearOpMode {
             }
 
 
-
-                // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
+            // ---------------- INTAKE + CAROUSEL SEQUENCE (GAMEPAD 1 RIGHT TRIGGER) ----------------
                 /*
                 This section of the code is an intake sequence. It cycles 3 times.  Upon pulling the trigger
                 on gamepad 1, the intake begins spinning and the carousel spins to intakePositionOne.
@@ -244,12 +246,12 @@ public class SpiritTeleop2 extends LinearOpMode {
 
             Pose2d pose = drive.localizer.getPose();
 
-            TelemetryPacket packet = new TelemetryPacket();
+            TelemetryPacket packet = dashboardPacketAccess.getTelemetryPacket();
             packet.fieldOverlay().setStroke("#3F51B5");
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-           telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
-           telemetry.update();
+            telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
+            telemetry.update();
         }
 
     }

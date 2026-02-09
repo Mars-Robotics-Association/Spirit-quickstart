@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,17 +16,16 @@ import java.lang.reflect.Field;
  */
 public class DashboardTelemetryPacketAccess {
 
-    private final Telemetry telemetry;
+    public final Telemetry dashboardTelemetry;
     private final Field currentPacketField;
 
     /**
      * Constructs an accessor for the given dashboard telemetry instance.
      *
-     * @param dashboardTelemetry The telemetry from {@code FtcDashboard.getInstance().getTelemetry()}.
      * @throws RuntimeException if the field cannot be found (e.g., wrong telemetry type or API change).
      */
-    public DashboardTelemetryPacketAccess(Telemetry dashboardTelemetry) {
-        this.telemetry = dashboardTelemetry;
+    public DashboardTelemetryPacketAccess() {
+        this.dashboardTelemetry = FtcDashboard.getInstance().getTelemetry();
         try {
             this.currentPacketField = dashboardTelemetry.getClass().getDeclaredField("currentPacket");
             this.currentPacketField.setAccessible(true);
@@ -44,7 +44,7 @@ public class DashboardTelemetryPacketAccess {
      */
     public TelemetryPacket getTelemetryPacket() {
         try {
-            return (TelemetryPacket) currentPacketField.get(telemetry);
+            return (TelemetryPacket) currentPacketField.get(dashboardTelemetry);
         } catch (IllegalAccessException e) {
             return null;
         }
