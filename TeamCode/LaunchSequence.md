@@ -1,6 +1,6 @@
 # LaunchSequence Flow
 
-> **Source:** [`LaunchSequence.java`](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/robot/LaunchSequence.java)
+> **Source:** [`LaunchSequence.java`](src/main/java/org/firstinspires/ftc/teamcode/robot/LaunchSequence.java)
 
 ## Overview
 
