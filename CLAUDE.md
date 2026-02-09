@@ -33,3 +33,19 @@ The build config is split across files: `build.common.gradle` (shared Android co
 - Classes annotated with `@Config` expose their `static public` fields to FTC Dashboard for live tuning
 - Drive parameters (kS, kV, kA, PID gains, wheel velocity limits) live in `MecanumDrive.Params`
 - The `MecanumDrive` constructor uses `LynxModule.BulkCachingMode.AUTO` for efficient hub communication
+
+## FTC SDK Gotchas
+
+### DcMotor RunMode
+
+- `RUN_USING_ENCODER` enables the SDK's built-in PIDF velocity controller. Only use this if you want the SDK to handle velocity control.
+- `RUN_WITHOUT_ENCODER` is the correct mode when doing custom feedback/feedforward in team code. Despite the name, it still reads encoder values — it just doesn't use them for internal control.
+
+### RUN_USING_ENCODER feedforward (kV)
+
+The SDK's velocity PIDF `F` coefficient is a kV, but scaled by 32767. To calculate: `F = 32767 * kV`. For example, a motor measured at max 2496 ticks/sec → `F = 32767 / 2496 ≈ 13.13`.
+
+### Gamepad edge detection
+
+SDK 11.0 added rising/falling edge detection methods directly on the Gamepad object, e.g. `gamepad1.leftBumperWasPressed()` and `gamepad1.leftBumperWasReleased()`. SDK 11.1 extended this to triggers. See `ConceptGamepadEdgeDetection` sample for usage. Code targeting older SDK versions must track previous button state manually.
+
