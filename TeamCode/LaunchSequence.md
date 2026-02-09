@@ -103,3 +103,76 @@ if (!launch.isRunning()) {
     // safe to accept manual shooter/carousel input
 }
 ```
+
+## Road Runner Actions Port
+
+> **Source:** [`LaunchSequenceAction.java`](src/main/java/org/firstinspires/ftc/teamcode/robot/LaunchSequenceAction.java)
+
+`LaunchSequenceAction` is a drop-in alternative that expresses the same sequence using Road Runner's `Action` API. Instead of a hand-rolled state machine, it composes `SequentialAction`, `SleepAction`, `InstantAction`, and `RaceAction` to describe the same steps declaratively.
+
+### How the shooter velocity loop works
+
+The shooter's feedforward+feedback controller must run every cycle during Ramp-up and Launching but **not** during Cleanup. A perpetual `shooterUpdateLoop()` action (always returns `true`) is paired with the timed steps inside a `RaceAction`, which ends as soon as any child finishes. When the sleep/step sequence completes, the race stops — automatically terminating the shooter loop.
+
+```
+RaceAction
+ ├─ shooterUpdateLoop()      ← runs every cycle, never finishes on its own
+ └─ SequentialAction(...)    ← finishes after last step → ends the race
+```
+
+### Differences from the state-machine version
+
+| | `LaunchSequence` | `LaunchSequenceAction` |
+|---|---|---|
+| **Pattern** | Manual state machine, caller pumps `update()` | Composable `Action`, caller calls `action.run(packet)` or `Actions.runBlocking()` |
+| **Reuse** | `reset()` reuses the same object | Call `build()` again for a fresh Action |
+| **Composability** | Standalone only | Can nest inside `ParallelAction` with drive trajectories |
+| **Shooter control loop** | Implicit in `update()` switch cases | Explicit via `RaceAction` — runs alongside steps, stops when steps finish |
+| **Dashboard tuning** | `@Config` values read live each cycle | Values captured at `build()` time (rebuild to pick up changes) |
+
+### Swapping into Autonomous
+
+Replace:
+```java
+LaunchSequence launchSequence = new LaunchSequence(shooter, carousel, this::getRuntime);
+launchSequence.start(Shooter.nearShooterVelocity, Shooter.nearTiltPosition);
+// ... loop calling launchSequence.update() until isDone() ...
+```
+
+With:
+```java
+LaunchSequenceAction factory = new LaunchSequenceAction(shooter, carousel);
+Actions.runBlocking(factory.build(Shooter.nearShooterVelocity, Shooter.nearTiltPosition));
+```
+
+### Swapping into Teleop
+
+Replace:
+```java
+LaunchSequence launchSequence = new LaunchSequence(shooter, carousel, this::getRuntime);
+
+// in loop:
+if (!launchSequence.isRunning()) {
+    if (triggerPressed) {
+        launchSequence.start(Shooter.nearShooterVelocity, Shooter.nearTiltPosition);
+    }
+}
+launchSequence.update();
+if (launchSequence.isDone()) {
+    launchSequence.reset();
+}
+```
+
+With:
+```java
+LaunchSequenceAction factory = new LaunchSequenceAction(shooter, carousel);
+Action active = null;
+
+// in loop:
+if (active == null && triggerPressed) {
+    active = factory.build(Shooter.nearShooterVelocity, Shooter.nearTiltPosition);
+}
+if (active != null && !active.run(new TelemetryPacket())) {
+    active = null;  // sequence finished, ready for next use
+}
+```

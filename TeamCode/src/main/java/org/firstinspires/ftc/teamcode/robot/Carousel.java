@@ -44,12 +44,8 @@ public class Carousel {
     public static double offSetAdjustment = 175;
     public static int degreeRange = 1667;
     public static double carouselPositionConversionFactor = (1.0) / (degreeRange); // converts degrees to servos function inputs (0 to 1.0)
-    double carouselPositionIntakeOne = carouselPositionConversionFactor * (0 + offSetAdjustment);
-    double carouselPositionIntakeTwo = carouselPositionConversionFactor * (120.0 + offSetAdjustment);
-    double carouselPositionIntakeThree = carouselPositionConversionFactor * (240.0 + offSetAdjustment);
-    double carouselPositionLaunchOne = carouselPositionConversionFactor * (180.0 + offSetAdjustment);
-    double carouselPositionLaunchTwo = carouselPositionConversionFactor * (310.0 + offSetAdjustment);
-    double carouselPositionLaunchThree = carouselPositionConversionFactor * (430.0 + offSetAdjustment);
+    double[] intakeDegrees = {0, 120.0, 240.0};
+    double[] launchDegrees = {180.0, 310.0, 430.0};
 
     /**
      * Constructs a Carousel subsystem and maps the servos from hardware.
@@ -76,17 +72,18 @@ public class Carousel {
     public void setHomePositionKicker(){
      kickerServo.setPosition(kickerDownPosition);
     }
-    /** Rotates the carousel to intake slot 1 (0 degrees + offset). */
-    public void spinCarouselIntakeOne() {
-        carouselServo.setPosition(carouselPositionIntakeOne);
+    /** Converts a degree value to a servo position, applying offset and conversion factor. */
+    private double degreesToServo(double degrees) {
+        return carouselPositionConversionFactor * (degrees + offSetAdjustment);
     }
-    /** Rotates the carousel to intake slot 2 (120 degrees + offset). */
-    public void spinCarouselIntakeTwo() {
-        carouselServo.setPosition(carouselPositionIntakeTwo);
-    }
-    /** Rotates the carousel to intake slot 3 (240 degrees + offset). */
-    public void spinCarouselIntakeThree() {
-        carouselServo.setPosition(carouselPositionIntakeThree);
+
+    /** Rotates the carousel to intake slot {@code ballNumber} (1-indexed). */
+    public void spinCarouselIntake(int ballNumber) {
+        if (ballNumber < 1 || ballNumber > intakeDegrees.length) {
+            throw new IllegalArgumentException(
+                    "ballNumber must be 1, 2, or 3 but was " + ballNumber);
+        }
+        carouselServo.setPosition(degreesToServo(intakeDegrees[ballNumber - 1]));
     }
 
     /** Rotates the carousel to its home (center) position. */
@@ -102,17 +99,13 @@ public class Carousel {
     public void spinCarouselMax() {
         carouselServo.setPosition(carouselPositionMax);
     }
-    /** Rotates the carousel to launch slot 1 (180 degrees + offset). */
-    public void spinCarouselLaunchOne() {
-        carouselServo.setPosition(carouselPositionLaunchOne);
-    }
-    /** Rotates the carousel to launch slot 2 (310 degrees + offset). */
-    public void spinCarouselLaunchTwo() {
-        carouselServo.setPosition(carouselPositionLaunchTwo);
-    }
-    /** Rotates the carousel to launch slot 3 (430 degrees + offset). */
-    public void spinCarouselLaunchThree() {
-        carouselServo.setPosition(carouselPositionLaunchThree);
+    /** Rotates the carousel to launch slot {@code ballNumber} (1-indexed). */
+    public void spinCarouselLaunch(int ballNumber) {
+        if (ballNumber < 1 || ballNumber > launchDegrees.length) {
+            throw new IllegalArgumentException(
+                    "ballNumber must be 1, 2, or 3 but was " + ballNumber);
+        }
+        carouselServo.setPosition(degreesToServo(launchDegrees[ballNumber - 1]));
     }
 }
 

@@ -123,30 +123,30 @@ public class SpiritTeleop2 extends LinearOpMode {
 
             }
             if (gamepad2.dpad_up) {
-                carousel.spinCarouselIntakeOne();//
+                carousel.spinCarouselIntake(1);//
 
             }
 
             if (gamepad2.dpad_right) {
-                carousel.spinCarouselIntakeTwo();//
+                carousel.spinCarouselIntake(2);//
 
             }
 
             if (gamepad2.dpad_down) {
-                carousel.spinCarouselIntakeThree();//
+                carousel.spinCarouselIntake(3);//
 
             }
 
             if (gamepad1.dpad_up) {
-                carousel.spinCarouselLaunchOne();
+                carousel.spinCarouselLaunch(1);
 
             }
             if (gamepad1.dpad_right) {
-                carousel.spinCarouselLaunchTwo();
+                carousel.spinCarouselLaunch(2);
             }
 
             if (gamepad1.dpad_down) {
-                carousel.spinCarouselLaunchThree();
+                carousel.spinCarouselLaunch(3);
             }
             //--------------------------END TESTING OF CAROUSEL
 
@@ -180,15 +180,15 @@ public class SpiritTeleop2 extends LinearOpMode {
                 // Advance carousel one position per pull
                 if (intakeStep == 0) {
                     intake.run();
-                    carousel.spinCarouselIntakeOne();
+                    carousel.spinCarouselIntake(1);
                     intakeStep = 1;
                 } else if (intakeStep == 1) {
                     intake.run();
-                    carousel.spinCarouselIntakeTwo();
+                    carousel.spinCarouselIntake(2);
                     intakeStep = 2;
                 } else if (intakeStep == 2) {
                     intake.run();
-                    carousel.spinCarouselIntakeThree();
+                    carousel.spinCarouselIntake(3);
                     intakeStep = 0;
                 }
 
@@ -206,7 +206,7 @@ public class SpiritTeleop2 extends LinearOpMode {
             if (gamepad2.a) {
                 carousel.setHomePositionKicker();
                 carousel.setHomePositionKicker();
-                carousel.spinCarouselLaunchOne();
+                carousel.spinCarouselLaunch(1);
                 carousel.setTinyKicker();
             }
             //END MANUAL LOAD-----------------------------------------------

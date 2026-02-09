@@ -72,7 +72,7 @@ public class LaunchSequence {
                     shooter.setHomeTiltPosition();
                     carousel.setHomePositionKicker();
                     stepStartTime = now;
-                    ballNumber = 0;
+                    ballNumber = 1;
                     subStep = 0;
                     state = State.LAUNCHING;
                 }
@@ -93,18 +93,14 @@ public class LaunchSequence {
         switch (subStep) {
             case 0: // Rotate carousel to launch position
                 if (now - stepStartTime > defaultStepDelay) {
-                    switch (ballNumber) {
-                        case 0: carousel.spinCarouselLaunchOne(); break;
-                        case 1: carousel.spinCarouselLaunchTwo(); break;
-                        case 2: carousel.spinCarouselLaunchThree(); break;
-                    }
+                    carousel.spinCarouselLaunch(ballNumber);
                     stepStartTime = now;
                     subStep++;
                 }
                 break;
 
             case 1: // Tiny kicker (extra +0.2s delay on first ball)
-                double kickerDelay = (ballNumber == 0)
+                double kickerDelay = (ballNumber == 1)
                         ? defaultStepDelay + 0.2
                         : defaultStepDelay;
                 if (now - stepStartTime > kickerDelay) {
@@ -126,7 +122,7 @@ public class LaunchSequence {
                 if (now - stepStartTime > tiltToLaunchDelay) {
                     carousel.setFullKicker();
                     stepStartTime = now;
-                    if (ballNumber == 2) {
+                    if (ballNumber == 3) {
                         // Last ball — skip reset, go to cleanup
                         subStep = 0;
                         state = State.CLEANUP;
@@ -166,7 +162,7 @@ public class LaunchSequence {
                 break;
             case 2: // Reset carousel and stop shooter
                 if (now - stepStartTime > defaultStepDelay + 0.5) {
-                    carousel.spinCarouselLaunchOne();
+                    carousel.spinCarouselLaunch(1);
                     shooter.shooterVelocity = 0;
                     shooter.update();
                     state = State.DONE;
