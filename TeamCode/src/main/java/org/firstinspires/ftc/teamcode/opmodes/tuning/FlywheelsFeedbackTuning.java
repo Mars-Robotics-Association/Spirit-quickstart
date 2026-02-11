@@ -1,14 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuning;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 /**
  * Interactive tuning opmode for flywheel kP and IIR low-pass filter alpha values.
@@ -38,10 +34,7 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
     public static double rightKV = 0.004908;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        initHardware();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+    protected void runOpModeInternal() throws InterruptedException {
         telemetry.addLine("Ready. Press START to begin.");
         telemetry.addLine("Adjust values via FTC Dashboard.");
         telemetry.update();
@@ -53,8 +46,8 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
         double smoothedVelocity = 0;
 
         while (opModeIsActive()) {
-            DcMotorEx activeMotor = useLeftMotor ? leftMotor : rightMotor;
-            DcMotorEx idleMotor = useLeftMotor ? rightMotor : leftMotor;
+            DcMotorEx activeMotor = motors[useLeftMotor ? 0 : 1];
+            DcMotorEx idleMotor = motors[useLeftMotor ? 1 : 0];
             double kS = useLeftMotor ? leftKS : rightKS;
             double kV = useLeftMotor ? leftKV : rightKV;
 
@@ -78,7 +71,7 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
                 double feedforward = kS + kV * smoothedTarget;
                 double feedback = kP * (smoothedTarget - smoothedVelocity);
                 double voltage = feedforward + feedback;
-                double batteryVoltage = voltageSensor.getVoltage();
+                double batteryVoltage = module.getInputVoltage(VoltageUnit.VOLTS);
                 activeMotor.setPower(voltage / batteryVoltage);
             }
 
@@ -89,8 +82,5 @@ public class FlywheelsFeedbackTuning extends FlywheelsTuningBase {
             telemetry.addData("Smoothed Velocity", "%.1f", smoothedVelocity);
             telemetry.update();
         }
-
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
     }
 }

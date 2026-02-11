@@ -12,6 +12,8 @@ The sequence has four major phases: **Ramp-up**, **Launching** (repeated for 3 b
 
 Open [`LaunchSequence.drawio`](LaunchSequence.drawio.svg) in [draw.io](https://app.diagrams.net) or the VS Code _Draw.io Integration_ extension to view the full state diagram.
 
+![LaunchSequence Diagram](LaunchSequence.drawio.svg)
+
 ## Tunable Parameters
 
 All delays are `static public` fields exposed to FTC Dashboard via `@Config`:
