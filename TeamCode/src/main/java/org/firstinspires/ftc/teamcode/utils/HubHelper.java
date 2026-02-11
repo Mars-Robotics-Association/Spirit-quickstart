@@ -42,7 +42,8 @@ public class HubHelper {
 
             // If any check fails, fall through to fallback
         } catch (Exception e) {
-            // Ignore and fallback
+            Log.e("HubHelper", "Failed to get hub for motor");
+            // after logging, fallback
         }
 
         // Fallback: return the first hub in hardware map
