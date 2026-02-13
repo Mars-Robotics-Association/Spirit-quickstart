@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.opmodes.tuning.FlywheelsFeedforwardTuning;
 
 /**
  * Subsystem controlling the dual-flywheel ball shooter and its tilt servo.
@@ -61,37 +62,71 @@ public class Shooter {
      */
     static public double shooterVelocity = 0;
 
-    double smoothTargetShooterVelocity = 0;
-
     /**
      * Proportional gain for the feedback term (volts per tick/sec error).
      */
     static public double kp = 0.002;
     /**
-     * Exponential smoothing factor (0..1) applied to the target velocity.
+     * The cutoffHz used for the first order IIR LPF of motor measurement
      */
-    static public double targetSmoothingFactor = .1;
-    /**
-     * Exponential smoothing factor (0..1) applied to actual motor velocities.
-     */
-    static public double actualSmoothingFactor = .1;
+    static public double cutoffHz = 8;
 
     /**
      * Left motor static friction voltage (volts). From feedforward tuning.
      */
-    static public double leftKS = 1.5109;
+    static public double leftKS = 0.6647;
     /**
      * Left motor velocity gain (volts per tick/sec). From feedforward tuning.
      */
-    static public double leftKV = 0.005178;
+    static public double leftKV = 12.5 / 2377.3;
+    /**
+     * Left motor acceleration gain (volts per tick/sec²). From feedforward tuning.
+     */
+    static public double leftKA = 12.5 / 2380.5;
     /**
      * Right motor static friction voltage (volts). From feedforward tuning.
      */
-    static public double rightKS = 1.3725;
+    static public double rightKS = 0.8157;
     /**
      * Right motor velocity gain (volts per tick/sec). From feedforward tuning.
      */
-    static public double rightKV = 0.004908;
+    static public double rightKV = 12.5 / 2742.4;
+    /**
+     * Right motor acceleration gain (volts per tick/sec²). From feedforward tuning.
+     */
+    static public double rightKA = 12.5 / 1835.8;
+
+    // ── Setpoint profile ────────────────────────────────────────────────
+    /**
+     * Maximum profiled acceleration in ticks/s².
+     * <p>
+     * The physical upper bound from a standstill is
+     * {@code (V_battery - kS) / kA}.  Derate to ~80 % of that value
+     * (using a conservative battery voltage, e.g. 11 V) to leave headroom
+     * for the feedback term and for battery sag during a match:
+     * <pre>
+     *   maxAccelTPS2 ≈ 0.8 * (11.0 - kS) / kA
+     * </pre>
+     * Setting this higher than the physical limit causes the profile to
+     * outrun the motor and forces the feedback controller to compensate.
+     */
+    public static double maxAccelTPS2 = Math.min((11.0 - leftKS) / leftKA, (11.0 - rightKS) / rightKA);
+    /**
+     * Exponential approach time constant (seconds).  Controls how smoothly
+     * the profiled setpoint settles onto the target velocity.
+     * <p>
+     * Set this to {@code kA / kV} — the motor's physical time constant,
+     * which {@link FlywheelsFeedforwardTuning}
+     * already reports as {@code avgTau}.  This makes the profile match the
+     * motor's natural dynamics so the feedforward does most of the work.
+     * Increase beyond {@code kA / kV} if the feedforward fit was noisy
+     * (low R² or few valid step-response trials).
+     */
+    public static double approachTau = Math.max(leftKA / leftKV, rightKA / rightKV);
+
+    private long lastTimeNanos;
+    private double profiledVelocity;
+    private double prevProfiledVelocity;
 
     /**
      * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
@@ -132,16 +167,36 @@ public class Shooter {
             right.stop();
             return;
         }
-        //calculate smoothing
-        smoothTargetShooterVelocity = (shooterVelocity * targetSmoothingFactor) + (1 - targetSmoothingFactor) * smoothTargetShooterVelocity;
-        // An IIR filter approaches its target asymptotically (never truly arrives).
-        // Snap to the exact target once we're within 1% to avoid lingering error.
-        if (Math.abs(smoothTargetShooterVelocity - shooterVelocity) / shooterVelocity < 0.01) {
-            smoothTargetShooterVelocity = shooterVelocity;
+
+        // ── Timing ──────────────────────────────────────────────────────
+        long now = System.nanoTime();
+        double dt = (now - lastTimeNanos) / 1e9;
+        lastTimeNanos = now;
+        if (dt < 1e-6) return;
+
+        // ── Clamped-exponential setpoint profile ─────────────────────────
+        // Far from target: acceleration clamped at maxAccelTPS2 (linear ramp).
+        // Close to target: acceleration = error/tau, decaying smoothly to zero.
+        // The transition is continuous in acceleration — no step change for kA.
+        double error = shooterVelocity - profiledVelocity;
+        double rawAccel = error / approachTau;
+        double accel = Math.max(-maxAccelTPS2, Math.min(maxAccelTPS2, rawAccel));
+        profiledVelocity += accel * dt;
+
+        // Snap to target once negligibly close (avoids asymptotic creep)
+        if (Math.abs(shooterVelocity - profiledVelocity) < 1.0) {
+            prevProfiledVelocity = profiledVelocity = shooterVelocity;
         }
 
-        left.update(smoothTargetShooterVelocity, leftKS, leftKV, kp, actualSmoothingFactor);
-        right.update(smoothTargetShooterVelocity, rightKS, rightKV, kp, actualSmoothingFactor);
+        double acceleration = (profiledVelocity - prevProfiledVelocity) / dt;
+
+        prevProfiledVelocity = profiledVelocity;
+
+        double filterTau = 1.0 / (2.0 * Math.PI * cutoffHz);
+        double alpha = 1.0 - Math.exp(-dt / filterTau);
+
+        left.update(profiledVelocity, acceleration, leftKS, leftKV, leftKA, kp, alpha);
+        right.update(profiledVelocity, acceleration, rightKS, rightKV, leftKA, kp, alpha);
     }
 
 

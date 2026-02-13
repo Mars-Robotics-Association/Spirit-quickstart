@@ -59,17 +59,19 @@ public class ShooterMotor {
      * to a duty-cycle power by dividing by the current battery voltage.
      *
      * @param targetVelocity  the target velocity (ticks/sec)
+     * @param targetAccel     the target acceleration
      * @param kS              static friction voltage (volts)
      * @param kV              velocity feedforward gain (volts per tick/sec)
+     * @param kA              acceleration feedforward gain
      * @param kp              proportional gain (volts per tick/sec error)
      * @param smoothingFactor exponential smoothing factor (0..1)
      */
-    public void update(double targetVelocity, double kS, double kV, double kp,
-                       double smoothingFactor) {
+    public void update(double targetVelocity, double targetAccel, double kS,
+                       double kV, double kA, double kp, double smoothingFactor) {
         double actualVelocity = motor.getVelocity();
         smoothActualVelocity = (actualVelocity * smoothingFactor) + (1 - smoothingFactor) * smoothActualVelocity;
 
-        double feedforward = kS + kV * targetVelocity;
+        double feedforward = kS * Math.signum(targetVelocity) + kV * targetVelocity + kA * targetAccel;
         double feedback = kp * (targetVelocity - smoothActualVelocity);
         double voltage = feedforward + feedback;
         setPower(voltage / batteryVoltage);
