@@ -45,7 +45,7 @@ public class SpiritTeleop2 extends LinearOpMode {
     //public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
-    static public double defaultLaunchStepDelay = 1;//.4 will work for competition
+    static public double defaultLaunchStepDelay = 6;//
     static public double tiltToLaunchDelay = 1.0;
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
