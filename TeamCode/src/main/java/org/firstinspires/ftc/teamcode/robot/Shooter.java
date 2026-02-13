@@ -4,8 +4,6 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.opmodes.tuning.FlywheelsFeedforwardTuning;
 
@@ -33,7 +31,6 @@ public class Shooter {
     private final ShooterMotor right;
     public final Servo tiltServo;
     private final Telemetry telemetry;
-    private final VoltageSensor voltageSensor;
 
     /**
      * Tilt servo position for near-target shots.
@@ -62,6 +59,11 @@ public class Shooter {
      * Current target velocity (ticks per second). Set before calling {@link #update}.
      */
     static public double shooterVelocity = 0;
+
+    /**
+     * Maximum velocity error (ticks/sec) for {@link #isReady()} to return true.
+     */
+    static public double readyThreshold = 25;
 
     /**
      * Proportional gain for the feedback term (volts per tick/sec error).
@@ -127,7 +129,7 @@ public class Shooter {
 
     private long lastTimeNanos;
     private double profiledVelocity;
-    private double prevProfiledVelocity;
+    private boolean stopped = true;
 
     /**
      * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
@@ -140,8 +142,7 @@ public class Shooter {
     public Shooter(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
-        voltageSensor = hardwareMap.voltageSensor.iterator().next();
-        double voltage = voltageSensor.getVoltage();
+        double voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
 
         left = new ShooterMotor(hardwareMap, "shooterMotorLeft", telemetry,
                 DcMotorSimple.Direction.FORWARD, voltage);
@@ -162,18 +163,38 @@ public class Shooter {
     public void update() {
         telemetry.addData("Target T/S", shooterVelocity);
 
-        //fail safe
-        if (shooterVelocity == 0) {
-            left.stop();
-            right.stop();
-            return;
-        }
-
         // ── Timing ──────────────────────────────────────────────────────
         long now = System.nanoTime();
+        if (lastTimeNanos == 0) {
+            lastTimeNanos = now;
+            return;
+        }
         double dt = (now - lastTimeNanos) / 1e9;
         lastTimeNanos = now;
         if (dt < 1e-6) return;
+
+        // ── Velocity filter (always runs so readings stay fresh) ─────────
+        // Exact discrete-time first-order LPF: alpha = 1 - exp(-dt/tau).
+        // This keeps the effective cutoff frequency constant regardless of loop rate.
+        double filterTau = 1.0 / (2.0 * Math.PI * cutoffHz);
+        double alpha = 1.0 - Math.exp(-dt / filterTau);
+        left.updateFilter(alpha);
+        right.updateFilter(alpha);
+
+        // ── Coast when target is zero ────────────────────────────────────
+        if (shooterVelocity == 0) {
+            left.stop();
+            right.stop();
+            stopped = true;
+            return;
+        }
+
+        // ── Seed profile from coasting velocity on resume ────────────────
+        if (stopped) {
+            profiledVelocity = Math.max(left.smoothActualVelocity,
+                    right.smoothActualVelocity);
+            stopped = false;
+        }
 
         // ── Clamped-exponential setpoint profile ─────────────────────────
         // Far from target: acceleration clamped at maxAccelTPS2 (linear ramp).
@@ -186,20 +207,25 @@ public class Shooter {
 
         // Snap to target once negligibly close (avoids asymptotic creep)
         if (Math.abs(shooterVelocity - profiledVelocity) < 1.0) {
-            prevProfiledVelocity = profiledVelocity = shooterVelocity;
+            profiledVelocity = shooterVelocity;
+            accel = 0;
         }
 
-        double acceleration = (profiledVelocity - prevProfiledVelocity) / dt;
-
-        prevProfiledVelocity = profiledVelocity;
-
-        double filterTau = 1.0 / (2.0 * Math.PI * cutoffHz);
-        double alpha = 1.0 - Math.exp(-dt / filterTau);
-
-        left.update(profiledVelocity, acceleration, leftKS, leftKV, leftKA, kp, alpha);
-        right.update(profiledVelocity, acceleration, rightKS, rightKV, leftKA, kp, alpha);
+        left.update(profiledVelocity, accel, leftKS, leftKV, leftKA, kp);
+        right.update(profiledVelocity, accel, rightKS, rightKV, rightKA, kp);
     }
 
+    /**
+     * Returns true when the shooter is up to speed and ready to fire.
+     * Requires the acceleration profile to have settled and both motors'
+     * smoothed velocities to be within {@link #readyThreshold} of the target.
+     */
+    public boolean isReady() {
+        return shooterVelocity != 0
+                && profiledVelocity == shooterVelocity
+                && Math.abs(left.smoothActualVelocity - shooterVelocity) < readyThreshold
+                && Math.abs(right.smoothActualVelocity - shooterVelocity) < readyThreshold;
+    }
 
     /**
      * Sets the tilt servo to an arbitrary position.

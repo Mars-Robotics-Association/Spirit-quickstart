@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -27,6 +26,7 @@ public class ShooterMotor {
     private final DcMotorEx motor;
     private final String name;
     private final Telemetry telemetry;
+    private double actualVelocity = 0;
     public double smoothActualVelocity = 0;
     public double actualMotorPower = 0;
     private double lastSetPower = 0;
@@ -51,26 +51,35 @@ public class ShooterMotor {
     }
 
     /**
-     * Runs one iteration of the voltage-based feedforward + feedback loop for this motor.
+     * Reads the encoder velocity and updates the smoothed velocity estimate.
+     * Call every loop iteration (even when the shooter is off) so the filter
+     * stays current for a smooth resume from coasting.
      *
-     * <p>The feedforward model is {@code voltage = kS + kV * targetVelocity}, matching
-     * the model from {@code FlywheelsFeedforwardTuning}. The feedback term
+     * @param alpha IIR low-pass filter coefficient (0..1)
+     */
+    public void updateFilter(double alpha) {
+        actualVelocity = motor.getVelocity();
+        smoothActualVelocity = (actualVelocity * alpha) + (1 - alpha) * smoothActualVelocity;
+    }
+
+    /**
+     * Runs one iteration of the voltage-based feedforward + feedback loop for this motor.
+     * {@link #updateFilter} must be called first each loop to refresh the velocity estimate.
+     *
+     * <p>The feedforward model is {@code voltage = kS + kV * targetVelocity + kA * targetAccel},
+     * matching the model from {@code FlywheelsFeedforwardTuning}. The feedback term
      * {@code kP * (target - actual)} is also in volts. The total voltage is converted
      * to a duty-cycle power by dividing by the current battery voltage.
      *
      * @param targetVelocity  the target velocity (ticks/sec)
-     * @param targetAccel     the target acceleration
+     * @param targetAccel     the target acceleration (ticks/sec²)
      * @param kS              static friction voltage (volts)
      * @param kV              velocity feedforward gain (volts per tick/sec)
-     * @param kA              acceleration feedforward gain
+     * @param kA              acceleration feedforward gain (volts per tick/sec²)
      * @param kp              proportional gain (volts per tick/sec error)
-     * @param smoothingFactor exponential smoothing factor (0..1)
      */
     public void update(double targetVelocity, double targetAccel, double kS,
-                       double kV, double kA, double kp, double smoothingFactor) {
-        double actualVelocity = motor.getVelocity();
-        smoothActualVelocity = (actualVelocity * smoothingFactor) + (1 - smoothingFactor) * smoothActualVelocity;
-
+                       double kV, double kA, double kp) {
         double feedforward = kS * Math.signum(targetVelocity) + kV * targetVelocity + kA * targetAccel;
         double feedback = kp * (targetVelocity - smoothActualVelocity);
         double voltage = feedforward + feedback;
