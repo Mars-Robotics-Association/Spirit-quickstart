@@ -48,14 +48,15 @@ public class Shooter {
      */
     static public double homeTiltPosition = 0;
 
-    /**
-     * Target flywheel velocity for near shots (ticks per second).
-     */
-    static public double nearShooterVelocity = 650;
-    /**
-     * Target flywheel velocity for far shots (ticks per second).
-     */
-    static public double farShooterVelocity = 925;
+    /*The near target as measured by tachometer is between 1700 and 1900 rpm so say 1800 (as measured by Mr. Beckstead on 1/21/2026).
+    The far target as measured by tachometer is between 3600 and 3700 rpm so say 3650
+
+    So, velocity for near target = (1800 rotations per minute /28 ticks per seconds)/60 seconds = 840 tps
+    So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/60 seconds = 1,703 tps
+
+       */
+    static public double nearShooterVelocity = 650;//tps for use with encoders to set shooter speed
+    static public double farShooterVelocity = 945;//tps for use with encoders to set shooter speed
 
     /**
      * Current target velocity (ticks per second). Set before calling {@link #update}.

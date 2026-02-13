@@ -29,9 +29,9 @@ public class LaunchSequence {
     private final Carousel carousel;
     private final DoubleSupplier clock;
 
-    static public double defaultStepDelay = 1.0;
+    static public double defaultStepDelay = 0.5;
     static public double tiltToLaunchDelay = 1.0;
-    static public double rampUpDuration = 2.0;
+    static public double rampUpDuration = 1.0;
 
     private State state = State.IDLE;
     private int ballNumber;
@@ -40,7 +40,7 @@ public class LaunchSequence {
     private double rampUpDeadline;
     private double tiltPosition;
 
-    private enum State { IDLE, RAMPING, LAUNCHING, CLEANUP, DONE }
+    private enum State {IDLE, RAMPING, LAUNCHING, CLEANUP, DONE}
 
     public LaunchSequence(Shooter shooter, Carousel carousel, DoubleSupplier clock) {
         this.shooter = shooter;
@@ -48,7 +48,9 @@ public class LaunchSequence {
         this.clock = clock;
     }
 
-    /** Begin the launch sequence — starts flywheel ramp-up. */
+    /**
+     * Begin the launch sequence — starts flywheel ramp-up.
+     */
     public void start(double velocity, double tiltPosition) {
         shooter.shooterVelocity = velocity;
         shooter.update();
@@ -57,7 +59,9 @@ public class LaunchSequence {
         state = State.RAMPING;
     }
 
-    /** Advance the state machine. Call every loop iteration. No-op when IDLE or DONE. */
+    /**
+     * Advance the state machine. Call every loop iteration. No-op when IDLE or DONE.
+     */
     public void update() {
         double now = clock.getAsDouble();
 
@@ -171,17 +175,23 @@ public class LaunchSequence {
         }
     }
 
-    /** True after the full sequence (3 balls + cleanup) has finished. */
+    /**
+     * True after the full sequence (3 balls + cleanup) has finished.
+     */
     public boolean isDone() {
         return state == State.DONE;
     }
 
-    /** True while ramping or launching (not idle, not done). */
+    /**
+     * True while ramping or launching (not idle, not done).
+     */
     public boolean isRunning() {
         return state == State.RAMPING || state == State.LAUNCHING || state == State.CLEANUP;
     }
 
-    /** Return to IDLE so the sequence can be started again (for Teleop reuse). */
+    /**
+     * Return to IDLE so the sequence can be started again (for Teleop reuse).
+     */
     public void reset() {
         state = State.IDLE;
     }
