@@ -45,8 +45,9 @@ public class SpiritTeleop2 extends LinearOpMode {
     //public int counter = 0;//variable to use to cause a waiting period in the launch sequence
     int launchStep = 0;
     double stepStartTime = 0;
-    static public double defaultLaunchStepDelay = 6;//
-    static public double tiltToLaunchDelay = 1.0;
+    static public double defaultLaunchStepDelay = 1.0;//
+    static public double tiltDelay = 1.0;
+    static public double flyWheelDelay = 1.0;
 
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
@@ -328,7 +329,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                         // STEP 2 — tilt shooter
                         case 2:
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                            if (getRuntime() - stepStartTime > tiltDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -338,7 +339,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                         // STEP 3 — full kicker (launch ball)
                         case 3:
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -379,7 +380,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                         // STEP 7 — tilt again
                         case 7:
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                            if (getRuntime() - stepStartTime > tiltDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -389,7 +390,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                         // STEP 8 — second full kicker
                         case 8:
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -430,7 +431,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                         // STEP 12 — tilt third time
                         case 12:
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
+                            if (getRuntime() - stepStartTime > tiltDelay) {
                                 shooter.setTiltPosition(tiltPosition);
                                 stepStartTime = getRuntime();
                                 launchStep++;
@@ -439,7 +440,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 13 — full send #3
                         case 13:
-                            if (getRuntime() - stepStartTime > tiltToLaunchDelay) {
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
                                 carousel.setFullKicker();
                                 stepStartTime = getRuntime();

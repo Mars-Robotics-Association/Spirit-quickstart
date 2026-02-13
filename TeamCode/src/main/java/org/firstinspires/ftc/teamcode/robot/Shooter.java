@@ -45,7 +45,7 @@ So, velocity for far target = (3650 rotations per second/28 ticks per seconds)/6
 
    */
     static public double nearShooterVelocity = 650;//tps for use with encoders to set shooter speed
-    static public double farShooterVelocity = 925;//tps for use with encoders to set shooter speed
+    static public double farShooterVelocity = 945;//tps for use with encoders to set shooter speed
 
     static public double shooterVelocity = 0;
     static public double maxShooterVelocityLeft = 2350;//tps when power set to 1
