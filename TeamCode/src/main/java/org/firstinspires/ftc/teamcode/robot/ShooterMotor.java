@@ -85,11 +85,11 @@ public class ShooterMotor {
         double voltage = feedforward + feedback;
         setPower(voltage / batteryVoltage);
 
-        telemetry.addData(name + " Actual Velocity", actualVelocity);
-        telemetry.addData(name + " Smooth Velocity", smoothActualVelocity);
-        telemetry.addData(name + " Feedforward (V)", feedforward);
-        telemetry.addData(name + " Feedback (V)", feedback);
-        telemetry.addData(name + " Motor Power", actualMotorPower);
+        telemetry.addData(name + " Actual Velocity", "%.0f", actualVelocity);
+        telemetry.addData(name + " Smooth Velocity", "%.0f", smoothActualVelocity);
+        telemetry.addData(name + " Feedforward (V)", "%.1f", feedforward);
+        telemetry.addData(name + " Feedback (V)", "%.1f", feedback);
+        telemetry.addData(name + " Motor Power", "%.2f", actualMotorPower);
     }
 
     /**

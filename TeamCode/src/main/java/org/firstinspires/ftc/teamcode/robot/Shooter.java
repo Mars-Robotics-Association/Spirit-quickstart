@@ -161,7 +161,7 @@ public class Shooter {
      * Set {@link #shooterVelocity} before calling this method to change the target speed.
      */
     public void update() {
-        telemetry.addData("Target T/S", shooterVelocity);
+        telemetry.addData("shooterVelocity", shooterVelocity);
 
         // ── Timing ──────────────────────────────────────────────────────
         long now = System.nanoTime();
