@@ -187,7 +187,9 @@ public class Shooter {
     }
 
     /**
-     * this is purely here to support the old way of using Shooter
+     * This is purely here to support the old way of using Shooter.
+     * The better way is to pass telemetry so that {@link Shooter} and
+     * {@link ShooterMotor} can do their own logging.
      *
      * @param hardwareMap
      */
@@ -198,8 +200,8 @@ public class Shooter {
 
     /**
      * Does nothing except call update. The new calling convention
-     * is to optionally set shooterVelocity, and then call update();
-     * update should run on every control loop iteration.
+     * is to optionally set {@link #shooterVelocity}, and then call {@link #update()}.
+     * {@link #update} should run on every control loop iteration.
      *
      * @param shooterVelocity ignored
      * @param telemetry       ignored
