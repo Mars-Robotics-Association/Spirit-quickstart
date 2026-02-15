@@ -26,7 +26,7 @@ public class ShooterMotor {
     private final DcMotorEx motor;
     private final String name;
     private final Telemetry telemetry;
-    private double actualVelocity = 0;
+    public double actualVelocity = 0;
     public double smoothActualVelocity = 0;
     public double actualMotorPower = 0;
     private double lastSetPower = 0;
@@ -71,31 +71,33 @@ public class ShooterMotor {
      * {@code kP * (target - actual)} is also in volts. The total voltage is converted
      * to a duty-cycle power by dividing by the current battery voltage.
      *
-     * @param targetVelocity  the target velocity (ticks/sec)
-     * @param targetAccel     the target acceleration (ticks/sec²)
-     * @param kS              static friction voltage (volts)
-     * @param kV              velocity feedforward gain (volts per tick/sec)
-     * @param kA              acceleration feedforward gain (volts per tick/sec²)
-     * @param kp              proportional gain (volts per tick/sec error)
+     * @param targetVelocity the target velocity (ticks/sec)
+     * @param targetAccel    the target acceleration (ticks/sec²)
+     * @param kS             static friction voltage (volts)
+     * @param kV             velocity feedforward gain (volts per tick/sec)
+     * @param kA             acceleration feedforward gain (volts per tick/sec²)
+     * @param kp             proportional gain (volts per tick/sec error)
      */
     public void update(double targetVelocity, double targetAccel, double kS,
                        double kV, double kA, double kp) {
         double feedforward = kS * Math.signum(targetVelocity) + kV * targetVelocity + kA * targetAccel;
         double feedback = kp * (targetVelocity - smoothActualVelocity);
         double voltage = feedforward + feedback;
-        setPower(voltage / batteryVoltage);
+        setPowerInternal(voltage / batteryVoltage);
 
-        telemetry.addData(name + " Actual Velocity", "%.0f", actualVelocity);
-        telemetry.addData(name + " Smooth Velocity", "%.0f", smoothActualVelocity);
-        telemetry.addData(name + " Feedforward (V)", "%.1f", feedforward);
-        telemetry.addData(name + " Feedback (V)", "%.1f", feedback);
-        telemetry.addData(name + " Motor Power", "%.2f", actualMotorPower);
+        if (telemetry != null) {
+            telemetry.addData(name + " Actual Velocity", "%.0f", actualVelocity);
+            telemetry.addData(name + " Smooth Velocity", "%.0f", smoothActualVelocity);
+            telemetry.addData(name + " Feedforward (V)", "%.1f", feedforward);
+            telemetry.addData(name + " Feedback (V)", "%.1f", feedback);
+            telemetry.addData(name + " Motor Power", "%.2f", actualMotorPower);
+        }
     }
 
     /**
      * Quantizes power to {@link #powerQuantum} and writes to the motor only if changed.
      */
-    private void setPower(double power) {
+    private void setPowerInternal(double power) {
         double scale = 1.0 / powerQuantum;
         actualMotorPower = Math.round(power * scale) / scale;
         if (actualMotorPower != lastSetPower) {
@@ -107,7 +109,7 @@ public class ShooterMotor {
     /**
      * Stops the motor by setting power to 0.
      */
-    public void stop() {
-        setPower(0);
+    public void cutPower() {
+        setPowerInternal(0);
     }
 }

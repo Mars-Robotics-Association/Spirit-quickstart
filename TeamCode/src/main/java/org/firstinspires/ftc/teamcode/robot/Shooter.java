@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.opmodes.tuning.FlywheelsFeedforwardTuning;
 
@@ -26,9 +27,40 @@ import org.firstinspires.ftc.teamcode.opmodes.tuning.FlywheelsFeedforwardTuning;
  */
 @Config
 public class Shooter {
+    public static class DummyMotor {
+        private final ShooterMotor shooterMotor;
+
+        private DummyMotor(ShooterMotor shooterMotor) {
+            this.shooterMotor = shooterMotor;
+        }
+
+        @Deprecated
+        public void setPower(double power) {
+            // no-op. Only here to avoid more diffs in the opmodes
+        }
+
+        @Deprecated
+        public double getVelocity() {
+            return shooterMotor.actualVelocity;
+        }
+    }
+
+    @Deprecated
+    public final double shooterPower = 1;
+    @Deprecated
+    public double smoothActualLeftShooterVelocity;
+    @Deprecated
+    public double smoothActualRightShooterVelocity;
+    @Deprecated
+    public double actualMotorPower;
+
 
     private final ShooterMotor left;
     private final ShooterMotor right;
+    @Deprecated
+    public final DummyMotor shooterMotorLeft;
+    @Deprecated
+    public final DummyMotor shooterMotorRight;
     public final Servo tiltServo;
     private final Telemetry telemetry;
 
@@ -148,8 +180,33 @@ public class Shooter {
                 DcMotorSimple.Direction.FORWARD, voltage);
         right = new ShooterMotor(hardwareMap, "shooterMotorRight", telemetry,
                 DcMotorSimple.Direction.REVERSE, voltage);
+        shooterMotorLeft = new DummyMotor(left);
+        shooterMotorRight = new DummyMotor(right);
 
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");
+    }
+
+    /**
+     * this is purely here to support the old way of using Shooter
+     *
+     * @param hardwareMap
+     */
+    @Deprecated
+    public Shooter(HardwareMap hardwareMap) {
+        this(hardwareMap, null);
+    }
+
+    /**
+     * Does nothing except call update. The new calling convention
+     * is to optionally set shooterVelocity, and then call update();
+     * update should run on every control loop iteration.
+     *
+     * @param shooterVelocity ignored
+     * @param telemetry       ignored
+     */
+    @Deprecated
+    public void setShooterVelocity(double shooterVelocity, Telemetry telemetry) {
+        update();
     }
 
     /**
@@ -161,7 +218,8 @@ public class Shooter {
      * Set {@link #shooterVelocity} before calling this method to change the target speed.
      */
     public void update() {
-        telemetry.addData("shooterVelocity", shooterVelocity);
+        if (telemetry != null)
+            telemetry.addData("shooterVelocity", shooterVelocity);
 
         // ── Timing ──────────────────────────────────────────────────────
         long now = System.nanoTime();
@@ -181,10 +239,14 @@ public class Shooter {
         left.updateFilter(alpha);
         right.updateFilter(alpha);
 
+        smoothActualLeftShooterVelocity = left.smoothActualVelocity;
+        smoothActualRightShooterVelocity = right.smoothActualVelocity;
+
         // ── Coast when target is zero ────────────────────────────────────
         if (shooterVelocity == 0) {
-            left.stop();
-            right.stop();
+            left.cutPower();
+            right.cutPower();
+            actualMotorPower = 0;
             stopped = true;
             return;
         }
@@ -213,6 +275,7 @@ public class Shooter {
 
         left.update(profiledVelocity, accel, leftKS, leftKV, leftKA, kp);
         right.update(profiledVelocity, accel, rightKS, rightKV, rightKA, kp);
+        actualMotorPower = left.actualMotorPower + right.actualMotorPower / 2.0;
     }
 
     /**
@@ -260,5 +323,4 @@ public class Shooter {
     public void setHomeTiltPosition() {
         tiltServo.setPosition(homeTiltPosition);
     }
-
 }
