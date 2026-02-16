@@ -269,6 +269,11 @@ public class Shooter {
         double accel = Math.max(-maxAccelTPS2, Math.min(maxAccelTPS2, rawAccel));
         profiledVelocity += accel * dt;
 
+        if (telemetry != null){
+            telemetry.addData("profile accel", "%.1f", accel);
+            telemetry.addData("profile velocity", "%.1f", profiledVelocity);
+        }
+
         // Snap to target once negligibly close (avoids asymptotic creep)
         if (Math.abs(shooterVelocity - profiledVelocity) < 1.0) {
             profiledVelocity = shooterVelocity;
