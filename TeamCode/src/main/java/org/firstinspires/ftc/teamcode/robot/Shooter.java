@@ -159,6 +159,23 @@ public class Shooter {
      */
     public static double approachTau = Math.max(leftKA / leftKV, rightKA / rightKV);
 
+    /**
+     * Maximum elapsed time (seconds) applied to the setpoint profile per
+     * call to {@link #update}.
+     * <p>
+     * If the caller does not invoke {@code update()} every loop iteration
+     * (e.g. the OpMode only calls it inside certain state-machine steps),
+     * the wall-clock {@code dt} can grow to seconds.  Without a cap the
+     * profile would overshoot wildly
+     * ({@code profiledVelocity += maxAccel * hugeΔt}).
+     * <p>
+     * Capping {@code dt} means the profile advances at most one
+     * "normal-sized" step regardless of how long the gap was — the
+     * velocity filter still uses the true {@code dt} so its estimate
+     * snaps to the latest encoder reading correctly.
+     */
+    public static double maxProfileDt = 0.060;
+
     private long lastTimeNanos;
     private double profiledVelocity;
     private boolean stopped = true;
@@ -254,7 +271,11 @@ public class Shooter {
         }
 
         // ── Seed profile from coasting velocity on resume ────────────────
+        // Reset the filter so the profile and feedback start from a clean
+        // encoder reading, not a stale smoothed value from before the gap.
         if (stopped) {
+            left.resetFilter();
+            right.resetFilter();
             profiledVelocity = Math.max(left.smoothActualVelocity,
                     right.smoothActualVelocity);
             stopped = false;
@@ -264,14 +285,21 @@ public class Shooter {
         // Far from target: acceleration clamped at maxAccelTPS2 (linear ramp).
         // Close to target: acceleration = error/tau, decaying smoothly to zero.
         // The transition is continuous in acceleration — no step change for kA.
+        //
+        // Cap dt for the profile so a gap between update() calls doesn't
+        // cause a massive overshoot.  The velocity filter above still uses
+        // the true dt so its estimate stays accurate.
+        double profileDt = Math.min(dt, maxProfileDt);
         double error = shooterVelocity - profiledVelocity;
         double rawAccel = error / approachTau;
         double accel = Math.max(-maxAccelTPS2, Math.min(maxAccelTPS2, rawAccel));
-        profiledVelocity += accel * dt;
+        profiledVelocity += accel * profileDt;
 
         if (telemetry != null){
             telemetry.addData("profile accel", "%.1f", accel);
             telemetry.addData("profile velocity", "%.1f", profiledVelocity);
+            if (dt > maxProfileDt)
+                telemetry.addData("profile dt CAPPED", "%.3f -> %.3f", dt, profileDt);
         }
 
         // Snap to target once negligibly close (avoids asymptotic creep)

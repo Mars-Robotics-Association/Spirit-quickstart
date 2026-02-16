@@ -63,6 +63,17 @@ public class ShooterMotor {
     }
 
     /**
+     * Discards all filter history and sets the smoothed velocity to the
+     * latest raw encoder reading (from the most recent {@link #updateFilter}
+     * call).  Use this when resuming from a long idle period so the
+     * feedback loop starts from a clean measurement rather than a stale
+     * filtered value.
+     */
+    public void resetFilter() {
+        smoothActualVelocity = actualVelocity;
+    }
+
+    /**
      * Runs one iteration of the voltage-based feedforward + feedback loop for this motor.
      * {@link #updateFilter} must be called first each loop to refresh the velocity estimate.
      *
