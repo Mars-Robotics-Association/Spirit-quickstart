@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 /**
  * Subsystem controlling the ball carousel and kicker mechanism.
@@ -107,23 +108,44 @@ public class Carousel {
     public void spinCarouselMin() {
         carouselServo.setPosition(carouselPositionMin);
     }
+
     /** Rotates the carousel to its maximum position (for testing). */
     public void spinCarouselMax() {
         carouselServo.setPosition(carouselPositionMax);
     }
+
     /** Rotates the carousel to launch slot 1 (180 degrees + offset). */
     public void spinCarouselLaunchOne() {
         carouselServo.setPosition(carouselPositionLaunchOne);
     }
+
     /** Rotates the carousel to launch slot 2 (310 degrees + offset). */
     public void spinCarouselLaunchTwo() {
         carouselServo.setPosition(carouselPositionLaunchTwo);
     }
+
     /** Rotates the carousel to launch slot 3 (430 degrees + offset). */
     public void spinCarouselLaunchThree() {
         carouselServo.setPosition(carouselPositionLaunchThree);
-
-
     }
+
+    public void disableCarouselAndKicker(){
+        /** To stop a servo, we need to disable it, and for that, we need the ServoImplEx Class so we
+        must cast the kickerServo and carouselServo into SErvoImplEx () -> servos
+        */
+        ServoImplEx kickerStopServo = (ServoImplEx) kickerServo;
+        kickerStopServo.setPwmDisable();
+
+        ServoImplEx carouselStopServo = (ServoImplEx) carouselServo;
+        carouselStopServo.setPwmDisable();
     }
+
+    public void enableCarouselAndKicker(){
+        ServoImplEx kickerEnableServo = (ServoImplEx) kickerServo;
+        kickerEnableServo.setPwmEnable();
+
+        ServoImplEx carouselEnableServo = (ServoImplEx) carouselServo;
+        carouselEnableServo.setPwmEnable();
+    }
+}
 
