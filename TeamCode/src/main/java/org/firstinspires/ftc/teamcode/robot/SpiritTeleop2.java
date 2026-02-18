@@ -86,7 +86,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
 //LIFT ROBOT OFF OF MAT****************************************************
 
-            if (gamepad2.a){
+            if (gamepad1.back){
                 lift.engageLift();
             }
 
@@ -233,19 +233,16 @@ public class SpiritTeleop2 extends LinearOpMode {
                 carousel.setHomePositionKicker();
             }
 
-/*
+
 //  KILL BUTTON*****************************************************************
-
-            if(gamepad1.y){
-                drive.setDrivePowers(new PoseVelocity2d(
-                        new Vector2d(0, 0
-
-                        ),
-                        0
-                ));
-            }
+if(gamepad2.back){
+currentState = State.IDLE;
+launchStep = 0;
+shooter.shooterMotorLeft.setPower(0);
+shooter.shooterMotorRight.setPower(0);
+}
 //END KILL BUTTON************************************************************
-*/
+
 
 /*
 //KILL CAROUSEL AND KICKER***************************************************************
