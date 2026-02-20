@@ -428,11 +428,25 @@ public class SpiritAutoBlueFar extends LinearOpMode {
                                 shooter.shooterVelocity = 0;
                                 shooter.setShooterVelocity(shooter.shooterVelocity, telemetry);
 
-                                //strafe to the field wall
-                                driveTimer = getRuntime() + .5;
+
+                                //rotate to the right a tiny bit
+                                driveTimer = getRuntime() + .3;
                                 while (getRuntime() < driveTimer) {
                                     drive.setDrivePowers(new PoseVelocity2d(
-                                            new Vector2d(-1, 0
+                                            new Vector2d(0, 0
+
+                                            ),
+                                            -.4
+                                    ));
+                                }
+                                drive.setDrivePowers(new PoseVelocity2d(new Vector2d(0, 0), 0)); // stop rotation
+
+                                //strafe to the right and out of alliance partner's access 3rd row of artifacts
+                                //note: x of -1, y of 0 and angVel of 0  drives it forward
+                                driveTimer = getRuntime() + .75;
+                                while (getRuntime() < driveTimer) {
+                                    drive.setDrivePowers(new PoseVelocity2d(
+                                            new Vector2d(0, -1
 
                                             ),
                                             0
