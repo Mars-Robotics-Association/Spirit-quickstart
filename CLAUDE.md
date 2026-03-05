@@ -1,14 +1,24 @@
-# CLAUDE.md
+## Workflow Preferences
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+- Do not run builds (`./gradlew`) or git commands (`git commit`, `git push`, etc.) by default — the user handles build testing and git operations themselves. Running builds is fine if the user reports a build problem and needs help diagnosing it.
+- The user may ask for a progress report at the end of a session. These go in `TeamCode/src/main/java/org/firstinspires/ftc/teamcode/ProgressReports/` and should summarize the full session: the problems the user brought up, the discussion and decisions made, any gotchas encountered, and the solutions reached — not just a list of code changes.
 
 ## Project Overview
 
-This is an FTC (FIRST Tech Challenge) robotics project for Team Spirit, built on the Road Runner v1.0 quickstart. It is an Android application that deploys to an FTC Robot Controller phone/Control Hub. The robot features a mecanum drivetrain with a ball shooter mechanism (carousel, kicker, tilt servo), intake motor, and lift.
+This is an FTC (FIRST Tech Challenge) robotics project for Team Spirit, built on the Road Runner v1.0 quickstart. It is an Android application that deploys to an FTC Robot Controller REV Control Hub. The robot features a mecanum drivetrain with a ball shooter mechanism (carousel, kicker, tilt servo), intake motor, and lift. The team's code starts after `08f0898`
+
+## Java Version
+
+The project targets Java 8 for Android compatibility. Avoid using features from newer Java versions:
+
+- Records (Java 16+)
+- `var` keyword (Java 10+)
+- Switch expressions (Java 14+)
+- Text blocks (Java 15+)
 
 ## Build Commands
 
-This project uses Gradle with the Android Gradle Plugin. All commands should be run from the project root.
+This project uses Gradle with the Android Gradle Plugin. All commands should be run from the project root. Use `./gradlew` directly from bash — do NOT use `gradlew.bat` or `cmd /c`. For git commands, avoid using `git -C <path>` — just run `git` from the project root instead.
 
 ```bash
 # Build the project
@@ -32,45 +42,39 @@ There are no unit tests in this project. Testing is done by deploying to the rob
 
 The build config is split across files: `build.common.gradle` (shared Android config, rarely modify), `build.dependencies.gradle` (FTC SDK dependencies v11.0.0), and `TeamCode/build.gradle` (team dependencies including Road Runner).
 
-### Key Dependencies
-
-- **FTC SDK 11.0.0** - Core robotics framework
-- **Road Runner 1.0.1** (core + actions) + **Road Runner FTC 0.1.25** - Motion planning and trajectory following
-- **FTC Dashboard 0.5.0** - Live telemetry and parameter tuning via `@Config` annotation
-- Road Runner artifacts come from `https://maven.brott.dev/`
-
-### Code Organization (`TeamCode/src/main/java/.../teamcode/`)
-
-**Drive classes (root package):**
-- `Localizer` - Interface for all localization strategies (`setPose`, `getPose`, `update`)
-- `TankDrive` / `robot/MecanumDrive` - Drive classes with embedded `DriveLocalizer` inner class; contain Road Runner `PARAMS` (feedforward, PID gains, constraints). **The team uses `MecanumDrive`** (set in `TuningOpModes.DRIVE_CLASS`)
-- `ThreeDeadWheelLocalizer`, `TwoDeadWheelLocalizer`, `PinpointLocalizer`, `OTOSLocalizer` - Alternative localizer implementations that can be swapped into the drive class
-
-**Robot subsystems (`robot/` package):**
-- `Intake` - Single motor (`intakeMotor`)
-- `Shooter` - Dual flywheel motors (`shooterMotorLeft`/`shooterMotorRight`) + tilt servo; uses feedforward+feedback velocity control with smoothing
-- `Carousel` - Two servos (`carouselServo` + `kickerServo`) that rotate a ball carousel and kick balls into the shooter; positions are computed from degree offsets
-- `Lift` - Encoder-controlled lift motor for raising the robot
-
-**OpModes (`robot/` package):**
-- `SpiritTeleop2` - Main teleop; gamepad1 drives + controls tilt/carousel positions, gamepad2 controls intake/shooter/lift. Launch sequence is a multi-step state machine (IDLE -> RAMPING -> LAUNCHING with 16 timed steps)
-- `SpiritAutoFar`, `SpiritAutoBlueFar`, `SpiritAutoBlueNear`, `SpiritAutoRedFar`, `SpiritAutoRedNear` - Autonomous routines, mostly timed drive movements
-
-**Tuning (`tuning/` package):**
-- `TuningOpModes` - Registers all Road Runner tuning OpModes (ramp loggers, push tests, direction debuggers, feedforward/feedback tuners). See [Road Runner tuning docs](https://rr.brott.dev/docs/v1-0/tuning/)
-- `LocalizationTest`, `ManualFeedbackTuner`, `SplineTest` - Custom tuning OpModes
-
-**Messages (`messages/` package):** Data classes for Road Runner's FlightRecorder logging.
-
-### Hardware Configuration Names
-
-Motors: `leftFront`, `leftBack`, `rightBack`, `rightFront`, `intakeMotor`, `shooterMotorLeft`, `shooterMotorRight`, `liftMotor`
-Servos: `tiltServo`, `kickerServo`, `carouselServo`
-IMU: `imu`
-
 ### Important Patterns
 
 - Classes annotated with `@Config` expose their `static public` fields to FTC Dashboard for live tuning
 - Drive parameters (kS, kV, kA, PID gains, wheel velocity limits) live in `MecanumDrive.Params`
 - The `MecanumDrive` constructor uses `LynxModule.BulkCachingMode.AUTO` for efficient hub communication
-- `rightFront` motor direction is reversed in `MecanumDrive`; other motor directions are default
+
+## FTC SDK Gotchas
+
+### DcMotor RunMode
+
+- `RUN_USING_ENCODER` enables the SDK's built-in PIDF velocity controller. Only use this if you want the SDK to handle velocity control.
+- `RUN_WITHOUT_ENCODER` is the correct mode when doing custom feedback/feedforward in team code. Despite the name, it still reads encoder values — it just doesn't use them for internal control.
+
+### RUN_USING_ENCODER feedforward (kV)
+
+The SDK's velocity PIDF `F` coefficient is a kV, but scaled by 32767. To calculate: `F = 32767 * kV`. For example, a motor measured at max 2496 ticks/sec → `F = 32767 / 2496 ≈ 13.13`.
+
+### Gamepad edge detection
+
+SDK 11.0 added rising/falling edge detection methods directly on the Gamepad object, e.g. `gamepad1.leftBumperWasPressed()` and `gamepad1.leftBumperWasReleased()`. SDK 11.1 extended this to triggers. See `ConceptGamepadEdgeDetection` sample for usage. Code targeting older SDK versions must track previous button state manually.
+
+### Identifying which hub a motor is on
+
+Use `HubHelper` to determine whether a motor is plugged into the Control Hub or the Expansion Hub. It returns the `LynxModule` for the hub the motor is connected to. Do not manually iterate `LynxModule` instances or hardcode hub assumptions.
+
+### Loop sleep
+
+Avoid calling `sleep()` to intentionally slow down control or sampling loops — prefer higher sample rates. Sleep is fine in situations where the OpMode is just waiting for stop (e.g., `while (opModeIsActive()) sleep(100);`).
+
+### FTC Dashboard field overlay
+
+When using FTC Dashboard telemetry alongside field overlay drawing (e.g., in `DrivingBase`), use `DashboardTelemetryPacketAccess` to get the underlying `TelemetryPacket` and draw on its `fieldOverlay()` directly. Do not create a separate `TelemetryPacket` and send it manually — that writes extra telemetry lines and duplicates data on the dashboard.
+
+### No hardware commands after opModeIsActive() returns false
+
+In a `LinearOpMode`, never send any hardware commands (motor power, servo position, sensor reads, etc.) after `opModeIsActive()` returns `false`. The SDK takes sole responsibility for shutting down hardware at that point. Sending commands after this will crash the Control Hub and force a restart.

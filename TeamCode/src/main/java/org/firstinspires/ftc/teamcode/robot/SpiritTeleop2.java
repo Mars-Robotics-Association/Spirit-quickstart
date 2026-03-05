@@ -68,12 +68,12 @@ public class SpiritTeleop2 extends LinearOpMode {
         double tiltPosition = 0;
         //double homeTiltPosition = 0;
 
+        telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
-        Shooter shooter = new Shooter(hardwareMap);//instantiate a new shooter
+        Shooter shooter = new Shooter(hardwareMap, telemetry);//instantiate a new shooter
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
         Lift lift = new Lift(hardwareMap);
-        telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
 
         shooter.setHomeTiltPosition();
@@ -507,13 +507,16 @@ shooter.shooterMotorRight.setPower(0);
             packet.fieldOverlay().setStroke("#3F51B5");
             Drawing.drawRobot(packet.fieldOverlay(), pose);
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
-           telemetry.addData("Actual Left Shooter Velocity  ", shooter.shooterMotorLeft.getVelocity());
-           telemetry.addData("Actual Right Shooter Velocity  ", shooter.shooterMotorRight.getVelocity());
-           telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
-           telemetry.addData("shooterPower ", shooter.shooterPower);
-           telemetry.addData(" smoothing vel left ", shooter.smoothActualLeftShooterVelocity);
-            telemetry.addData(" smoothing vel right", shooter.smoothActualRightShooterVelocity);
-            telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
+            if (false) {
+                telemetry.addData("Actual Left Shooter Velocity  ", shooter.shooterMotorLeft.getVelocity());
+                telemetry.addData("Actual Right Shooter Velocity  ", shooter.shooterMotorRight.getVelocity());
+                telemetry.addData("shooterVelocity ", shooter.shooterVelocity);
+                telemetry.addData("currentState", currentState);
+                telemetry.addData("launchStep", launchStep);
+                telemetry.addData(" smoothing vel left ", shooter.smoothActualLeftShooterVelocity);
+                telemetry.addData(" smoothing vel right", shooter.smoothActualRightShooterVelocity);
+                telemetry.addData("actualMotorPower ", shooter.actualMotorPower);
+            }
            telemetry.update();
         }
 
