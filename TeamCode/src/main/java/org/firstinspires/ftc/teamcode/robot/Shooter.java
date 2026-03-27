@@ -54,7 +54,7 @@ public class Shooter {
 
         tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
 
-        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);//one of the launchers has to spin in opposite direction
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 

@@ -62,11 +62,9 @@ public class SpiritTeleop2 extends LinearOpMode {
         double driveTimer = 0;
         boolean rampUpFlag = false;
 
-        //double shooterPower = 0;//power for shooter which is set for near or far shot based on which trigger is pulled
         State currentState = State.IDLE;
 
         double tiltPosition = 0;
-        //double homeTiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         //Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
@@ -74,7 +72,6 @@ public class SpiritTeleop2 extends LinearOpMode {
         Carousel carousel = new Carousel(hardwareMap);//instantiate a new carousel
         Lift lift = new Lift(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
-
 
         shooter.setHomeTiltPosition();
         lift.homeLift();
@@ -91,28 +88,29 @@ public class SpiritTeleop2 extends LinearOpMode {
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
                 case IDLE:
-                    // Near shot (right trigger)
+                    // Near shot (if right trigger pulled and the left trigger is not pulled)
+                    //The if condition is written this way in case someone pulls both triggers at once, nothing happens
                     if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                        //shooter.shooterVelocity = shooter.nearShooterVelocity;
-                        shooter.shooterMotorLeft.setPower(.3);
-                        shooter.shooterMotorRight.setPower(.3);
-                        shooter.shooterPower = Shooter.nearShooterPower;
-                        shooter.setShooterPower(shooter.shooterPower, telemetry);
-                        tiltPosition = shooter.nearTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;   // 2-second spin-up
-                        currentState = State.RAMPING;
+                        shooter.shooterMotorLeft.setPower(.3);//get the launcher spinning
+                        shooter.shooterMotorRight.setPower(.3);//get the launcher spinning
+                        shooter.shooterPower = Shooter.nearShooterPower;//sets the power for a near launch
+                        shooter.setShooterPower(shooter.shooterPower, telemetry);//applies the power to the launcher motors
+                        tiltPosition = shooter.nearTiltPosition;//sets the tilt position to for a near launch
+                        rampUpTimer = getRuntime() + 2.0;   // sets a 2-second spin-up timer
+                        currentState = State.RAMPING;//lets us move to the ramping section of the code
 
                     }
 
-                    // Far shot (left trigger)
+                    // Far shot (if left trigger pulled and the right trigger is not)
+                    //The if condition is written this way in case someone pulls both triggers at once, nothing happens
                     if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                        shooter.shooterMotorLeft.setPower(.425);
-                        shooter.shooterMotorRight.setPower(.425);
-                        shooter.shooterPower = Shooter.farShooterPower;
-                        shooter.setShooterPower(Shooter.shooterPower, telemetry);
-                        tiltPosition = shooter.farTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;
-                        currentState = State.RAMPING;
+                        shooter.shooterMotorLeft.setPower(.425);//get the launcher spinning
+                        shooter.shooterMotorRight.setPower(.425);//get the launcher spinning
+                        shooter.shooterPower = Shooter.farShooterPower;//set power for a far launch
+                        shooter.setShooterPower(Shooter.shooterPower, telemetry);//apply power to launcher motors
+                        tiltPosition = shooter.farTiltPosition;//set the tilt for a far launch
+                        rampUpTimer = getRuntime() + 2.0;//sets a 2 second spin-up timer
+                        currentState = State.RAMPING;//let us move to the ramping section of the code
                     }
                     break;
 
@@ -120,16 +118,16 @@ public class SpiritTeleop2 extends LinearOpMode {
                 //  RAMPING — waiting for flywheel to reach speed
                 // ------------------------------------------------------
                 case RAMPING:
-                    shooter.setShooterPower(shooter.shooterPower, telemetry);
-                    if (getRuntime() > rampUpTimer) {
+                    shooter.setShooterPower(shooter.shooterPower, telemetry);//apply power to launch motors
+                    if (getRuntime() > rampUpTimer) {//the code will keep testing this if condition until 2 seconds have passed
                         // Begin launch sequence
-                        currentState = State.LAUNCHING;
-                        launchStep = 0;
-                        //carousel.spinCarouselLaunchOne();
+                        currentState = State.LAUNCHING;//lets us move to the LAUNCHING SECTION OF THE CODE
+                        launchStep = 0;//sets the launch step to be used in the LAUNCHING SECTION OF THE CODE
 
-                        shooter.setHomeTiltPosition();
-                        carousel.setHomePositionKicker();
-                        stepStartTime = getRuntime();
+                        //get tilt and carousel ready to start launch sequence:
+                        shooter.setHomeTiltPosition();//set tilt position to home (vertical position)
+                        carousel.setHomePositionKicker();//set carousel to home position
+                        stepStartTime = getRuntime();//set a timer to the current time
 
                     }
                     break;
@@ -139,15 +137,15 @@ public class SpiritTeleop2 extends LinearOpMode {
                 // ------------------------------------------------------
                 case LAUNCHING:
 
-                    switch (launchStep) {
+                    switch (launchStep) {//launchStep is what will move us through the steps in order. We increase it in each step below
 
                         // STEP 0 — rotate carousel to launch position 1
                         case 0:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                carousel.spinCarouselLaunchOne();
-                                shooter.setShooterPower(shooter.shooterPower, telemetry);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                carousel.spinCarouselLaunchOne();//spin carousel to first launch position
+                                shooter.setShooterPower(shooter.shooterPower, telemetry);//apply power to launch motors
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increases the launch step from 0 to 1
                             }
                             break;
 
@@ -310,7 +308,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
             //------------------------END OF LAUNCH SEQUENCE-----------------------------------
 
-
+/*
 //LIFT ROBOT OFF OF MAT****************************************************
 
             if (gamepad1.back){
@@ -322,7 +320,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                 lift.homeLift();
             }
 //END CODE FOR LIFT*********************************************************
-
+*/
             telemetry.addData("Test", 0);
             //Operate Intake: left bumper is intake and right bumper is eject
             if (gamepad2.left_bumper) {
