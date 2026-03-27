@@ -151,155 +151,157 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 1 — tiny kicker
                         case 1:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {//check to see if delay time has passed
+                                carousel.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep from 1 to 2
                             }
                             break;
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > tiltDelay) {
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
+                                shooter.setTiltPosition(tiltPosition);//tilt the launcher
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep from 2 to 3
                             }
                             break;
 
                         // STEP 3 — full kicker (launch ball)
                         case 3:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > flyWheelDelay) {
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
+                                carousel.setFullKicker();//lift the kicker the to the launch wheels
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep from 3 to 4
                             }
                             break;
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setHomeTiltPosition();
-                                carousel.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                shooter.setHomeTiltPosition();//set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
+                                carousel.setHomePositionKicker();//lower the kicker
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep from 4 to 5
                             }
                             break;
 
                         // STEP 5 — rotate carousel to position 2
                         case 5:
-                            shooter.setShooterPower(shooter.shooterPower,telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                carousel.spinCarouselLaunchTwo();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower,telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                carousel.spinCarouselLaunchTwo();//spin carousel to second launch position
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep
                             }
                             break;
 
                         // STEP 6 — second tiny kicker
                         case 6:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
+                                carousel.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase the launchStep
                             }
                             break;
 
                         // STEP 7 — tilt again
                         case 7:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > tiltDelay) {
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
+                                shooter.setTiltPosition(tiltPosition);//tilt the launcher
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
 
                         // STEP 8 — second full kicker
                         case 8:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > flyWheelDelay) {
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
+                                carousel.setFullKicker();//lift the kicker up to the launchers
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
 
                             }
                             break;
 
                         // STEP 9 — reset tilt + kicker again
                         case 9:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                shooter.setHomeTiltPosition();
-                                carousel.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                shooter.setHomeTiltPosition();//set the tilt to home(vertical) so we can lower the kicker without hitting anyting
+                                carousel.setHomePositionKicker();//lower the kicker
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
 
                         // STEP 10 — rotate to position 3
                         case 10:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                carousel.spinCarouselLaunchThree();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                carousel.spinCarouselLaunchThree();//spin the carousel to the third launch position
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
 
                         // STEP 11 — tiny kicker third time
                         case 11:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {
-                                carousel.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
+                                carousel.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
 
                         // STEP 12 — tilt third time
                         case 12:
-                            shooter.setShooterPower(shooter.shooterPower, telemetry);
-                            if (getRuntime() - stepStartTime > tiltDelay) {
-                                shooter.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
+                                shooter.setTiltPosition(tiltPosition);//tilt the launcher
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
 
                         // STEP 13 — full send #3
                         case 13:
-                            if (getRuntime() - stepStartTime > flyWheelDelay) {
-                                shooter.setShooterPower(shooter.shooterPower, telemetry);
-                                carousel.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
+                                carousel.setFullKicker();//lift the kicker to the launchers
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             break;
                         case 14://position kicker down so it does not bump carousel
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {
-                                shooter.setHomeTiltPosition();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
+                                shooter.setHomeTiltPosition();//tilt the launcher to home (vertical) position
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
                             // STEP 15 — reset everything, end sequence
                         case 15:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {
-                                carousel.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            shooter.setShooterPower(shooter.shooterPower, telemetry);//reapply power to launch motors
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {//check to see if delay time has passed
+                                carousel.setHomePositionKicker();//spin carousel to home position
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
+                                launchStep++;//increase launchStep
                             }
-                        case 16:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .75) {
-                                carousel.spinCarouselLaunchOne();//add
-                                shooter.shooterPower = 0;
-                                shooter.setShooterPower(shooter.shooterPower, telemetry);
-                                currentState = State.IDLE;
+                        case 16://stop launchers from spinning
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .75) {//check to see if delay time has passed
+                                carousel.spinCarouselLaunchOne();//spin carousel to first launch position
+                                shooter.shooterPower = 0;//set shooter power to 0
+                                shooter.setShooterPower(shooter.shooterPower, telemetry);//set motor power to shooter power
+                                currentState = State.IDLE;//return to the IDLE state (currentState = State.IDLE;)
                             }
                             break;
                     }
