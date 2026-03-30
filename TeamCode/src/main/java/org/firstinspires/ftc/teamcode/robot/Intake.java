@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * <p>Uses a single motor ({@code "intakeMotor"}) to spin a roller that pulls balls
  * into the carousel. Positive power intakes balls; negative power ejects them.
  *
- * @see Carousel
+ * @see CarouselTimmy
  */
 public class Intake {
     private final DcMotorEx intakeMotor;

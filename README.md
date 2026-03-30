@@ -15,20 +15,20 @@ The quickstart's `MecanumDrive.java` was relocated from the root `teamcode` pack
 Four new hardware subsystem classes were added in `teamcode.robot`:
 
 - **Intake** -- Single DC motor (`intakeMotor`). Thin wrapper: just `setPower()`.
-- **Shooter** -- Dual flywheel motors (`shooterMotorLeft`, `shooterMotorRight`) plus a `tiltServo` that angles the shooter for near vs. far shots. Velocity control uses a hand-rolled feedforward + proportional feedback loop with exponential smoothing, rather than the SDK's built-in `RUN_USING_ENCODER` PID (which is commented out). Near target is ~650 tps, far target is ~925 tps.
-- **Carousel** -- Two servos: `carouselServo` (continuous rotation, holds 3 balls at 120-degree spacing) and `kickerServo` (pushes balls into the shooter). Positions are computed from a degree-to-servo conversion factor with a configurable offset. Intake positions and launch positions are staggered so the carousel rotates to feed balls one at a time.
+- **Shooter** -- Dual flywheel motors (`shooterMotorLeft`, `shooterMotorRight`) plus a `tiltServo` that angles the shooterTimmy for near vs. far shots. Velocity control uses a hand-rolled feedforward + proportional feedback loop with exponential smoothing, rather than the SDK's built-in `RUN_USING_ENCODER` PID (which is commented out). Near target is ~650 tps, far target is ~925 tps.
+- **Carousel** -- Two servos: `carouselServo` (continuous rotation, holds 3 balls at 120-degree spacing) and `kickerServo` (pushes balls into the shooterTimmy). Positions are computed from a degree-to-servo conversion factor with a configurable offset. Intake positions and launch positions are staggered so the timmyCarouselTimmy rotates to feed balls one at a time.
 - **Lift** -- Encoder-driven motor (`liftMotor`) with `RUN_TO_POSITION` to raise the robot. Target is 1300 ticks.
 
 ### Teleop: State Machine Launch Sequence
 
-`SpiritTeleop2` is the main driver-controlled OpMode. The most interesting part is the 16-step timed state machine that fires all three balls from the carousel:
+`SpiritTeleop2` is the main driver-controlled OpMode. The most interesting part is the 16-step timed state machine that fires all three balls from the timmyCarouselTimmy:
 
 1. Gamepad2 trigger pull enters **RAMPING** state (2-second flywheel spin-up)
-2. Transitions to **LAUNCHING**, which cycles through three identical fire-reset sequences: rotate carousel to position -> tiny kicker nudge -> tilt shooter -> full kicker fire -> reset tilt and kicker
+2. Transitions to **LAUNCHING**, which cycles through three identical fire-reset sequences: rotate timmyCarouselTimmy to position -> tiny kicker nudge -> tilt shooterTimmy -> full kicker fire -> reset tilt and kicker
 3. Right trigger = near shot (lower tilt, lower velocity); left trigger = far shot (higher tilt, higher velocity)
-4. After all 3 balls are fired, the shooter powers down and returns to **IDLE**
+4. After all 3 balls are fired, the shooterTimmy powers down and returns to **IDLE**
 
-Gamepad1's right trigger runs a separate 3-step intake sequence that advances the carousel through intake positions on successive pulls, with rising-edge detection to avoid repeat triggers.
+Gamepad1's right trigger runs a separate 3-step intake sequence that advances the timmyCarouselTimmy through intake positions on successive pulls, with rising-edge detection to avoid repeat triggers.
 
 ### Autonomous Routines
 

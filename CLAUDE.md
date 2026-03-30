@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an FTC (FIRST Tech Challenge) robotics project for Team Spirit, built on the Road Runner v1.0 quickstart. It is an Android application that deploys to an FTC Robot Controller phone/Control Hub. The robot features a mecanum drivetrain with a ball shooter mechanism (carousel, kicker, tilt servo), intake motor, and lift.
+This is an FTC (FIRST Tech Challenge) robotics project for Team Spirit, built on the Road Runner v1.0 quickstart. It is an Android application that deploys to an FTC Robot Controller phone/Control Hub. The robot features a mecanum drivetrain with a ball shooterTimmy mechanism (timmyCarouselTimmy, kicker, tilt servo), intake motor, and lift.
 
 ## Build Commands
 
@@ -49,11 +49,11 @@ The build config is split across files: `build.common.gradle` (shared Android co
 **Robot subsystems (`robot/` package):**
 - `Intake` - Single motor (`intakeMotor`)
 - `Shooter` - Dual flywheel motors (`shooterMotorLeft`/`shooterMotorRight`) + tilt servo; uses feedforward+feedback velocity control with smoothing
-- `Carousel` - Two servos (`carouselServo` + `kickerServo`) that rotate a ball carousel and kick balls into the shooter; positions are computed from degree offsets
+- `Carousel` - Two servos (`carouselServo` + `kickerServo`) that rotate a ball timmyCarouselTimmy and kick balls into the shooterTimmy; positions are computed from degree offsets
 - `Lift` - Encoder-controlled lift motor for raising the robot
 
 **OpModes (`robot/` package):**
-- `SpiritTeleop2` - Main teleop; gamepad1 drives + controls tilt/carousel positions, gamepad2 controls intake/shooter/lift. Launch sequence is a multi-step state machine (IDLE -> RAMPING -> LAUNCHING with 16 timed steps)
+- `SpiritTeleop2` - Main teleop; gamepad1 drives + controls tilt/timmyCarouselTimmy positions, gamepad2 controls intake/shooterTimmy/lift. Launch sequence is a multi-step state machine (IDLE -> RAMPING -> LAUNCHING with 16 timed steps)
 - `SpiritAutoFar`, `SpiritAutoBlueFar`, `SpiritAutoBlueNear`, `SpiritAutoRedFar`, `SpiritAutoRedNear` - Autonomous routines, mostly timed drive movements
 
 **Tuning (`tuning/` package):**

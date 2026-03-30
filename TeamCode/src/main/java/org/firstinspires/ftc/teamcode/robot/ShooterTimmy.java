@@ -18,10 +18,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  *
  * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
  *
- * @see Carousel
+ * @see CarouselTimmy
  */
 @Config
-public class Shooter {
+public class ShooterTimmy {
 
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
@@ -43,7 +43,7 @@ public class Shooter {
      * @param hardwareMap the robot's hardware map containing {@code "shooterMotorLeft"},
      *                    {@code "shooterMotorRight"}, and {@code "tiltServo"}
      */
-    public Shooter(HardwareMap hardwareMap) {
+    public ShooterTimmy(HardwareMap hardwareMap) {
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
