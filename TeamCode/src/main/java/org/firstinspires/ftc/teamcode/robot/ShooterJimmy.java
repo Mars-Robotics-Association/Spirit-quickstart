@@ -31,8 +31,8 @@ public class ShooterJimmy {
     //static public double homeTiltPosition = 0;//for testing
 
     static public double shooterPower = 0;
-    static public double nearShooterPower = .3;//tps for use with encoders to set shooter speed
-    static public double farShooterPower = .425;//tps for use with encoders to set shooter speed
+    static public double nearShooterPower = 1.0;//tps for use with encoders to set shooter speed
+    static public double farShooterPower = 1.0;//tps for use with encoders to set shooter speed
 
     //*********************************************
 
@@ -54,7 +54,7 @@ public class ShooterJimmy {
 
        // tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
 
-        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);//one of the launchers has to spin in opposite direction
+        shooterMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);//one of the launchers has to spin in opposite direction
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
@@ -70,7 +70,7 @@ public class ShooterJimmy {
      */
     public void setShooterPower(double shooterPower, Telemetry telemetry) {
         shooterMotorLeft.setPower(shooterPower);
-        shooterMotorRight.setPower(shooterPower);
+       shooterMotorRight.setPower(shooterPower);
 
         //fail safe
         if (shooterPower == 0){

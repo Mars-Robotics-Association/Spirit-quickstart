@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
  * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
  *
  * @see ShooterTimmy
- * @see Intake
+ * @see IntakeTimmy
  */
 @Config
 public class CarouselJimmy {
@@ -36,12 +36,12 @@ public class CarouselJimmy {
     // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
 
     //KICKER POSITIONS
-    public static double kickerDownPosition = .8;//0
+    public static double kickerDownPosition = .52;//0
    // static public double kickerTinyLiftPosition = .65;//.7
-    double kickerFullLiftPosition = .5;//.5
+    double kickerFullLiftPosition = .21;//.5
 
     //CAROUSEL POSITIONS
-    public static double carouselPositionHome = 0.5;
+    public static double carouselPositionHome = 0.0;
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
     double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions

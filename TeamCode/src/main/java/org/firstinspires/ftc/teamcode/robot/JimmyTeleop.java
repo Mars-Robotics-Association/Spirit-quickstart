@@ -52,7 +52,7 @@ public class JimmyTeleop extends LinearOpMode {
     //VARIABLES USED IN INTAKE SEQUENCE--------------------------------------
     int intakeStep = 0;                 // 0 → 1 → 2
     boolean triggerHeld = false;        // edge detection
-    double intakePower = 1.0;
+    //double intakePower = 0.3;
     //-------------------------------------------
     @Override
     public void runOpMode() {
@@ -67,14 +67,14 @@ public class JimmyTeleop extends LinearOpMode {
         //double tiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        //Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
+        IntakeJimmy intakeJimmy = new IntakeJimmy(hardwareMap);//instantiate a new intake motor
         ShooterJimmy shooterJimmy = new ShooterJimmy(hardwareMap);//instantiate a new shooter
         CarouselJimmy carouselJimmy = new CarouselJimmy(hardwareMap);//instantiate a new carousel
-        Lift lift = new Lift(hardwareMap);
+        //Lift lift = new Lift(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
         //shooterJimmy.setHomeTiltPosition();
-        lift.homeLift();
+        //lift.homeLift();
         waitForStart();
 
         while (opModeIsActive()){
@@ -91,9 +91,10 @@ public class JimmyTeleop extends LinearOpMode {
                     // Near shot (if right trigger pulled and the left trigger is not pulled)
                     //The if condition is written this way in case someone pulls both triggers at once, nothing happens
                     if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                        intakeJimmy.setPower(-0.2);
                         shooterJimmy.shooterMotorLeft.setPower(.3);//get the launcher spinning
                         shooterJimmy.shooterMotorRight.setPower(.3);//get the launcher spinning
-                        shooterJimmy.shooterPower = ShooterTimmy.nearShooterPower;//sets the power for a near launch
+                        shooterJimmy.shooterPower = ShooterJimmy.nearShooterPower;//sets the power for a near launch
                         shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//applies the power to the launcher motors
                         //tiltPosition = shooterTimmy.nearTiltPosition;//sets the tilt position to for a near launch
                         rampUpTimer = getRuntime() + 2.0;   // sets a 2-second spin-up timer
@@ -301,6 +302,7 @@ public class JimmyTeleop extends LinearOpMode {
                                 carouselJimmy.spinCarouselLaunchOne();//spin carousel to first launch position
                                 shooterJimmy.shooterPower = 0;//set shooter power to 0
                                 shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//set motor power to shooter power
+                                intakeJimmy.setPower(0.0);
                                 currentState = State.IDLE;//return to the IDLE state (currentState = State.IDLE;)
                             }
                             break;

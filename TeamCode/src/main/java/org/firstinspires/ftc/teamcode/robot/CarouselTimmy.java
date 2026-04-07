@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
  * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
  *
  * @see ShooterTimmy
- * @see Intake
+ * @see IntakeTimmy
  */
 @Config
 public class CarouselTimmy {

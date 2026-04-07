@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
  * <p>Uses a single motor ({@code "intakeMotor"}) to spin a roller that pulls balls
  * into the carousel. Positive power intakes balls; negative power ejects them.
  *
- * @see CarouselTimmy
+ * @see CarouselJimmy
  */
-public class Intake {
+public class IntakeTimmy {
     private final DcMotorEx intakeMotor;
 
     /**
@@ -19,7 +19,7 @@ public class Intake {
      *
      * @param hardwareMap the robot's hardware map containing {@code "intakeMotor"}
      */
-    public Intake(HardwareMap hardwareMap) {
+    public IntakeTimmy(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
     }
 

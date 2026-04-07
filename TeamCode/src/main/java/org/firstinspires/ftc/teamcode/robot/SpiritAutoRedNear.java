@@ -55,7 +55,7 @@ public class SpiritAutoRedNear extends LinearOpMode {
         //double homeTiltPosition = 0;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
-        Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
+        IntakeTimmy intake = new IntakeTimmy(hardwareMap);//instantiate a new intake motor
         ShooterTimmy shooterTimmy = new ShooterTimmy(hardwareMap);//instantiate a new shooter
         CarouselTimmy timmyCarouselTimmy = new CarouselTimmy(hardwareMap);//instantiate a new carousel
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
