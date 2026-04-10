@@ -25,14 +25,11 @@ public class ShooterJimmy {
 
     public DcMotorEx shooterMotorLeft;
     public DcMotorEx shooterMotorRight;
-    //public Servo tiltServo;
-    //static public double nearTiltPosition = .03;//for testing
-   // static public double farTiltPosition = .15;//for testing
-    //static public double homeTiltPosition = 0;//for testing
+
 
     static public double shooterPower = 0;
-    static public double nearShooterPower = 1.0;//tps for use with encoders to set shooter speed
-    static public double farShooterPower = 1.0;//tps for use with encoders to set shooter speed
+    static public double nearShooterPower = 0.5;//tps for use with encoders to set shooter speed
+    static public double farShooterPower = 0.7;//tps for use with encoders to set shooter speed
 
     //*********************************************
 
@@ -47,12 +44,6 @@ public class ShooterJimmy {
 
         shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
-
-        //enable the encoders on the shooter motors
-        // shooterMotorLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        // shooterMotorRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-       // tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
 
         shooterMotorRight.setDirection(DcMotorSimple.Direction.FORWARD);//one of the launchers has to spin in opposite direction
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -79,41 +70,6 @@ public class ShooterJimmy {
             return;
         }
     }
-
-
-
-    /**
-     * Sets the tilt servo to an arbitrary position.
-     *
-     * @param tiltPositon servo position (0.0 to 1.0)
-     */
-   // public void setTiltPosition(double tiltPositon) {
-       // tiltServo.setPosition(tiltPositon);
-   // }
-
-    /**
-     * Sets the tilt servo to the near-target launch angle.
-     *
-     * @param nearTiltPosition servo position for near shots
-     */
-   // public void setNearTiltPosition(double nearTiltPosition) {
-       // tiltServo.setPosition(nearTiltPosition);
-    //}
-
-    /**
-     * Sets the tilt servo to the far-target launch angle.
-     *
-     * @param farTiltPosition servo position for far shots
-     */
-  //  public void setFarTiltPosition(double farTiltPosition) {
-     //   tiltServo.setPosition(farTiltPosition);
-   // }
-
-    /** Resets the tilt servo to the home (flat) position. */
-  //  public void setHomeTiltPosition() {
-     //   tiltServo.setPosition(homeTiltPosition);
-  //  }
-
 }
 
 

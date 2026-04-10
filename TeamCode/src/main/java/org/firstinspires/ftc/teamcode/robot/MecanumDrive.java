@@ -247,10 +247,11 @@ public final class MecanumDrive {
      * Constructs the mecanum drive, initializes motors with brake mode,
      * configures the IMU, and creates the drive localizer.
      *
-     * @param hardwareMap the robot's hardware map
-     * @param pose        the starting pose of the robot on the field
+     * @param hardwareMap       the robot's hardware map
+     * @param pose              the starting pose of the robot on the field
+     * @param setDirectionJimmy
      */
-    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose) {
+    public MecanumDrive(HardwareMap hardwareMap, Pose2d pose, boolean setDirectionJimmy) {
         LynxFirmware.throwIfModulesAreOutdated(hardwareMap);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
@@ -270,11 +271,18 @@ public final class MecanumDrive {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // TODO: reverse motor directions if needed
-       //leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-     //   leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        if(setDirectionJimmy){
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
+        else {
+            //leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            //   leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            //rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
 
 
         // TODO: make sure your config has an IMU with this name (can be BNO or BHI)

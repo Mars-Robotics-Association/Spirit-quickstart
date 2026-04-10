@@ -66,7 +66,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
         double tiltPosition = 0;
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0),false);
         //Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
         ShooterTimmy shooterTimmy = new ShooterTimmy(hardwareMap);//instantiate a new shooter
         CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);//instantiate a new carousel
