@@ -44,6 +44,7 @@ import org.firstinspires.ftc.teamcode.Drawing;
 public class SpiritTeleop2 extends LinearOpMode {
     public double launchSequenceTimer = 0;
     int launchStep = 0;
+    int i = 0;//place holder for use in the trigger for the far shot
     double stepStartTime = 0;
     static public double defaultLaunchStepDelay = .6;//
     static public double tiltDelay = .6;
@@ -103,14 +104,15 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                     // Far shot (if left trigger pulled and the right trigger is not)
                     //The if condition is written this way in case someone pulls both triggers at once, nothing happens
-                    if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1){
-                        shooterTimmy.shooterMotorLeft.setPower(.425);//get the launcher spinning
-                        shooterTimmy.shooterMotorRight.setPower(.425);//get the launcher spinning
-                        shooterTimmy.shooterPower = ShooterTimmy.farShooterPower;//set power for a far launch
-                        shooterTimmy.setShooterPower(ShooterTimmy.shooterPower, telemetry);//apply power to launcher motors
-                        tiltPosition = shooterTimmy.farTiltPosition;//set the tilt for a far launch
-                        rampUpTimer = getRuntime() + 2.0;//sets a 2 second spin-up timer
-                        currentState = State.RAMPING;//let us move to the ramping section of the code
+                    if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                        shooterTimmy.shooterMotorLeft.setPower(.3);//get the launcher spinning
+                        shooterTimmy.shooterMotorRight.setPower(.3);//get the launcher spinning
+                        shooterTimmy.shooterPower = ShooterTimmy.farShooterPower;//sets the power for a near launch
+                        shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//applies the power to the launcher motors
+                        tiltPosition = shooterTimmy.farTiltPosition;//sets the tilt position to for a near launch
+                        rampUpTimer = getRuntime() + 2.0;   // sets a 2-second spin-up timer
+                        currentState = State.RAMPING;//lets us move to the ramping section of the code
+
                     }
                     break;
 
@@ -151,7 +153,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 1 — tiny kicker
                         case 1:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {//check to see if delay time has passed
                                 carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -161,7 +162,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
                                 shooterTimmy.setTiltPosition(tiltPosition);//tilt the launcher
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -171,7 +171,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 3 — full kicker (launch ball)
                         case 3:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselTimmy.setFullKicker();//lift the kicker the to the launch wheels
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -181,7 +180,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 shooterTimmy.setHomeTiltPosition();//set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
                                 carouselTimmy.setHomePositionKicker();//lower the kicker
@@ -192,7 +190,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 5 — rotate carousel to position 2
                         case 5:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower,telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselTimmy.spinCarouselLaunchTwo();//spin carousel to second launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -202,7 +199,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 6 — second tiny kicker
                         case 6:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
                                 carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -212,7 +208,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 7 — tilt again
                         case 7:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
                                 shooterTimmy.setTiltPosition(tiltPosition);//tilt the launcher
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -222,7 +217,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 8 — second full kicker
                         case 8:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselTimmy.setFullKicker();//lift the kicker up to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -233,7 +227,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 9 — reset tilt + kicker again
                         case 9:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 shooterTimmy.setHomeTiltPosition();//set the tilt to home(vertical) so we can lower the kicker without hitting anyting
                                 carouselTimmy.setHomePositionKicker();//lower the kicker
@@ -244,7 +237,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 10 — rotate to position 3
                         case 10:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselTimmy.spinCarouselLaunchThree();//spin the carousel to the third launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -254,7 +246,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 11 — tiny kicker third time
                         case 11:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -264,7 +255,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 12 — tilt third time
                         case 12:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > tiltDelay) {//check to see if delay time has passed
                                 shooterTimmy.setTiltPosition(tiltPosition);//tilt the launcher
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -274,7 +264,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 13 — full send #3
                         case 13:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselTimmy.setFullKicker();//lift the kicker to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -282,7 +271,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                             }
                             break;
                         case 14://position kicker down so it does not bump carousel
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
                                 shooterTimmy.setHomeTiltPosition();//tilt the launcher to home (vertical) position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -290,7 +278,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                             }
                             // STEP 15 — reset everything, end sequence
                         case 15:
-                            shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {//check to see if delay time has passed
                                 carouselTimmy.setHomePositionKicker();//spin carousel to home position
                                 stepStartTime = getRuntime();//reset timer timerso we can check it in the next step
