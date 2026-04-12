@@ -458,21 +458,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 //END KILL BUTTON************************************************************
 
 
-/*
-//KILL CAROUSEL AND KICKER***************************************************************
-
-            if(gamepad1.left_bumper){
-            carousel.disableCarouselAndKicker();
-            currentState = State.IDLE;
-            NEED TO RESET THE CASE BACK TO 0 ALSO
-            carousel.enableCarouselAndKicker();
-            }
-
-//END KILL CAROUSEL AND KICKER**************************************************************
-
-*/
-
-
 
             //CODE TO DRIVE
 

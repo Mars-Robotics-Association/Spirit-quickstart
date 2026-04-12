@@ -141,7 +141,6 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 1 — full kicker (launch ball)
                         case 1:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselJimmy.setFullKicker();//lift the kicker the to the launch wheels
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -151,7 +150,6 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 2 — reset tilt + kicker
                         case 2:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.setHomePositionKicker();//lower the kicker
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -161,7 +159,6 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 3 — rotate carousel to position 2
                         case 3:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower,telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.spinCarouselLaunchTwo();//spin carousel to second launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -171,18 +168,15 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 4 — second full kicker
                         case 4:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselJimmy.setFullKicker();//lift the kicker up to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
-
                             }
                             break;
 
                         // STEP 5 — reset tilt + kicker again
                         case 5:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.setHomePositionKicker();//lower the kicker
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -192,7 +186,6 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 6 — rotate to position 3
                         case 6:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.spinCarouselLaunchThree();//spin the carousel to the third launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -202,7 +195,6 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 7 — full send #3
                         case 7:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
                                 carouselJimmy.setFullKicker();//lift the kicker to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
@@ -210,25 +202,16 @@ public class JimmyTeleop extends LinearOpMode {
                             }
                             break;
 
-                        //STEP 8 - position kicker down so it does not bump carousel
+                        // STEP 8 — reset everything, end sequence
                         case 8:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
-                                //shooterTimmy.setHomeTiltPosition();//tilt the launcher to home (vertical) position
-                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
-                                launchStep++;//increase launchStep
-                            }
-                        // STEP 9 — reset everything, end sequence
-                        case 9:
-                            shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//reapply power to launch motors
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {//check to see if delay time has passed
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.setHomePositionKicker();//spin carousel to home position
                                 stepStartTime = getRuntime();//reset timer timerso we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
-                         //STEP 10 - stop launchers from spinning
-                        case 10:
-                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .75) {//check to see if delay time has passed
+                         //STEP 9 - stop launchers from spinning
+                        case 9:
+                            if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 carouselJimmy.spinCarouselLaunchOne();//spin carousel to first launch position
                                 shooterJimmy.shooterPower = 0;//set shooter power to 0
                                 shooterJimmy.setShooterPower(shooterJimmy.shooterPower, telemetry);//set motor power to shooter power
