@@ -21,15 +21,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * @see CarouselJimmy
  */
 @Config
-public class ShooterJimmy {
+public class
+ShooterJimmy {
 
     public DcMotorEx shooterMotorLeft;
     public DcMotorEx shooterMotorRight;
-
-
     static public double shooterPower = 0;
     static public double nearShooterPower = 0.5;//tps for use with encoders to set shooter speed
-    static public double farShooterPower = 0.7;//tps for use with encoders to set shooter speed
+    //ToDo: find the correct value of farShooterPower to shoot from the back wall. The .1 value is a place holder
+    static public double farShooterPower = 0.1;
 
     //*********************************************
 

@@ -97,9 +97,9 @@ public class JimmyTeleop extends LinearOpMode {
                     // Far shot (if left trigger pulled and the right trigger is not)
                     //The if condition is written this way in case someone pulls both triggers at once, nothing happens
 
-                    //This is a place holder. Students should code the left trigger using the code for the right trigger as guide
-                    if (i==1){
-                        i++;
+                    //TODO: should code the left trigger using the code for the right trigger as guide
+                    if (i==1){//ToDo: enter the condition to test (i.e., if the left trigger is pulled and the right one is not pulled)
+                        i++;//ToDo: remove this line. It's a place holder
                     }
                     break;
 
@@ -136,90 +136,90 @@ public class JimmyTeleop extends LinearOpMode {
 
                         // STEP 1 — full kicker (launch ball)
                         case 1:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker the to the launch wheels
-                                //reset timer so we can check it in the next step
-                                //increase the launchStep by 1
+                                //ToDo: lift the kicker the to the launch wheels
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 2 — reset tilt + kicker
                         case 2:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lower the kicker
-                                //reset timer so we can check it in the next step
-                                //increase the launchStep from 4 to 5
+                                //ToDo: lower the kicker
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase the launchStep from 4 to 5
                             }
                             break;
 
                         // STEP 3 — rotate carousel to position 2
                         case 3:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                                //spin carousel to second launch position
-                               //reset timer so we can check it in the next step
-                               //increase the launchStep
+                                //ToDo: spin carousel to second launch position
+                               //ToDo: reset timer so we can check it in the next step
+                               //ToDo: increase the launchStep
                             }
                             break;
 
                         // STEP 4 — second full kicker
                         case 4:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker up to the launchers
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: lift the kicker up to the launchers
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
 
                             }
                             break;
 
                         // STEP 5 — reset tilt + kicker again
                         case 5:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lower the kicker
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: lower the kicker
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 6 — rotate to position 3
                         case 6:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //spin the carousel to the third launch position
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: spin the carousel to the third launch position
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 7 — full send #3
                         case 7:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker to the launchers
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: lift the kicker to the launchers
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 8 — reset everything, end sequence
                         case 8:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //spin carousel to home position
-                                //reset timer timerso we can check it in the next step
-                                //increase launchStep
+                                //ToDo: spin carousel to home position
+                                //ToDo: reset timer timerso we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                          //STEP 9 - stop launchers from spinning
                         case 9:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //spin carousel to first launch position
-                                //set shooter power to 0
-                                //set motor power to shooter power
+                                //ToDo: spin carousel to first launch position
+                                //ToDo: set shooter power to 0
+                                //ToDo: set motor power to shooter power
                                 currentState = State.IDLE;//return to the IDLE state (currentState = State.IDLE;)
                             }
                             break;

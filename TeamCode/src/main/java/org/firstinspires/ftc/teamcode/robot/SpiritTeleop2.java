@@ -82,9 +82,6 @@ public class SpiritTeleop2 extends LinearOpMode {
 
             //CODE FOR WHEN THE TRIGGERS ARE PRESSED----------------------------------
             switch (currentState) {
-
-
-
                 // ------------------------------------------------------
                 //  IDLE — waiting for trigger input
                 // ------------------------------------------------------
@@ -105,7 +102,7 @@ public class SpiritTeleop2 extends LinearOpMode {
                     //The if condition is written this way in case someone pulls both triggers at once, nothing happens
 
                     //The code below is a place holder.
-                    // students should modify the if statement below to create code for the left trigger (far shot)
+                    // ToDo: students should modify the if statement below to create code for the left trigger (far shot). Use the code for the right trigger as a guide
 
                     if (i == 1) {
                         i++;
@@ -150,160 +147,160 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 1 — lift kicker a tiny bit
                         case 1:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker a tiny bit so we can tilt in the next step without hitting anything
-                                //reset timer so we can check it in the next step
-                                //increase the launchStep by 1
+                                //ToDo: lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //tilt the launcher
-                                //reset timer so we can check it in the next step
-                               //increase the launchStep by 1
+                                //ToDo: tilt the launcher
+                                //ToDo: reset timer so we can check it in the next step
+                               //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 3 — full kicker (launch ball)
                         case 3:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker the to the launch wheels
-                                //reset timer so we can check it in the next step
-                               //increase the launchStep by 1
+                                //ToDo: lift the kicker the to the launch wheels
+                                //ToDo: reset timer so we can check it in the next step
+                               //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                                //set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
-                               //lower the kicker
-                                //reset timer so we can check it in the next step
-                               //increase the launchStep by 1
+                                //ToDo: set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
+                               //ToDo: lower the kicker
+                                //ToDo: reset timer so we can check it in the next step
+                               //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 5 — rotate carousel to position 2
                         case 5:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                                //spin carousel to second launch position
-                                //reset timer so we can check it in the next step
-                               //increase the launchStep
+                                //ToDo: spin carousel to second launch position
+                                //ToDo: reset timer so we can check it in the next step
+                               //ToDo: increase the launchStep
                             }
                             break;
 
                         // STEP 6 — second tiny kicker
                         case 6:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                                ;//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
-                                //reset timer so we can check it in the next step
-                                //increase the launchStep by 1
+                                ;//ToDo: lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase the launchStep by 1
                             }
                             break;
 
                         // STEP 7 — tilt again
                         case 7:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                                //tilt the launcher
-                                //reset timer so we can check it in the next step
-                                //increase launchStep by 1
+                                //ToDo: tilt the launcher
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep by 1
                             }
                             break;
 
                         // STEP 8 — second full kicker
                         case 8:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {ToDo: //check to see if delay time has passed
                                 i++;
-                               //lift the kicker up to the launchers
-                                //reset timer so we can check it in the next step
-                                //increase launchStep by 1
+                               //ToDo: lift the kicker up to the launchers
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep by 1
 
                             }
                             break;
 
                         // STEP 9 — reset tilt + kicker again
                         case 9:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) { //ToDo: check to see if delay time has passed
                                 i++;
-                                //set the tilt to home(vertical) so we can lower the kicker without hitting anyting
-                                //lower the kicker
-                               //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: set the tilt to home(vertical) so we can lower the kicker without hitting anyting
+                                //ToDo: lower the kicker
+                               //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 10 — rotate to position 3
                         case 10:
                             if (i==1) {
-                                i++;//check to see if delay time has passed
-                            //spin the carousel to the third launch position
-                               //reset timer so we can check it in the next step
-                                //increase launchStep
+                                i++;//ToDo: check to see if delay time has passed
+                            //ToDo: spin the carousel to the third launch position
+                               //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 11 — tiny kicker third time
                         case 11:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) { //ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker a tiny bit so we can tilt in the next step without hitting anything
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 12 — tilt third time
                         case 12:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //tilt the launcher
-                                //reset timer so we can check it in the next step
-                              //increase launchStep
+                                //ToDo: tilt the launcher
+                                //ToDo: reset timer so we can check it in the next step
+                              //ToDo: increase launchStep
                             }
                             break;
 
                         // STEP 13 — full send #3
                         case 13:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //lift the kicker to the launchers
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: lift the kicker to the launchers
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             break;
                         case 14://position kicker down so it does not bump carousel
-                            //this step need a litle extra delay for some odd reason so add 0.2 to the delay time
-                            if (i==1) {//check to see if delay time has passed
+                            //ToDo: this step need a litle extra delay for some odd reason so add 0.2 to the delay time
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //tilt the launcher to home (vertical) position
-                                //reset timer so we can check it in the next step
-                                //increase launchStep
+                                //ToDo: tilt the launcher to home (vertical) position
+                                //ToDo: reset timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                             // STEP 15 — reset everything, end sequence
                         case 15:
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                               //spin carousel to home position
-                                //reset timer timer so we can check it in the next step
-                                //increase launchStep
+                               //ToDo: spin carousel to home position
+                                //ToDo: reset timer timer so we can check it in the next step
+                                //ToDo: increase launchStep
                             }
                         case 16://stop launchers from spinning
                             //this step needs a little extra delay so add .75 seconds to the delay time
-                            if (i==1) {//check to see if delay time has passed
+                            if (i==1) {//ToDo: check to see if delay time has passed
                                 i++;
-                                //spin carousel to first launch position
-                                //set shooter power to 0
-                                //set motor power to shooter power
-                                currentState = State.IDLE;//return to the IDLE state (currentState = State.IDLE;)
+                                //ToDo: spin carousel to first launch position
+                                //ToDo: set shooter power to 0
+                                //ToDo: set motor power to shooter power
+                                currentState = State.IDLE;//KEEP THIS LINE, return to the IDLE state (currentState = State.IDLE;)
                             }
                             break;
                     }
@@ -471,11 +468,6 @@ public class SpiritTeleop2 extends LinearOpMode {
                 shooterTimmy.shooterMotorRight.setPower(0);
             }
 //END KILL BUTTON************************************************************
-
-
-
-
-*/
 
             //CODE TO DRIVE
 

@@ -32,7 +32,8 @@ public class ShooterTimmy {
 
     static public double shooterPower = 0;
     static public double nearShooterPower = .3;//tps for use with encoders to set shooter speed
-    static public double farShooterPower = .425;//tps for use with encoders to set shooter speed
+    //ToDo: find the correct value of farShooterPower to shoot from the back wall.  .1 is a place holder
+    static public double farShooterPower = .1;//tps for use with encoders to set shooter speed
 
     //*********************************************
 
