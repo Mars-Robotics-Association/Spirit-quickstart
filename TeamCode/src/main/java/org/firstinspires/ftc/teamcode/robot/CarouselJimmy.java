@@ -30,27 +30,25 @@ public class CarouselJimmy {
 
     /** Lifts the teardrop to feed the artifact to the shooter. */
     private Servo kickerServo;
-    /** Rotates the carousel to position balls. */
+    /** Rotates the carousel to position artifact. */
     private Servo carouselServo;
-    // double carouselPosition1 = .2;//for testing variable to hold the forward positon of the carousel (will be set in code)
-    // double carouselPosition2 = .4;//for testing variable to hold the backward positon of the carousel (will be set in code)
+
 
     //KICKER POSITIONS
     public static double kickerDownPosition = .52;//0
-   // static public double kickerTinyLiftPosition = .65;//.7
-    double kickerFullLiftPosition = .21;//.5
+
+    double kickerFullLiftPosition = .21;
 
     //CAROUSEL POSITIONS
     public static double carouselPositionHome = 0.0;
     double carouselPositionMin = 0;//forward sping for testing only just to see if carousel turns
-    double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
+   double carouselPositionMax = 1;//backward spin for testing only just to see carousel moves
     //carousel positions
     public static double offSetAdjustment = 175;
-    public static int degreeRange = 1667;
-    public static double carouselPositionConversionFactor = (1.0)/(degreeRange); // converts degrees to servos function inputs (0 to 1.0)
-    double carouselPositionIntakeOne = carouselPositionConversionFactor * (0 + offSetAdjustment);
-    double carouselPositionIntakeTwo = carouselPositionConversionFactor * (120.0 + offSetAdjustment);
-    double carouselPositionIntakeThree = carouselPositionConversionFactor * (240.0 + offSetAdjustment);
+   public static int degreeRange = 1667;public static double carouselPositionConversionFactor = (1.0)/(degreeRange); // converts degrees to servos function inputs (0 to 1.0)
+   double carouselPositionIntakeOne = carouselPositionConversionFactor * (0 + offSetAdjustment);
+   double carouselPositionIntakeTwo = carouselPositionConversionFactor * (120.0 + offSetAdjustment);
+   double carouselPositionIntakeThree = carouselPositionConversionFactor * (240.0 + offSetAdjustment);
     double carouselPositionLaunchOne = 0.13;
     double carouselPositionLaunchTwo = 0.2;
     double carouselPositionLaunchThree = 0.06;

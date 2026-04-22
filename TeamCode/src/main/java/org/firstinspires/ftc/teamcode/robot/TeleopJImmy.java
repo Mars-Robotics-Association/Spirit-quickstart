@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.Drawing;
  */
 @Config
 @TeleOp(name = "JimmyTeleop", group = "Teleop")
-public class JimmyTeleop extends LinearOpMode {
+public class TeleopJImmy extends LinearOpMode {
     public double launchSequenceTimer = 0;
     int i = 0;
     int launchStep = 0;

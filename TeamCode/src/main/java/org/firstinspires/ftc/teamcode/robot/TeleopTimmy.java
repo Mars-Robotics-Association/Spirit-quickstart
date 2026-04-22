@@ -40,8 +40,8 @@ import org.firstinspires.ftc.teamcode.Drawing;
  * positions — tilting, kicking, and resetting for each ball.
  */
 @Config
-@TeleOp(name = "SpiritTeleop2", group = "Teleop")
-public class SpiritTeleop2 extends LinearOpMode {
+@TeleOp(name = "TimmyTeleop", group = "Teleop")
+public class TeleopTimmy extends LinearOpMode {
     public double launchSequenceTimer = 0;
     int launchStep = 0;
     int i = 0;//place holder for use in the trigger for the far shot
@@ -60,8 +60,8 @@ public class SpiritTeleop2 extends LinearOpMode {
 //      telemetry.setAutoClear(false);
         telemetry.clear();
         double rampUpTimer = 0;
-        double driveTimer = 0;
-        boolean rampUpFlag = false;
+       double driveTimer = 0;
+       boolean rampUpFlag = false;
 
         State currentState = State.IDLE;
 
@@ -104,8 +104,8 @@ public class SpiritTeleop2 extends LinearOpMode {
                     //The code below is a place holder.
                     // ToDo: students should modify the if statement below to create code for the left trigger (far shot). Use the code for the right trigger as a guide
 
-                    if (i == 1) {
-                        i++;
+                    if (i == 1) {//TODO: remove i==1 and write the condition to test to detect when the left trigger is pulled.
+                        i++;//TODO: remove i++: and call methods to execute if the left trigger is pulled.
 
                     }
                     break;
@@ -147,9 +147,9 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 1 — lift kicker a tiny bit
                         case 1:
-                            if (i==1) {//ToDo: check to see if delay time has passed
-                                i++;
-                                //ToDo: lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                            if (i==1) {//ToDo: check to see if delay time has passed. Hint: check to see if (getRuntime() - stepStartTime > defaultLaunchStepDelay)
+                                i++;//TODO: remove this line of code
+                                //ToDo: lift the kicker a tiny bit so we can tilt in the next step without hitting anything. Hint: call timmyCarouselTimmy.setTinyKicker();
                                 //ToDo: reset timer so we can check it in the next step
                                 //ToDo: increase the launchStep by 1
                             }
@@ -177,7 +177,7 @@ public class SpiritTeleop2 extends LinearOpMode {
 
                         // STEP 4 — reset tilt + kicker
                         case 4:
-                            if (i==1) {ToDo: //check to see if delay time has passed
+                            if (i==1) {//TODO; check to see if delay time has passed
                                 i++;
                                 //ToDo: set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
                                //ToDo: lower the kicker

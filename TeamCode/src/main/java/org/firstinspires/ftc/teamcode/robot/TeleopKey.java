@@ -69,7 +69,7 @@ public class TeleopKey extends LinearOpMode {
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0),false);
         //Intake intake = new Intake(hardwareMap);//instantiate a new intake motor
         ShooterTimmy shooterTimmy = new ShooterTimmy(hardwareMap);//instantiate a new shooter
-        CarouselTimmy timmyCarouselTimmy = new CarouselTimmy(hardwareMap);//instantiate a new carousel
+        CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);//instantiate a new carousel
         Lift lift = new Lift(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
@@ -126,7 +126,7 @@ public class TeleopKey extends LinearOpMode {
 
                         //get tilt and carousel ready to start launch sequence:
                         shooterTimmy.setHomeTiltPosition();//set tilt position to home (vertical position)
-                        timmyCarouselTimmy.setHomePositionKicker();//set carousel to home position
+                        carouselTimmy.setHomePositionKicker();//set carousel to home position
                         stepStartTime = getRuntime();//set a timer to the current time
 
                     }
@@ -142,7 +142,7 @@ public class TeleopKey extends LinearOpMode {
                         // STEP 0 — rotate carousel to launch position 1
                         case 0:
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.spinCarouselLaunchOne();//spin carousel to first launch position
+                                carouselTimmy.spinCarouselLaunchOne();//spin carousel to first launch position
                                 shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//apply power to launch motors
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increases the launch step from 0 to 1
@@ -153,9 +153,9 @@ public class TeleopKey extends LinearOpMode {
                         case 1:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay +.2) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
-                                stepStartTime = getRuntime();//reset timer so we can check it in the next step
-                                launchStep++;//increase the launchStep from 1 to 2
+                                carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                stepStartTime = getRuntime();//reset timer so we can check it in the next step. Hint: stepStartTime = getRuntime();
+                                launchStep++;//increase the launchStep from 1 to 2.Hint: launchStep++;
                             }
                             break;
 
@@ -173,7 +173,7 @@ public class TeleopKey extends LinearOpMode {
                         case 3:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setFullKicker();//lift the kicker the to the launch wheels
+                                carouselTimmy.setFullKicker();//lift the kicker the to the launch wheels
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase the launchStep from 3 to 4
                             }
@@ -184,7 +184,7 @@ public class TeleopKey extends LinearOpMode {
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 shooterTimmy.setHomeTiltPosition();//set the tilt to home (vertical) position so we can lower the kicker without hitting anyting
-                                timmyCarouselTimmy.setHomePositionKicker();//lower the kicker
+                                carouselTimmy.setHomePositionKicker();//lower the kicker
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase the launchStep from 4 to 5
                             }
@@ -194,7 +194,7 @@ public class TeleopKey extends LinearOpMode {
                         case 5:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower,telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.spinCarouselLaunchTwo();//spin carousel to second launch position
+                                carouselTimmy.spinCarouselLaunchTwo();//spin carousel to second launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase the launchStep
                             }
@@ -204,7 +204,7 @@ public class TeleopKey extends LinearOpMode {
                         case 6:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .2) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase the launchStep
                             }
@@ -224,7 +224,7 @@ public class TeleopKey extends LinearOpMode {
                         case 8:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setFullKicker();//lift the kicker up to the launchers
+                                carouselTimmy.setFullKicker();//lift the kicker up to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
 
@@ -236,7 +236,7 @@ public class TeleopKey extends LinearOpMode {
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
                                 shooterTimmy.setHomeTiltPosition();//set the tilt to home(vertical) so we can lower the kicker without hitting anyting
-                                timmyCarouselTimmy.setHomePositionKicker();//lower the kicker
+                                carouselTimmy.setHomePositionKicker();//lower the kicker
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
@@ -246,7 +246,7 @@ public class TeleopKey extends LinearOpMode {
                         case 10:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.spinCarouselLaunchThree();//spin the carousel to the third launch position
+                                carouselTimmy.spinCarouselLaunchThree();//spin the carousel to the third launch position
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
@@ -256,7 +256,7 @@ public class TeleopKey extends LinearOpMode {
                         case 11:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
+                                carouselTimmy.setTinyKicker();//lift the kicker a tiny bit so we can tilt in the next step without hitting anything
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
@@ -276,7 +276,7 @@ public class TeleopKey extends LinearOpMode {
                         case 13:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > flyWheelDelay) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setFullKicker();//lift the kicker to the launchers
+                                carouselTimmy.setFullKicker();//lift the kicker to the launchers
                                 stepStartTime = getRuntime();//reset timer so we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
@@ -292,13 +292,13 @@ public class TeleopKey extends LinearOpMode {
                         case 15:
                             shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//reapply power to launch motors
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .5) {//check to see if delay time has passed
-                                timmyCarouselTimmy.setHomePositionKicker();//spin carousel to home position
+                                carouselTimmy.setHomePositionKicker();//spin carousel to home position
                                 stepStartTime = getRuntime();//reset timer timerso we can check it in the next step
                                 launchStep++;//increase launchStep
                             }
                         case 16://stop launchers from spinning
                             if (getRuntime() - stepStartTime > defaultLaunchStepDelay + .75) {//check to see if delay time has passed
-                                timmyCarouselTimmy.spinCarouselLaunchOne();//spin carousel to first launch position
+                                carouselTimmy.spinCarouselLaunchOne();//spin carousel to first launch position
                                 shooterTimmy.shooterPower = 0;//set shooter power to 0
                                 shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//set motor power to shooter power
                                 currentState = State.IDLE;//return to the IDLE state (currentState = State.IDLE;)
@@ -336,13 +336,13 @@ public class TeleopKey extends LinearOpMode {
 //JUST FOR TESTING POSITON OF KICKER SERVO-------
 
             if (gamepad2.b) {
-                timmyCarouselTimmy.setHomePositionKicker();
+                carouselTimmy.setHomePositionKicker();
             }
             if (gamepad2.x) {
-                timmyCarouselTimmy.setTinyKicker();
+                carouselTimmy.setTinyKicker();
             }
             if (gamepad2.y) {
-                timmyCarouselTimmy.setFullKicker();
+                carouselTimmy.setFullKicker();
             }
 //JUST FOR TESTING POSITION OF TILT SERVO
             if (gamepad1.a) {
@@ -365,7 +365,7 @@ public class TeleopKey extends LinearOpMode {
 
             //}
             if (gamepad2.dpad_left) {
-                timmyCarouselTimmy.spinCarouselHome();//
+                carouselTimmy.spinCarouselHome();//
 
             }
             // if (gamepad2.dpad_up) {
@@ -373,30 +373,30 @@ public class TeleopKey extends LinearOpMode {
 
             //}
             if (gamepad2.dpad_up) {
-                timmyCarouselTimmy.spinCarouselIntakeOne();//
+                carouselTimmy.spinCarouselIntakeOne();//
 
             }
 
             if (gamepad2.dpad_right) {
-                timmyCarouselTimmy.spinCarouselIntakeTwo();//
+                carouselTimmy.spinCarouselIntakeTwo();//
 
             }
 
             if (gamepad2.dpad_down) {
-                timmyCarouselTimmy.spinCarouselIntakeThree();//
+                carouselTimmy.spinCarouselIntakeThree();//
 
             }
 
             if (gamepad1.dpad_up) {
-                timmyCarouselTimmy.spinCarouselLaunchOne();
+                carouselTimmy.spinCarouselLaunchOne();
 
             }
             if (gamepad1.dpad_right) {
-                timmyCarouselTimmy.spinCarouselLaunchTwo();
+                carouselTimmy.spinCarouselLaunchTwo();
             }
 
             if (gamepad1.dpad_down) {
-                timmyCarouselTimmy.spinCarouselLaunchThree();
+                carouselTimmy.spinCarouselLaunchThree();
             }
 //--------------------------END TESTING OF CAROUSEL
 
@@ -425,15 +425,15 @@ public class TeleopKey extends LinearOpMode {
                 // Advance carousel one position per pull
                 if (intakeStep == 0) {
                     // intake.setPower(intakePower);
-                    timmyCarouselTimmy.spinCarouselIntakeOne();
+                    carouselTimmy.spinCarouselIntakeOne();
                     intakeStep = 1;
                 } else if (intakeStep == 1) {
                     // intake.setPower(intakePower);
-                    timmyCarouselTimmy.spinCarouselIntakeTwo();
+                    carouselTimmy.spinCarouselIntakeTwo();
                     intakeStep = 2;
                 } else if (intakeStep == 2) {
                     // intake.setPower(intakePower);
-                    timmyCarouselTimmy.spinCarouselIntakeThree();
+                    carouselTimmy.spinCarouselIntakeThree();
                     intakeStep = 0;
                 }
 
@@ -457,7 +457,7 @@ public class TeleopKey extends LinearOpMode {
  //END MANUAL LOAD-----------------------------------------------
  */
             if (gamepad2.b) {
-                timmyCarouselTimmy.setHomePositionKicker();
+                carouselTimmy.setHomePositionKicker();
             }
 
 
