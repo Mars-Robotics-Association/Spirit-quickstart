@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -22,6 +23,7 @@ public class IntakeJimmy {
      */
     public IntakeJimmy(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intakeMotor");
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     /**
