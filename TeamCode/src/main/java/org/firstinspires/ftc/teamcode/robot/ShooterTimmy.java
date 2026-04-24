@@ -15,7 +15,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * spinning in opposite directions to launch balls, and a servo ({@code "tiltServo"}) to
  * adjust the launch angle for near vs. far targets.
  *
- *
  * <p>Fields annotated with {@code @Config} are tunable via FTC Dashboard.
  *
  * @see CarouselTimmy
@@ -26,16 +25,14 @@ public class ShooterTimmy {
     public final DcMotorEx shooterMotorLeft;
     public final DcMotorEx shooterMotorRight;
     public final Servo tiltServo;
-    static public double nearTiltPosition = .03;//for testing
-    static public double farTiltPosition = .15;//for testing
-    static public double homeTiltPosition = 0;//for testing
 
-    static public double shooterPower = 0;
-    static public double nearShooterPower = .3;//tps for use with encoders to set shooter speed
-    //ToDo: find the correct value of farShooterPower to shoot from the back wall.  .1 is a place holder
-    static public double farShooterPower = .1;//tps for use with encoders to set shooter speed
+    public static double nearTiltPosition = .03;
+    public static double farTiltPosition  = .15;
+    public static double homeTiltPosition = 0;
 
-    //*********************************************
+    public static double shooterPower     = 0;
+    public static double nearShooterPower = .3;
+    public static double farShooterPower  = .425;
 
     /**
      * Constructs a Shooter subsystem and maps the motors and tilt servo from hardware.
@@ -45,51 +42,39 @@ public class ShooterTimmy {
      *                    {@code "shooterMotorRight"}, and {@code "tiltServo"}
      */
     public ShooterTimmy(HardwareMap hardwareMap) {
-
-        shooterMotorLeft = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
+        shooterMotorLeft  = hardwareMap.get(DcMotorEx.class, "shooterMotorLeft");
         shooterMotorRight = hardwareMap.get(DcMotorEx.class, "shooterMotorRight");
 
-        //enable the encoders on the shooter motors
-       // shooterMotorLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-       // shooterMotorRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        tiltServo = hardwareMap.get(Servo.class, "tiltServo");
 
-        tiltServo = hardwareMap.get(Servo.class, "tiltServo");//controls angle of shooters
-
-        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);//one of the launchers has to spin in opposite direction
+        shooterMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterMotorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     /**
-     * Runs the feedforward + feedback velocity control loop for both shooter motors.
+     * Sets the power on both shooter motors.
+     * Passing 0 immediately stops both motors.
      *
-     * <p>Applies exponential smoothing to both the target and actual velocities, then
-     * computes a proportional correction term added to the static feedforward power.
-     * If {@code shooterVelocity} is 0, both motors are stopped immediately.
-     *
-     * @param shooterPower desired flywheel velocity in ticks per second
-     * @param telemetry       telemetry instance for logging velocity diagnostics
+     * @param shooterPower desired motor power (0.0 to 1.0)
+     * @param telemetry    telemetry instance for logging diagnostics
      */
     public void setShooterPower(double shooterPower, Telemetry telemetry) {
+        if (shooterPower == 0) {
+            shooterMotorLeft.setPower(0);
+            shooterMotorRight.setPower(0);
+            return;
+        }
         shooterMotorLeft.setPower(shooterPower);
         shooterMotorRight.setPower(shooterPower);
-
-        //fail safe
-        if (shooterPower == 0){
-           shooterMotorLeft.setPower(0);
-           shooterMotorRight.setPower(0);
-           return;
-       }
     }
-
-
 
     /**
      * Sets the tilt servo to an arbitrary position.
      *
-     * @param tiltPositon servo position (0.0 to 1.0)
+     * @param tiltPosition servo position (0.0 to 1.0)
      */
-    public void setTiltPosition(double tiltPositon) {
-        tiltServo.setPosition(tiltPositon);
+    public void setTiltPosition(double tiltPosition) {
+        tiltServo.setPosition(tiltPosition);
     }
 
     /**
@@ -114,8 +99,4 @@ public class ShooterTimmy {
     public void setHomeTiltPosition() {
         tiltServo.setPosition(homeTiltPosition);
     }
-
 }
-
-
-
