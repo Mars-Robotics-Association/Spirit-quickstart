@@ -105,13 +105,13 @@ public class TeleopTimmy extends LinearOpMode {
 
                 // RAMPING — waiting for flywheel to reach speed
                 case RAMPING:
-                    shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
-                    if (getRuntime() > rampUpTimer) {
-                        currentState = State.LAUNCHING;
-                        launchStep = 0;
-                        shooterTimmy.setHomeTiltPosition();
-                        carouselTimmy.setHomePositionKicker();
-                        stepStartTime = getRuntime();
+                    shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);//applies power to launch motors
+                    if (getRuntime() > rampUpTimer) {//tests to see if 2 seconds have passed (remember the value of the variable rampUpTimer is 2
+                        currentState = State.LAUNCHING;//changes the State to Launching
+                        launchStep = 0;//changes to launchStep to 0
+                        shooterTimmy.setHomeTiltPosition();//set the tilt positon to home position (vertical)
+                        carouselTimmy.setHomePositionKicker();//sets the kicker position to the home position (down)
+                        stepStartTime = getRuntime();//increases the launch step by 1
                     }
                     break;
 
@@ -121,177 +121,176 @@ public class TeleopTimmy extends LinearOpMode {
 
                         // STEP 0 — rotate carousel to launch position 1
                         case 0:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.spinCarouselLaunchOne();
-                                //shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (getRuntime() - stepStartTime > launchStepDelay) {//creates a delay equal to the value of the variable launchStepDelay
+                                carouselTimmy.spinCarouselLaunchOne();//rotates the carousel to the first launch position
+                                stepStartTime = getRuntime();//resets the timer
+                                launchStep++;//increases the launch step
                             }
                             break;
 
-                        // STEP 1 — tiny kicker
+                        // STEP 1 — lift kicker a tiny bit
                         case 1:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .2) {
-                                carouselTimmy.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (getRuntime() - stepStartTime > launchStepDelay + .2) {//creates a delay, we added .2 seconds to the delay
+                                carouselTimmy.setTinyKicker();//lifts the kicker a tiny bit to clear the well
+                                stepStartTime = getRuntime();//resets the timer
+                                launchStep++;//increases the launch step
                             }
                             break;
 
                         // STEP 2 — tilt shooter
                         case 2:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                shooterTimmy.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test -hint: if (getRuntime() - stepStartTime > launchStepDelay)
+                                //TODO: set the tilt position -hint: shooterTimmy.setTiltPosition(tiltPosition);
+                                //TODO: reset the timer -hint: stepStartTime = getRuntime();
+                                //TODO: increase the launch step by 1 -hint: launchStep++;
                             }
                             break;
 
                         // STEP 3 — full kicker (launch ball 1)
                         case 3:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: lift the kicker the whole way
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 4 — reset tilt
                         case 4:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                shooterTimmy.setHomeTiltPosition();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: set the tilt position to the home position
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
                         // STEP 5 - reset kicker
                         case 5:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: set the kicker to the home positon
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
                         // STEP 6 — rotate carousel to launch position 2
                         case 6:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.spinCarouselLaunchTwo();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: rotate carousel to launch position 2
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 7 — tiny kicker (2nd ball)
                         case 7:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .2) {
-                                carouselTimmy.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: lift the kicker a tiny bit
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 8 — tilt shooter (2nd ball)
                         case 8:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                shooterTimmy.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: tilt the shooter, hint: call the function shooterTimmy.setTiltPosition(tiltPosition)
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 9 — full kicker (launch ball 2)
                         case 9:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: lift the kicker the whole way
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 10 — reset tilt
                         case 10:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                shooterTimmy.setHomeTiltPosition();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: reset the tilt to the home position, hint: call shooterTimmy.setHomeTiltPosition()
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 11 — reset kicker
                         case 11:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: set the kicker to the home (down) position
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 12 — rotate carousel to launch position 3
                         case 12:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.spinCarouselLaunchThree();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: rotate the carousel to launch position 3
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 13 — tiny kicker (3rd ball)
                         case 13:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setTinyKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: lift the kicker a tiny bit
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 14 — tilt shooter (3rd ball)
                         case 14:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                shooterTimmy.setTiltPosition(tiltPosition);
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: tilt the shooter
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 15 — full kicker (launch ball 3)
                         case 15:
-                            if (getRuntime() - stepStartTime > launchStepDelay) {
-                                carouselTimmy.setFullKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: lift the kicker the whole way
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 16 — reset tilt (extra delay so kicker clears carousel)
                         case 16:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .2) {
-                                shooterTimmy.setHomeTiltPosition();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test
+                                //TODO: reset the tilt to the home (vertical) position
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 17 — lower kicker
                         case 17:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .5) {
-                                carouselTimmy.setHomePositionKicker();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test.
+                                //TODO: set the kicker to the home (down) position
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
-                        // STEP 18 — spin carousel home
+                        // STEP 18 — spin carousel to launch position one to get ready for next launch sequence
                         case 18:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .5) {
-                                carouselTimmy.spinCarouselLaunchOne();
-                                stepStartTime = getRuntime();
-                                launchStep++;
+                            if (false) {//TODO: remove the word false and insert the condition to test. Add .5 seconds to the delay
+                                //TODO: rotate the carousel to the first launch position
+                                //TODO: reset the timer
+                                //TODO: increase the launchStep
                             }
                             break;
 
                         // STEP 19 — stop shooter motors
                         case 19:
-                            if (getRuntime() - stepStartTime > launchStepDelay + .75) {
+                            if (getRuntime() - stepStartTime > launchStepDelay){
                                 shooterTimmy.shooterPower = 0;
                                 shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
                                 currentState = State.IDLE; // return to idle — keep this line
