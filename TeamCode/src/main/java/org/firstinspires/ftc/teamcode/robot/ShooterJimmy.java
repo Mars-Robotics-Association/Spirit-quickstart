@@ -25,7 +25,7 @@ public class ShooterJimmy {
 
     public static double shooterPower     = 0;
     public static double nearShooterPower = 0.5;
-    public static double farShooterPower  = 0.7;
+    public static double farShooterPower  = 0.5;//TODO: Figure out the value of power needed to launch from the back wall
 
     /**
      * Constructs a Shooter subsystem and maps the motors from hardware.
