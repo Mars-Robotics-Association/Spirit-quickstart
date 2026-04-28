@@ -68,8 +68,8 @@ public class TeleopDriveTimmy extends LinearOpMode {
         //It can be helpful to put the robot on blocks to check the direction of the wheels (motors).
         // -------------------------------------------------------------------
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         // -------------------------------------------------------------------
