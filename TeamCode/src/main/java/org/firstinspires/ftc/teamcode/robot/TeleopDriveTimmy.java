@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -32,9 +31,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
     //   We declare one variable per motor.
     // -----------------------------------------------------------------------
     private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftBack;
-    private DcMotor rightBack;
+    //TODO: declare the rightFront motor
+    //TODO: declare the leftBack motor
+    //TODO: declare the rightBack motor
 
     // -----------------------------------------------------------------------
     // STEP 2: runOpMode()
@@ -53,9 +52,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
         // Driver Station robot configuration file.
         // -------------------------------------------------------------------
         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        //TODO: map the rightFront motor
+        //TODO: map the leftBack motor
+        //TODO: map the right motorBack
 
         // -------------------------------------------------------------------
         // Set motor directions.
@@ -68,9 +67,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
         //It can be helpful to put the robot on blocks to check the direction of the wheels (motors).
         // -------------------------------------------------------------------
         leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        //TODO: set the direction of the leftBack motor to FORWARD
+        //TODO: set the direction of the leftBack motor to REVERSE
+        //TODO: set the direction of the leftBack motor to FORWARD
 
         // -------------------------------------------------------------------
         // Set zero-power behavior.
@@ -79,9 +78,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
         // BRAKE is usually safer for beginners.
         // -------------------------------------------------------------------
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //TODO:set zero power behavior of rightFront motor
+        //TODO:set zero power behavior of leftBack motor
+       //TODO:set zero power behavior of rightBack motor
 
         // Tell the driver the robot is ready
         telemetry.addData("Status", "Initialized — waiting for START");
@@ -136,9 +135,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
             // Send the calculated power to each motor
             // ---------------------------------------------------------------
             leftFront.setPower(frontLeftPower);
-            rightFront.setPower(frontRightPower);
-            leftBack.setPower(rearLeftPower);
-            rightBack.setPower(rearRightPower);
+           //TODO: set the power to the rightFront motor
+            //TODO: set the power to the leftBack motor
+           //TODO: set the power to the rightBack motor
 
             // ---------------------------------------------------------------
             // Telemetry — send information to the Driver Station screen
@@ -162,9 +161,10 @@ public class TeleopDriveTimmy extends LinearOpMode {
         // -------------------------------------------------------------------
         // Safety: stop all motors when the OpMode ends
         // -------------------------------------------------------------------
-        stopAllMotors();
 
-    } // end runOpMode()
+        stopAllMotors();//this calls the method stopAllMotors() below
+
+    } // ends runOpMode()
     // -----------------------------------------------------------------------
     // HELPER METHOD: stopAllMotors()
     //
@@ -173,9 +173,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
     // -----------------------------------------------------------------------
     private void stopAllMotors() {
         leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftBack.setPower(0);
-        rightBack.setPower(0);
+        rightFront.setPower(0);//TODO: set the power to the rightFront motor to 0
+        leftBack.setPower(0);//TODO: set the power to the leftBack motor to 0
+        rightBack.setPower(0);//TODO: set the power to the rightBack motor to 0
     }
 
 } // end class TeleOpDrive
