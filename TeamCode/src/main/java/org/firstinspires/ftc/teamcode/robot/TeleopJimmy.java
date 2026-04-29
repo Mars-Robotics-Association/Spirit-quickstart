@@ -69,7 +69,7 @@ public class TeleopJimmy extends LinearOpMode {
         while (opModeIsActive()) {
 
             // -----------------------------------------------------------------------
-            //  STATE MACHINE — controls the flywheel spin-up and launch sequence
+            //  STATE MACHINE — controls the launch wheel spin-up and launch sequence
             // -----------------------------------------------------------------------
             switch (currentState) {
 
