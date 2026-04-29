@@ -94,12 +94,12 @@ public class TeleopTimmy extends LinearOpMode {
 
                     // TODO: Far shot — left trigger pulled, right trigger not pulled
                     // Use the near shot code above as a guide and fill in the if statement below.
-                    if (false) { // TODO: replace 'false' with the correct condition
-                        // TODO: set shooterTimmy.shooterPower to ShooterTimmy.farShooterPower
-                        // TODO: call shooterTimmy.setShooterPower(...)
-                        // TODO: set tiltPosition to shooterTimmy.farTiltPosition
-                        // TODO: set rampUpTimer to getRuntime() + 2.0
-                        // TODO: set currentState to State.RAMPING
+                    if (gamepad2.left_trigger > 0.25 && gamepad2.right_trigger < 0.1) {
+                        shooterTimmy.shooterPower = ShooterTimmy.farShooterPower;
+                        shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
+                        tiltPosition = shooterTimmy.farTiltPosition;
+                        rampUpTimer = getRuntime() + 2.0;  // 2-second spin-up timer
+                        currentState = State.RAMPING;
                     }
                     break;
 
