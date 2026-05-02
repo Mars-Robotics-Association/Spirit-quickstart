@@ -58,7 +58,7 @@ public class ShooterTimmy {
      * @param shooterPower desired motor power (0.0 to 1.0)
      * @param telemetry    telemetry instance for logging diagnostics
      */
-    public void setShooterPower(double shooterPower, Telemetry telemetry) {
+    public void setShooterPower(double shooterPower) {
         if (shooterPower == 0) {
             shooterMotorLeft.setPower(0);
             shooterMotorRight.setPower(0);

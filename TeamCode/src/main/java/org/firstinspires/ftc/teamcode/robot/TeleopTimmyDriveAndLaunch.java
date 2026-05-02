@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode.robot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -23,8 +22,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *   Right Stick X  → Rotate Left / Right
  */
 
-@TeleOp(name = "TeleopDriveTimmy", group = "Intro")
-public class TeleopDriveTimmy extends LinearOpMode {
+@TeleOp(name = "TeleopTimmyDriveAndLaunch", group = "Intro")
+public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
 
     // -----------------------------------------------------------------------
     // STEP 1: Declare our motor variables
@@ -56,6 +55,13 @@ public class TeleopDriveTimmy extends LinearOpMode {
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
         rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+
+        ShooterTimmy shooterTimmy   = new ShooterTimmy(hardwareMap);
+        CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);
+
+        double delay = 0.8;
+        double startTimer = 0;
+
 
         // -------------------------------------------------------------------
         // Set motor directions.
@@ -101,7 +107,39 @@ public class TeleopDriveTimmy extends LinearOpMode {
         while (opModeIsActive()) {
 
             if(gamepad1.a){
+                shooterTimmy.setShooterPower(.425);
+                startTimer = getRuntime();
 
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    carouselTimmy.spinCarouselLaunchOne();
+                    startTimer = getRuntime();
+                }
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    carouselTimmy.setTinyKicker();
+                    startTimer = getRuntime();
+                }
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    shooterTimmy.setNearTiltPosition(.3);
+                    startTimer = getRuntime();
+                }
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    carouselTimmy.setFullKicker();
+                    startTimer = getRuntime();
+                }
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    shooterTimmy.setHomeTiltPosition();
+                    startTimer = getRuntime();
+                }
+                if ((getRuntime() - startTimer) > delay)
+                {
+                    carouselTimmy.setHomePositionKicker();
+                    startTimer = getRuntime();
+                } 
             }
 
             // ---------------------------------------------------------------
@@ -182,8 +220,6 @@ public class TeleopDriveTimmy extends LinearOpMode {
         rightBack.setPower(0);
     }
 
-    private void launchBall() {
-
-    }
+    
 
 } // end class TeleOpDrive
