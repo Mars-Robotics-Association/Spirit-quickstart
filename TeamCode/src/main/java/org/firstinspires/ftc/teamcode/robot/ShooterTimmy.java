@@ -54,16 +54,8 @@ public class ShooterTimmy {
     /**
      * Sets the power on both shooter motors.
      * Passing 0 immediately stops both motors.
-     *
-     * @param shooterPower desired motor power (0.0 to 1.0)
-     * @param telemetry    telemetry instance for logging diagnostics
      */
-    public void setShooterPower(double shooterPower, Telemetry telemetry) {
-        if (shooterPower == 0) {
-            shooterMotorLeft.setPower(0);
-            shooterMotorRight.setPower(0);
-            return;
-        }
+    public void setShooterPower() {
         shooterMotorLeft.setPower(shooterPower);
         shooterMotorRight.setPower(shooterPower);
     }
@@ -79,19 +71,15 @@ public class ShooterTimmy {
 
     /**
      * Sets the tilt servo to the near-target launch angle.
-     *
-     * @param nearTiltPosition servo position for near shots
      */
-    public void setNearTiltPosition(double nearTiltPosition) {
+    public void setNearTiltPosition() {
         tiltServo.setPosition(nearTiltPosition);
     }
 
     /**
      * Sets the tilt servo to the far-target launch angle.
-     *
-     * @param farTiltPosition servo position for far shots
      */
-    public void setFarTiltPosition(double farTiltPosition) {
+    public void setFarTiltPosition() {
         tiltServo.setPosition(farTiltPosition);
     }
 
