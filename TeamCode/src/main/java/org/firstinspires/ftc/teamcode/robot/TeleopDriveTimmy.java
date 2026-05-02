@@ -31,9 +31,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
     //   We declare one variable per motor.
     // -----------------------------------------------------------------------
     private DcMotor leftFront;
-    //TODO: declare the rightFront motor
-    //TODO: declare the leftBack motor
-    //TODO: declare the rightBack motor
+    private  DcMotor rightFront;
+    private DcMotor leftBack;
+    private  DcMotor rightBack;
 
     // -----------------------------------------------------------------------
     // STEP 2: runOpMode()
@@ -52,9 +52,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
         // Driver Station robot configuration file.
         // -------------------------------------------------------------------
         leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
-        //TODO: map the rightFront motor
-        //TODO: map the leftBack motor
-        //TODO: map the right motorBack
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
         // -------------------------------------------------------------------
         // Set motor directions.
