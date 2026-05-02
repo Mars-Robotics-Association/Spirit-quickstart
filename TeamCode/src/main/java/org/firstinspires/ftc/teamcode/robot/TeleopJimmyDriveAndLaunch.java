@@ -22,8 +22,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  *   Right Stick X  → Rotate Left / Right
  */
 
-@TeleOp(name = "TeleopTimmyDriveAndLaunch", group = "Intro")
-public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
+@TeleOp(name = "TeleopJimmyDriveAndLaunch", group = "Intro")
+public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
 
     // -----------------------------------------------------------------------
     // STEP 1: Declare our motor variables
@@ -51,17 +51,17 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         // The string name must EXACTLY match what is configured in the
         // Driver Station robot configuration file.
         // -------------------------------------------------------------------
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
         //-------------------------------------------------------------------
         //Instantiate the Shooter and Carousel classes
         //
         //-----------------------------------------------------------------
-        ShooterTimmy shooterTimmy   = new ShooterTimmy(hardwareMap);
-        CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);
+        ShooterJimmy shooterJimmy = new ShooterJimmy(hardwareMap);
+        CarouselJimmy carouselJimmy = new CarouselJimmy(hardwareMap);
 
         //-------------------------------------------------------------------
         //Create variables for the delay and timer
@@ -80,9 +80,9 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         // If your robot is not driving correctly, check the direction of the wheels (motors).
         //It can be helpful to put the robot on blocks to check the direction of the wheels (motors).
         // -------------------------------------------------------------------
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         // -------------------------------------------------------------------
@@ -116,40 +116,24 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
             //Create launch sequence to launch one ball
             //
             //-----------------------------------------------------------------
-            if(gamepad1.a){
-                shooterTimmy.setShooterPower(.425, telemetry);
+            if (gamepad1.a) {
+                shooterJimmy.setShooterPower(.3, telemetry);
                 startTimer = getRuntime();
 
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.spinCarouselLaunchOne();
+                if ((getRuntime() - startTimer) > delay) {
+                    carouselJimmy.spinCarouselLaunchOne();
                     startTimer = getRuntime();
                 }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setTinyKicker();
+
+                if ((getRuntime() - startTimer) > delay) {
+                    carouselJimmy.setFullKicker();
                     startTimer = getRuntime();
                 }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    shooterTimmy.setNearTiltPosition(.3);
+
+                if ((getRuntime() - startTimer) > delay) {
+                    carouselJimmy.setHomePositionKicker();
                     startTimer = getRuntime();
                 }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setFullKicker();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    shooterTimmy.setHomeTiltPosition();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setHomePositionKicker();
-                    startTimer = getRuntime();
-                } 
             }
 
             // ---------------------------------------------------------------
@@ -159,9 +143,9 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
             // We negate the Y axes because pushing the stick forward gives a
             // NEGATIVE value by default (up = negative in screen coordinates).
             // ---------------------------------------------------------------
-            double drive  = -gamepad1.left_stick_y;   // Forward / Backward
-            double strafe =  gamepad1.left_stick_x;   // Left / Right (strafe)
-            double rotate =  gamepad1.right_stick_x;  // Rotate (turn in place)
+            double drive = -gamepad1.left_stick_y;   // Forward / Backward
+            double strafe = gamepad1.left_stick_x;   // Left / Right (strafe)
+            double rotate = gamepad1.right_stick_x;  // Rotate (turn in place)
 
             // ---------------------------------------------------------------
             // Calculate motor powers — Mecanum wheel math
@@ -217,6 +201,7 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         stopAllMotors();
 
     } // end runOpMode()
+
     // -----------------------------------------------------------------------
     // HELPER METHOD: stopAllMotors()
     //
@@ -229,7 +214,6 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         leftBack.setPower(0);
         rightBack.setPower(0);
     }
+}
 
-    
 
-} // end class TeleOpDrive
