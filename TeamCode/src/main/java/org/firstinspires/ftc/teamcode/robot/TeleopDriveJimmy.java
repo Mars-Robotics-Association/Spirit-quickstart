@@ -107,7 +107,7 @@ public class TeleopDriveJimmy extends LinearOpMode {
             // NEGATIVE value by default (up = negative in screen coordinates).
             // ---------------------------------------------------------------
             double drive  = -gamepad1.left_stick_y;   // Forward / Backward
-            double strafe =  gamepad1.left_stick_x;   // Left / Right (strafe)
+            //TODO:get the input from gamepad1, the left_stick_x
             double rotate =  gamepad1.right_stick_x;  // Rotate (turn in place)
 
             // ---------------------------------------------------------------
