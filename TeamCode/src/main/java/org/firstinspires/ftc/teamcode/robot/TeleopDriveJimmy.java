@@ -174,10 +174,9 @@ public class TeleopDriveJimmy extends LinearOpMode {
     // Here we set every motor to 0 power (stopped) in one place.
     // -----------------------------------------------------------------------
     private void stopAllMotors() {
-        leftFront.setPower(0);
-        rightFront.setPower(0);//TODO: set the power to the rightFront motor to 0
-        leftBack.setPower(0);//TODO: set the power to the leftBack motor to 0
-        rightBack.setPower(0);//TODO: set the power to the rightBack motor to 0
+
+        //TODO: write the code to stop all 4 wheels motors
+
     }
 
 } // end class TeleOpDrive
