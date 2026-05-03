@@ -106,9 +106,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
             // We negate the Y axes because pushing the stick forward gives a
             // NEGATIVE value by default (up = negative in screen coordinates).
             // ---------------------------------------------------------------
-            double drive  = -gamepad1.left_stick_y;   // Forward / Backward
-            double strafe =  gamepad1.left_stick_x;   // Left / Right (strafe)
-            double rotate =  gamepad1.right_stick_x;  // Rotate (turn in place)
+            //TODO: create a variable of the type double, and store the input from gamepad1.left_stick_y;   // Forward / Backward
+            //TODO: create a variable of the type double, and store the input from gamepad1.left_stick_x;   // Left / Right (strafe)
+            double rotate =  gamepad1.right_stick_x;  // creates a variable of the type double and stores the input to rotate (turn in place)
 
             // ---------------------------------------------------------------
             // Calculate motor powers — Mecanum wheel math
