@@ -11,6 +11,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Drawing;
+import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.InstantAction;
+import org.firstinspires.ftc.teamcode.actions.SequentialAction;
+import org.firstinspires.ftc.teamcode.actions.SleepAction;
 
 /**
  * Main teleop OpMode for Team Spirit's robot.
@@ -49,6 +53,59 @@ public class TeleopTimmy extends LinearOpMode {
     int intakeStep = 0;          // cycles 0 → 1 → 2 → 0
     boolean triggerHeld = false; // edge detection
 
+    Action makeShooterSequence(ShooterTimmy shooterTimmy, CarouselTimmy carouselTimmy, double shooterPower, double tiltPosition) {
+        return new SequentialAction(
+                new InstantAction(() -> ShooterTimmy.shooterPower = shooterPower),
+                new InstantAction(shooterTimmy::setShooterPower),
+                new SleepAction(2.0),
+                new InstantAction(shooterTimmy::setHomeTiltPosition),
+                new InstantAction(carouselTimmy::setHomePositionKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::spinCarouselLaunchOne),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(carouselTimmy::setTinyKicker),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(() -> shooterTimmy.setTiltPosition(tiltPosition)),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setFullKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(shooterTimmy::setHomeTiltPosition),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setHomePositionKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::spinCarouselLaunchTwo),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(carouselTimmy::setTinyKicker),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(() -> shooterTimmy.setTiltPosition(tiltPosition)),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setFullKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(shooterTimmy::setHomeTiltPosition),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setHomePositionKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::spinCarouselLaunchThree),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(carouselTimmy::setTinyKicker),
+                new SleepAction(launchStepDelay + 0.2),
+                new InstantAction(() -> shooterTimmy.setTiltPosition(tiltPosition)),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setFullKicker),
+                new SleepAction(launchStepDelay),
+                new InstantAction(shooterTimmy::setHomeTiltPosition),
+                new SleepAction(launchStepDelay),
+                new InstantAction(carouselTimmy::setHomePositionKicker),
+                new SleepAction(launchStepDelay + 0.5),
+                new InstantAction(carouselTimmy::spinCarouselLaunchOne),
+                new SleepAction(launchStepDelay),
+                new InstantAction(() -> {
+                    ShooterTimmy.shooterPower = 0;
+                    shooterTimmy.setShooterPower();
+                })
+        );
+    }
+
     @Override
     public void runOpMode() {
         telemetry.clear();
@@ -71,10 +128,25 @@ public class TeleopTimmy extends LinearOpMode {
         lift.homeLift();//the home position of the lift. We will not use this in the class
         waitForStart();//makes code execution stop until "start" is pressed on the driver's station
 
+        Action currentAction = null;
+
 
         //this is the loop that runs continually until the robot is stopped
         while (opModeIsActive()) {
 
+            if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                if (currentAction == null) {
+                    currentAction = makeShooterSequence(shooterTimmy, carouselTimmy, ShooterTimmy.nearShooterPower, ShooterTimmy.nearTiltPosition);
+                }
+            }
+
+            if (currentAction != null) {
+                if (!currentAction.Run()) {
+                    currentAction = null;
+                }
+            }
+
+            /*
             // -----------------------------------------------------------------------
             //  STATE MACHINE — controls the flywheel spin-up and launch sequence
             // -----------------------------------------------------------------------
@@ -303,13 +375,19 @@ public class TeleopTimmy extends LinearOpMode {
             // -----------------------------------------------------------------------
             //  END STATE MACHINE
             // -----------------------------------------------------------------------
+             */
 
             // KILL SWITCH — stops shooter and returns to IDLE immediately
             if (gamepad2.back) {
-                currentState = State.IDLE;
-                launchStep = 0;
-                shooterTimmy.shooterMotorLeft.setPower(0);
-                shooterTimmy.shooterMotorRight.setPower(0);
+//                currentState = State.IDLE;
+//                launchStep = 0;
+//                shooterTimmy.shooterMotorLeft.setPower(0);
+//                shooterTimmy.shooterMotorRight.setPower(0);
+                if (currentAction != null) {
+                    ShooterTimmy.shooterPower = 0;
+                    shooterTimmy.setShooterPower();
+                    currentAction = null;
+                }
             }
 
             // TILT SERVO TESTING (Gamepad 1)
