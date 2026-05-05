@@ -198,7 +198,7 @@ public class TeleopTimmy extends LinearOpMode {
                         // STEP 8 — tilt shooter (2nd ball)
                         case 8:
                             if (getRuntime() - stepStartTime > launchStepDelay) {//TODO: remove the word false and insert the condition to test
-                                shooterTimmy.setTiltPosition();//TODO: tilt the shooter, hint: call the function shooterTimmy.setTiltPosition(tiltPosition)
+                                shooterTimmy.setTiltPosition(tiltPosition);//TODO: tilt the shooter, hint: call the function shooterTimmy.setTiltPosition(tiltPosition)
                                 stepStartTime = getRuntime();//resets the timer
                                 launchStep++;//increases the launch step  //TODO: reset the timer
                                 //TODO: increase the launchStep
@@ -258,7 +258,7 @@ public class TeleopTimmy extends LinearOpMode {
                         // STEP 14 — tilt shooter (3rd ball)
                         case 14:
                             if (getRuntime() - stepStartTime > launchStepDelay) {//TODO: remove the word false and insert the condition to test
-                                shooterTimmy.setTiltPosition();//TODO: tilt the shooter
+                                shooterTimmy.setTiltPosition(tiltPosition);//TODO: tilt the shooter
                                 stepStartTime = getRuntime();//resets the timer
                                 launchStep++;//increases the launch step //TODO: reset the timer
                                 //TODO: increase the launchStep
