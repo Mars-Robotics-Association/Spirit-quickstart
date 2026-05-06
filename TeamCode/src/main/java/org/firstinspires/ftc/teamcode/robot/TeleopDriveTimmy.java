@@ -109,7 +109,8 @@ public class TeleopDriveTimmy extends LinearOpMode {
             //TODO: create a variable of the type double, and store the input from gamepad1.left_stick_y;   // Forward / Backward
             //TODO: create a variable of the type double, and store the input from gamepad1.left_stick_x;   // Left / Right (strafe)
             double rotate =  gamepad1.right_stick_x;  // creates a variable of the type double and stores the input to rotate (turn in place)
-
+            double drive = - gamepad1.right_stick_y;
+            double strafe = gamepad1.left_stick_x;
             // ---------------------------------------------------------------
             // Calculate motor powers — Mecanum wheel math
             //
@@ -135,8 +136,8 @@ public class TeleopDriveTimmy extends LinearOpMode {
             // Send the calculated power to each motor
             // ---------------------------------------------------------------
             leftFront.setPower(frontLeftPower);
-           //TODO: set the power to the rightFront motor
-            //TODO: set the power to the leftBack motor
+            rightFront.setPower(frontRightPower);   //TODO: set the power to the rightFront motor
+            leftBack.setPower()  //TODO: set the power to the leftBack motor
            //TODO: set the power to the rightBack motor
 
             // ---------------------------------------------------------------
