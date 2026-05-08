@@ -62,13 +62,14 @@ public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
         //-----------------------------------------------------------------
         ShooterJimmy shooterJimmy = new ShooterJimmy(hardwareMap);
         CarouselJimmy carouselJimmy = new CarouselJimmy(hardwareMap);
-
+        IntakeJimmy intakeJimmy = new IntakeJimmy(hardwareMap);
         //-------------------------------------------------------------------
         //Create variables for the delay and timer
         //
         //-----------------------------------------------------------------
         double delay = 0.8;
         double startTimer = 0;
+        double tiltPosition = 0;//this variable should really be in the carousel class but I can't change it now
 
         // -------------------------------------------------------------------
         // Set motor directions.
@@ -112,108 +113,106 @@ public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
         // The loop keeps repeating until time runs out or STOP is pressed.
         // -------------------------------------------------------------------
         while (opModeIsActive()) {
+                // ---------------------------------------------------------------
+                // Read gamepad inputs
+                //
+                // Gamepad x and y axes return a value between -1.0 and +1.0.
+                // We negate the Y axes because pushing the stick forward gives a
+                // NEGATIVE value by default (up = negative in screen coordinates).
+                // ---------------------------------------------------------------
+                double drive = -gamepad1.left_stick_y;   // Forward / Backward
+                double strafe = gamepad1.left_stick_x;   // Left / Right (strafe)
+                double rotate = gamepad1.right_stick_x;  // Rotate (turn in place)
+
+                // ---------------------------------------------------------------
+                // Calculate motor powers — Mecanum wheel math
+                //
+                // Each wheel gets a combination of drive, strafe, and rotate.
+                // The +/- signs come from the geometry of mecanum rollers:
+                //
+                //   Front Left  =  drive + strafe + rotate
+                //   Front Right =  drive - strafe - rotate
+                //   Back  Left  =  drive - strafe + rotate
+                //   Back  Right =  drive + strafe - rotate
+                //
+                // Think of it this way:
+                //   • All four wheels positive  → move forward
+                //   • FL & BR positive, FR & BL negative → strafe right
+                //   • Left side positive, right side negative → rotate right
+                // ---------------------------------------------------------------
+                double frontLeftPower = (drive + strafe + rotate);
+                double frontRightPower = (drive - strafe - rotate);
+                double rearLeftPower = (drive - strafe + rotate);
+                double rearRightPower = (drive + strafe - rotate);
+
+                // ---------------------------------------------------------------
+                // Send the calculated power to each motor
+                // ---------------------------------------------------------------
+                leftFront.setPower(frontLeftPower);
+                rightFront.setPower(frontRightPower);
+                leftBack.setPower(rearLeftPower);
+                rightBack.setPower(rearRightPower);
+
+                // ---------------------------------------------------------------
+                // Telemetry — send information to the Driver Station screen
+                // This is very helpful for debugging!
+                // ---------------------------------------------------------------
+                telemetry.addData("--- Gamepad Inputs ---", "");
+                telemetry.addData("Drive  (Fwd/Back)", "%.2f", drive);
+                telemetry.addData("Strafe (L/R)     ", "%.2f", strafe);
+                telemetry.addData("Rotate           ", "%.2f", rotate);
+
+                telemetry.addData("--- Motor Powers ---", "");
+                telemetry.addData("Front Left  ", frontLeftPower);
+                telemetry.addData("Front Right ", frontRightPower);
+                telemetry.addData("Back  Left  ", rearLeftPower);
+                telemetry.addData("Back  Right ", rearRightPower);
+
+                telemetry.update();
+
             //-------------------------------------------------------------------
             //Create launch sequence to launch one ball
             //
             //-----------------------------------------------------------------
-            if (gamepad1.a) {
-                shooterJimmy.setShooterPower(.3, telemetry);
-                startTimer = getRuntime();
+            if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                shooterJimmy.setShooterPower(.5, telemetry);
+                intakeJimmy.setPower(-0.2);
 
-                if ((getRuntime() - startTimer) > delay) {
+                    //first launch
+                    sleep(800);
                     carouselJimmy.spinCarouselLaunchOne();
-                    startTimer = getRuntime();
-                }
 
-                if ((getRuntime() - startTimer) > delay) {
+                    sleep(800);
                     carouselJimmy.setFullKicker();
-                    startTimer = getRuntime();
-                }
 
-                if ((getRuntime() - startTimer) > delay) {
+                    sleep(800);
                     carouselJimmy.setHomePositionKicker();
-                    startTimer = getRuntime();
-                }
-            }
 
-            // ---------------------------------------------------------------
-            // Read gamepad inputs
-            //
-            // Gamepad x and y axes return a value between -1.0 and +1.0.
-            // We negate the Y axes because pushing the stick forward gives a
-            // NEGATIVE value by default (up = negative in screen coordinates).
-            // ---------------------------------------------------------------
-            double drive = -gamepad1.left_stick_y;   // Forward / Backward
-            double strafe = gamepad1.left_stick_x;   // Left / Right (strafe)
-            double rotate = gamepad1.right_stick_x;  // Rotate (turn in place)
+                    //second launch
+                    sleep(800);
+                    carouselJimmy.spinCarouselLaunchTwo();
 
-            // ---------------------------------------------------------------
-            // Calculate motor powers — Mecanum wheel math
-            //
-            // Each wheel gets a combination of drive, strafe, and rotate.
-            // The +/- signs come from the geometry of mecanum rollers:
-            //
-            //   Front Left  =  drive + strafe + rotate
-            //   Front Right =  drive - strafe - rotate
-            //   Back  Left  =  drive - strafe + rotate
-            //   Back  Right =  drive + strafe - rotate
-            //
-            // Think of it this way:
-            //   • All four wheels positive  → move forward
-            //   • FL & BR positive, FR & BL negative → strafe right
-            //   • Left side positive, right side negative → rotate right
-            // ---------------------------------------------------------------
-            double frontLeftPower = (drive + strafe + rotate);
-            double frontRightPower = (drive - strafe - rotate);
-            double rearLeftPower = (drive - strafe + rotate);
-            double rearRightPower = (drive + strafe - rotate);
+                    sleep(800);
+                    carouselJimmy.setFullKicker();
 
-            // ---------------------------------------------------------------
-            // Send the calculated power to each motor
-            // ---------------------------------------------------------------
-            leftFront.setPower(frontLeftPower);
-            rightFront.setPower(frontRightPower);
-            leftBack.setPower(rearLeftPower);
-            rightBack.setPower(rearRightPower);
+                    sleep(800);
+                    carouselJimmy.setHomePositionKicker();
 
-            // ---------------------------------------------------------------
-            // Telemetry — send information to the Driver Station screen
-            // This is very helpful for debugging!
-            // ---------------------------------------------------------------
-            telemetry.addData("--- Gamepad Inputs ---", "");
-            telemetry.addData("Drive  (Fwd/Back)", "%.2f", drive);
-            telemetry.addData("Strafe (L/R)     ", "%.2f", strafe);
-            telemetry.addData("Rotate           ", "%.2f", rotate);
+                    //third launch
+                    sleep(800);
+                    carouselJimmy.spinCarouselLaunchThree();
 
-            telemetry.addData("--- Motor Powers ---", "");
-            telemetry.addData("Front Left  ", frontLeftPower);
-            telemetry.addData("Front Right ", frontRightPower);
-            telemetry.addData("Back  Left  ", rearLeftPower);
-            telemetry.addData("Back  Right ", rearRightPower);
+                    sleep(800);
+                    carouselJimmy.setFullKicker();
 
-            telemetry.update();
+                    sleep(800);
+                    carouselJimmy.setHomePositionKicker();
+                    //stop intake and shooter motors
+                    intakeJimmy.setPower(0);
+                    shooterJimmy.setShooterPower(0, telemetry);
 
-        } // end while loop
-
-        // -------------------------------------------------------------------
-        // Safety: stop all motors when the OpMode ends
-        // -------------------------------------------------------------------
-        stopAllMotors();
-
-    } // end runOpMode()
-
-    // -----------------------------------------------------------------------
-    // HELPER METHOD: stopAllMotors()
-    //
-    // A helper method is a reusable block of code we can call by name.
-    // Here we set every motor to 0 power (stopped) in one place.
-    // -----------------------------------------------------------------------
-    private void stopAllMotors() {
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-    }
+            } //end trigger
+        } // end whileOpModeIsActive loop
+    }//end runOpMode
 }
-
 

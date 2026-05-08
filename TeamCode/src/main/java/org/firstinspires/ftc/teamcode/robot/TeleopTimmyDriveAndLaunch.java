@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * TeleOpDrive - Introduction to FTC Robot Programming
@@ -30,10 +32,11 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
     //   DcMotor is the class that controls a motor plugged into the Control Hub.
     //   We declare one variable per motor.
     // -----------------------------------------------------------------------
-    private DcMotor leftFront;
-    private DcMotor rightFront;
-    private DcMotor leftBack;
-    private DcMotor rightBack;
+    private DcMotor leftFront;//declare left front motor
+    private DcMotor rightFront;//declare right front motor
+    private DcMotor leftBack;//declare left back motor
+    private DcMotor rightBack;//declare right back motor
+
 
     // -----------------------------------------------------------------------
     // STEP 2: runOpMode()
@@ -51,16 +54,16 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         // The string name must EXACTLY match what is configured in the
         // Driver Station robot configuration file.
         // -------------------------------------------------------------------
-        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
+        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack   = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack  = hardwareMap.get(DcMotor.class, "rightBack");
+        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
+        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
         //-------------------------------------------------------------------
         //Instantiate the Shooter and Carousel classes
         //
         //-----------------------------------------------------------------
-        ShooterTimmy shooterTimmy   = new ShooterTimmy(hardwareMap);
+        ShooterTimmy shooterTimmy = new ShooterTimmy(hardwareMap);
         CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);
 
         //-------------------------------------------------------------------
@@ -69,7 +72,7 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         //-----------------------------------------------------------------
         double delay = 0.8;
         double startTimer = 0;
-
+        double tiltPosition = 0;//this variable should be in the Carousel class but I can't change it at this point.
         // -------------------------------------------------------------------
         // Set motor directions.
         //
@@ -112,45 +115,6 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         // The loop keeps repeating until time runs out or STOP is pressed.
         // -------------------------------------------------------------------
         while (opModeIsActive()) {
-            //-------------------------------------------------------------------
-            //Create launch sequence to launch one ball
-            //
-            //-----------------------------------------------------------------
-            if(gamepad1.a){
-                shooterTimmy.setShooterPower(.425, telemetry);
-                startTimer = getRuntime();
-
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.spinCarouselLaunchOne();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setTinyKicker();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    shooterTimmy.setNearTiltPosition(.3);
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setFullKicker();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    shooterTimmy.setHomeTiltPosition();
-                    startTimer = getRuntime();
-                }
-                if ((getRuntime() - startTimer) > delay)
-                {
-                    carouselTimmy.setHomePositionKicker();
-                    startTimer = getRuntime();
-                } 
-            }
 
             // ---------------------------------------------------------------
             // Read gamepad inputs
@@ -159,9 +123,9 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
             // We negate the Y axes because pushing the stick forward gives a
             // NEGATIVE value by default (up = negative in screen coordinates).
             // ---------------------------------------------------------------
-            double drive  = -gamepad1.left_stick_y;   // Forward / Backward
-            double strafe =  gamepad1.left_stick_x;   // Left / Right (strafe)
-            double rotate =  gamepad1.right_stick_x;  // Rotate (turn in place)
+            double drive = -gamepad1.left_stick_y;   // Forward / Backward
+            double strafe = gamepad1.left_stick_x;   // Left / Right (strafe)
+            double rotate = gamepad1.right_stick_x;  // Rotate (turn in place)
 
             // ---------------------------------------------------------------
             // Calculate motor powers — Mecanum wheel math
@@ -209,27 +173,71 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
 
             telemetry.update();
 
-        } // end while loop
+            if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                shooterTimmy.setShooterPower(.3, telemetry);
+                tiltPosition = shooterTimmy.nearTiltPosition;
 
-        // -------------------------------------------------------------------
-        // Safety: stop all motors when the OpMode ends
-        // -------------------------------------------------------------------
-        stopAllMotors();
 
-    } // end runOpMode()
-    // -----------------------------------------------------------------------
-    // HELPER METHOD: stopAllMotors()
-    //
-    // A helper method is a reusable block of code we can call by name.
-    // Here we set every motor to 0 power (stopped) in one place.
-    // -----------------------------------------------------------------------
-    private void stopAllMotors() {
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-    }
+                    //first launch
+                    sleep(1000);
+                    carouselTimmy.spinCarouselLaunchOne();
 
-    
+                    sleep(1000);
+                    carouselTimmy.setTinyKicker();
 
-} // end class TeleOpDrive
+                    sleep(1000);
+                    shooterTimmy.setTiltPosition(tiltPosition);
+
+                    sleep(1000);
+                    carouselTimmy.setFullKicker();
+
+                    sleep(1000);
+                    shooterTimmy.setHomeTiltPosition();
+
+                    sleep(1000);
+                    carouselTimmy.setHomePositionKicker();
+
+                    //second launch
+                    sleep(1000);
+                    carouselTimmy.spinCarouselLaunchTwo();
+
+                    sleep(1000);
+                    carouselTimmy.setTinyKicker();
+
+                    sleep(1000);
+                    shooterTimmy.setTiltPosition(tiltPosition);
+
+                    sleep(1000);
+                    carouselTimmy.setFullKicker();
+
+                    sleep(1000);
+                    shooterTimmy.setHomeTiltPosition();
+
+                    sleep(1000);
+                    carouselTimmy.setHomePositionKicker();
+
+                    //third launch
+                    sleep(1000);
+                    carouselTimmy.spinCarouselLaunchThree();
+
+                    sleep(1000);
+                    carouselTimmy.setTinyKicker();
+
+                    sleep(1000);
+                    shooterTimmy.setTiltPosition(tiltPosition);
+
+                    sleep(1000);
+                    carouselTimmy.setFullKicker();
+
+                    sleep(1000);
+                    shooterTimmy.setHomeTiltPosition();
+
+                    sleep(1000);
+                    carouselTimmy.setHomePositionKicker();
+                    //stop intake and shooter motors
+                    shooterTimmy.setShooterPower(0, telemetry);
+
+            } // end trigger
+        } // end whileOpModeIsActive loop
+    } //end runOpMode
+}//end class
