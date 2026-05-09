@@ -128,9 +128,9 @@ public class TeleopDriveTimmy extends LinearOpMode {
             //   • Left side positive, right side negative → rotate right
             // ---------------------------------------------------------------
             double frontLeftPower = (drive + strafe + rotate);
-            double frontRightPower = (drive - strafe - rotate);
+            //calculate motor power for front right wheel
             double rearLeftPower = (drive - strafe + rotate);
-            double rearRightPower = (drive + strafe - rotate);
+           //calculate motor power for rear right wheel
 
             // ---------------------------------------------------------------
             // Send the calculated power to each motor
@@ -173,7 +173,7 @@ public class TeleopDriveTimmy extends LinearOpMode {
     // Here we set every motor to 0 power (stopped) in one place.
     // -----------------------------------------------------------------------
     private void stopAllMotors() {
-        //TODO: write the code to stop all wheel 4 motors
+        //TODO: write the code to stop all 4 wheels' motors
     }
 
 } // end class TeleOpDrive
