@@ -31,7 +31,7 @@ public class ShooterTimmy {
     public static double homeTiltPosition = 0;
 
     public static double shooterPower     = 0;
-    public static double nearShooterPower = .3;
+    public static double nearShooterPower = .4;
     public static double farShooterPower  = .425;
 
     /**

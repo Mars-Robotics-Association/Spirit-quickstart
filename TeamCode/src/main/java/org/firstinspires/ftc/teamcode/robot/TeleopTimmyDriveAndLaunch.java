@@ -71,9 +71,8 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         //
         //-----------------------------------------------------------------
         double delay = 0.8;
-        //double startTimer = 0;
         double tiltPosition = 0;//this variable should be in the Carousel class but I can't change it at this point.
-        int launchPositionNumber = 0;
+
         // -------------------------------------------------------------------
         // Set motor directions.
         //
@@ -177,15 +176,15 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
             if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
                 shooterTimmy.setShooterPower(.3, telemetry);
                 tiltPosition = shooterTimmy.nearTiltPosition;
-                launchPositionNumber = 0;
-                for(int i=0;i<3;i++) {
-                    launchPositionNumber++;//initialize the launch position before the loop starts, increasing it by 1 each time through the for loop
+
+                for(int i=1;i<=3;i++) {
+
                     sleep(1000);
 
                     //spin carousel to correct position
-                    if (launchPositionNumber == 1) {
+                    if (i == 1) {
                         carouselTimmy.spinCarouselLaunchOne();
-                    } else if (launchPositionNumber == 2) {
+                    } else if (i == 2) {
                         carouselTimmy.spinCarouselLaunchTwo();
                     } else {
                         carouselTimmy.spinCarouselLaunchThree();
