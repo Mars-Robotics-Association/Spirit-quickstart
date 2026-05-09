@@ -66,7 +66,7 @@ public class TeleopTimmy extends LinearOpMode {
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        //Instantiage the class used for the dashboard
+        //Instantiate the class used for the dashboard
         shooterTimmy.setHomeTiltPosition();
         lift.homeLift();//the home position of the lift. We will not use this in the class
         waitForStart();//makes code execution stop until "start" is pressed on the driver's station
@@ -98,7 +98,7 @@ public class TeleopTimmy extends LinearOpMode {
                         shooterTimmy.shooterPower = ShooterTimmy.farShooterPower;
                         shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
                         tiltPosition = shooterTimmy.farTiltPosition;
-                        rampUpTimer = getRuntime() + 2.0;  // 2-second spin-up timer
+                        rampUpTimer = getRuntime() + 2.0;  // set the rampUpTimer for a 2-second spin-up
                         currentState = State.RAMPING;
                     }
                     break;

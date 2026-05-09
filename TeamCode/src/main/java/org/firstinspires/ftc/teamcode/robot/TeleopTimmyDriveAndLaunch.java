@@ -71,8 +71,9 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
         //
         //-----------------------------------------------------------------
         double delay = 0.8;
-        double startTimer = 0;
+        //double startTimer = 0;
         double tiltPosition = 0;//this variable should be in the Carousel class but I can't change it at this point.
+        int launchPositionNumber = 0;
         // -------------------------------------------------------------------
         // Set motor directions.
         //
@@ -176,66 +177,37 @@ public class TeleopTimmyDriveAndLaunch extends LinearOpMode {
             if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
                 shooterTimmy.setShooterPower(.3, telemetry);
                 tiltPosition = shooterTimmy.nearTiltPosition;
-
-
-                    //first launch
+                launchPositionNumber = 0;
+                for(int i=0;i<3;i++) {
+                    launchPositionNumber++;//initialize the launch position before the loop starts, increasing it by 1 each time through the for loop
                     sleep(1000);
-                    carouselTimmy.spinCarouselLaunchOne();
 
-                    sleep(1000);
-                    carouselTimmy.setTinyKicker();
+                    //spin carousel to correct position
+                    if (launchPositionNumber == 1) {
+                        carouselTimmy.spinCarouselLaunchOne();
+                    } else if (launchPositionNumber == 2) {
+                        carouselTimmy.spinCarouselLaunchTwo();
+                    } else {
+                        carouselTimmy.spinCarouselLaunchThree();
+                    }
 
-                    sleep(1000);
-                    shooterTimmy.setTiltPosition(tiltPosition);
+                    sleep(1000);//pauses all functions, robot cannot drive
+                    carouselTimmy.setTinyKicker();//set the tiny kicker
 
-                    sleep(1000);
-                    carouselTimmy.setFullKicker();
+                    sleep(1000);//pauses all functions, robot cannot drive
+                    shooterTimmy.setTiltPosition(tiltPosition);//tilt the launcher
 
-                    sleep(1000);
-                    shooterTimmy.setHomeTiltPosition();
+                    sleep(1000);//pauses all functions, robot cannot drive
+                    carouselTimmy.setFullKicker();//lift the kicker the full way
 
-                    sleep(1000);
-                    carouselTimmy.setHomePositionKicker();
+                    sleep(1000);//pauses all functions, robot cannot drive
+                    shooterTimmy.setHomeTiltPosition();//tilt the launcher vertical
 
-                    //second launch
-                    sleep(1000);
-                    carouselTimmy.spinCarouselLaunchTwo();
+                    sleep(1000);//pauses all functions, robot cannot drive
+                    carouselTimmy.setHomePositionKicker();//lower the kicker
 
-                    sleep(1000);
-                    carouselTimmy.setTinyKicker();
-
-                    sleep(1000);
-                    shooterTimmy.setTiltPosition(tiltPosition);
-
-                    sleep(1000);
-                    carouselTimmy.setFullKicker();
-
-                    sleep(1000);
-                    shooterTimmy.setHomeTiltPosition();
-
-                    sleep(1000);
-                    carouselTimmy.setHomePositionKicker();
-
-                    //third launch
-                    sleep(1000);
-                    carouselTimmy.spinCarouselLaunchThree();
-
-                    sleep(1000);
-                    carouselTimmy.setTinyKicker();
-
-                    sleep(1000);
-                    shooterTimmy.setTiltPosition(tiltPosition);
-
-                    sleep(1000);
-                    carouselTimmy.setFullKicker();
-
-                    sleep(1000);
-                    shooterTimmy.setHomeTiltPosition();
-
-                    sleep(1000);
-                    carouselTimmy.setHomePositionKicker();
-                    //stop intake and shooter motors
-                    shooterTimmy.setShooterPower(0, telemetry);
+                }//end for loop
+                shooterTimmy.setShooterPower(0, telemetry);//stop launch motors
 
             } // end trigger
         } // end whileOpModeIsActive loop

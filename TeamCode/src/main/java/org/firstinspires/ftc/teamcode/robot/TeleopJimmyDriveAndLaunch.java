@@ -68,8 +68,8 @@ public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
         //
         //-----------------------------------------------------------------
         double delay = 0.8;
-        double startTimer = 0;
-        double tiltPosition = 0;//this variable should really be in the carousel class but I can't change it now
+        //double startTimer = 0;
+        int launchPositionNumber = 0;//this variable will be used to control the position of the carousel in the launch sequence
 
         // -------------------------------------------------------------------
         // Set motor directions.
@@ -171,43 +171,36 @@ public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
                 telemetry.update();
 
             //-------------------------------------------------------------------
-            //Create launch sequence to launch one ball
+            //Create launch sequence if right trigger is pulled
             //
             //-----------------------------------------------------------------
             if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
-                shooterJimmy.setShooterPower(.5, telemetry);
-                intakeJimmy.setPower(-0.2);
+                shooterJimmy.setShooterPower(.5, telemetry);//ramp up the launchers
+                intakeJimmy.setPower(-0.2);//get the intake spinning so the balls stay in the carousel
+                launchPositionNumber = 0;//initialize the launch position before the loop starts. Increment by 1 each time through the loop
 
-                    //first launch
-                    sleep(800);
-                    carouselJimmy.spinCarouselLaunchOne();
+                //create loop for launch sequence
+                for(int i = 0;i<3;i++) {
+                    launchPositionNumber++;
+                    sleep(1000);//pauses all functions, robot cannot drive
 
-                    sleep(800);
+                    //spin the carousel to the correct position
+                    if (launchPositionNumber ==1) {
+                        carouselJimmy.spinCarouselLaunchOne();
+                    } else if (launchPositionNumber == 2) {
+                        carouselJimmy.spinCarouselLaunchTwo();
+                    } else {
+                        carouselJimmy.spinCarouselLaunchThree();
+                    }
+
+                    sleep(1000);//pauses all functions, robot cannot drive
                     carouselJimmy.setFullKicker();
 
-                    sleep(800);
+                    sleep(1000);//pauses all functions, robot cannot drive
                     carouselJimmy.setHomePositionKicker();
+                }//end for loop
 
-                    //second launch
-                    sleep(800);
-                    carouselJimmy.spinCarouselLaunchTwo();
-
-                    sleep(800);
-                    carouselJimmy.setFullKicker();
-
-                    sleep(800);
-                    carouselJimmy.setHomePositionKicker();
-
-                    //third launch
-                    sleep(800);
-                    carouselJimmy.spinCarouselLaunchThree();
-
-                    sleep(800);
-                    carouselJimmy.setFullKicker();
-
-                    sleep(800);
-                    carouselJimmy.setHomePositionKicker();
-                    //stop intake and shooter motors
+                //stop intake and shooter motors
                     intakeJimmy.setPower(0);
                     shooterJimmy.setShooterPower(0, telemetry);
 
