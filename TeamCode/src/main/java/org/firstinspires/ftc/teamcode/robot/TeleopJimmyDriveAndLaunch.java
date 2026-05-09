@@ -180,7 +180,7 @@ public class TeleopJimmyDriveAndLaunch extends LinearOpMode {
 
                 //create loop for launch sequence
                 for(int i = 1;i<=3;i++) {
-                    //launchPositionNumber++;
+
                     sleep(1000);//pauses all functions, robot cannot drive
 
                     //spin the carousel to the correct position
