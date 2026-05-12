@@ -31,7 +31,7 @@ public class ShooterTimmy {
     public static double homeTiltPosition = 0;
 
     public static double shooterPower     = 0;
-    public static double nearShooterPower = .3;
+    public static double nearShooterPower = .35;
     public static double farShooterPower  = .3;//TODO: Figure out the value of power needed to launch from the back wall
 
     /**
