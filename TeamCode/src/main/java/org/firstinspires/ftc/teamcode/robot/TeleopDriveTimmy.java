@@ -26,6 +26,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp(name = "TeleopDriveTimmy", group = "Intro")
 public class TeleopDriveTimmy extends LinearOpMode {
 
+
     // -----------------------------------------------------------------------
     // STEP 1: Declare our motor variables
     //   DcMotor is the class that controls a motor plugged into the Control Hub.
@@ -46,6 +47,8 @@ public class TeleopDriveTimmy extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        ShooterTimmy shooterTimmy   = new ShooterTimmy(hardwareMap);
+        CarouselTimmy carouselTimmy = new CarouselTimmy(hardwareMap);
         // -------------------------------------------------------------------
         // INIT PHASE
         // Initialize (set up) the four motors by name.
@@ -70,7 +73,7 @@ public class TeleopDriveTimmy extends LinearOpMode {
         leftFront.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.REVERSE);//TODO: set the direction of the rightFront motor to FORWARD
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);//TODO: set the direction of the leftBack motor to REVERSE
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);//TODO: set the direction of the rightBack motor to FORWARD
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);//TODO: set the direction of the rightBack motor to FORWARD
 
         // -------------------------------------------------------------------
         // Set zero-power behavior.
@@ -141,6 +144,36 @@ public class TeleopDriveTimmy extends LinearOpMode {
             rightFront.setPower(frontRightPower);//TODO: set the power to the rightFront motor
             leftBack.setPower(rearLeftPower);//TODO: set the power to the leftBack motor
             rightBack.setPower(rearRightPower);//TODO: set the power to the rightBack motor
+            for(int i=1;i<3;i++) {
+
+                sleep(1000);
+
+                if (i == 1) {
+                    carouselTimmy.spinCarouselLaunchOne();
+                } else if (i == 2) {
+                    carouselTimmy.spinCarouselLaunchTwo();
+                } else {
+                    carouselTimmy.spinCarouselLaunchThree();
+                }
+                }
+            if (gamepad2.right_trigger > 0.25 && gamepad2.left_trigger < 0.1) {
+                shooterTimmy.shooterPower = ShooterTimmy.nearShooterPower;
+                shooterTimmy.setShooterPower(shooterTimmy.shooterPower, telemetry);
+
+                sleep(1000);
+                carouselTimmy.setTinyKicker();
+                sleep(1000);
+                shooterTimmy.setNearTiltPosition(.3);
+                sleep(1000);
+                carouselTimmy.setFullKicker();
+                sleep(1000);
+                carouselTimmy.setHomePositionKicker();
+                sleep(1000);
+                shooterTimmy.setHomeTiltPosition();
+
+
+            }
+
 
             // ---------------------------------------------------------------
             // Telemetry — send information to the Driver Station screen
@@ -158,6 +191,7 @@ public class TeleopDriveTimmy extends LinearOpMode {
             telemetry.addData("Back  Right ", rearRightPower);
 
             telemetry.update();
+
 
         } // end while loop
 
